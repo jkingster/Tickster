@@ -66,7 +66,9 @@ public class CommandContext {
     }
 
     public boolean getBooleanOption(String name) {
-        return getMapping(name) != null && getMapping(name).getAsBoolean();
+        if (getMapping(name) == null)
+            return false;
+        return getMapping(name).getAsBoolean();
     }
 
     public long getLongOption(String name) {
