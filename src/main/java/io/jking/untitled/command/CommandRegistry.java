@@ -2,10 +2,7 @@ package io.jking.untitled.command;
 
 import io.jking.untitled.command.impl.bot_owner.TestCommand;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CommandRegistry {
@@ -35,8 +32,9 @@ public class CommandRegistry {
 
     public List<Command> getCommandsByCategory(Category category) {
         return COMMAND_MAP.values()
-                 .stream()
+                .stream()
                 .filter(command -> command.getCategory() == category)
+                .sorted(Comparator.comparing(Command::getName))
                 .collect(Collectors.toUnmodifiableList());
     }
 
