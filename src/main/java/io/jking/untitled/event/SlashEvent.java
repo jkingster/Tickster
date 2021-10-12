@@ -40,6 +40,7 @@ public class SlashEvent extends ListenerAdapter {
             return;
 
         if (command.getCategory() == Category.BOT_OWNER && !isOwner(member.getIdLong())) {
+            // TODO: Implement _error_ handling and respond with an error that member has no access.
             return;
         }
 
@@ -47,9 +48,10 @@ public class SlashEvent extends ListenerAdapter {
     }
 
     private boolean isOwner(long targetId) {
-        return config.getObject("bot").getArray("bot_owners").toList()
+        return config.getObject("bot")
+                .getArray("owner_ids")
+                .toList()
                 .stream()
-                .mapToLong(Object::hashCode)
-                .anyMatch(value -> value == targetId);
+                .anyMatch(id -> (long) id == targetId);
     }
 }
