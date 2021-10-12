@@ -16,10 +16,13 @@ public abstract class Command extends CommandData {
         this.category = category;
     }
 
-
     public abstract void onCommand(CommandContext ctx);
 
     public Category getCategory() {
         return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
