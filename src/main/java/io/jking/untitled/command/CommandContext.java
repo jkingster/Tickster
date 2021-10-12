@@ -54,7 +54,7 @@ public class CommandContext {
     }
 
     public String getStringOption(String name) {
-       return getMapping(name) == null ? null : getMapping(name).getAsString();
+        return getMapping(name) == null ? null : getMapping(name).getAsString();
     }
 
     public User getUserOption(String name) {
@@ -77,10 +77,11 @@ public class CommandContext {
         return getMapping(name) == null ? null : getMapping(name).getAsMember();
     }
 
-    private OptionMapping getMapping(String name) {
-        return getEvent().getOption(name);
-    }
     public ReplyAction reply(String content) {
         return getEvent().reply(content);
+    }
+
+    private OptionMapping getMapping(String name) {
+        return getEvent().getOption(name);
     }
 }
