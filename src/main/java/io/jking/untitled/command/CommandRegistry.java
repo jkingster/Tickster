@@ -1,6 +1,7 @@
 package io.jking.untitled.command;
 
 import io.jking.untitled.command.impl.bot_owner.TestCommand;
+import io.jking.untitled.command.impl.utility.PingCommand;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ public class CommandRegistry {
     private final Map<String, Command> COMMAND_MAP = new HashMap<>();
 
     public CommandRegistry() {
-        addCommands(new TestCommand());
+        addCommands(new TestCommand(), new PingCommand());
     }
 
     public void addCommand(Command command) {
