@@ -1,6 +1,7 @@
 package io.jking.untitled.command;
 
 import io.jking.untitled.core.Config;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -23,6 +24,10 @@ public class CommandContext {
 
     public Config getConfig() {
         return config;
+    }
+
+    public JDA getJDA() {
+        return getEvent().getJDA();
     }
 
     private Guild getGuild() {
