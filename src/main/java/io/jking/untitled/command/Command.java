@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Command extends CommandData {
 
     private Category category = Category.UNKNOWN;
+    private boolean isGlobal = false;
 
     public Command(@NotNull String name, @NotNull String description) {
         super(name, description);
@@ -24,5 +25,22 @@ public abstract class Command extends CommandData {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    public void setGlobal(boolean global) {
+        isGlobal = global;
+    }
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "options=" + options +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
