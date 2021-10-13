@@ -7,7 +7,7 @@ import io.jking.untitled.command.CommandContext;
 
 public class TestCommand extends Command {
     public TestCommand() {
-        super("test", "A testing command for the bot owners. Maybe...?", Category.BOT_OWNER);
+        super("test", "A testing command for the bot owners.", Category.UTILITY);
     }
 
     @Override
