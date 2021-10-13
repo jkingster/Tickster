@@ -88,6 +88,10 @@ public class CommandContext {
         return getEvent().reply(content);
     }
 
+    public ReplyAction reply(MessageEmbed embed) {
+        return getEvent().replyEmbeds(embed);
+    }
+
     private OptionMapping getMapping(String name) {
         return getEvent().getOption(name);
     }
