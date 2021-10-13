@@ -1,7 +1,9 @@
 package io.jking.untitled.command;
 
 import io.jking.untitled.command.impl.bot_owner.TestCommand;
+import io.jking.untitled.command.impl.utility.HelpCommand;
 import io.jking.untitled.command.impl.utility.PingCommand;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,7 +13,7 @@ public class CommandRegistry {
     private final Map<String, Command> COMMAND_MAP = new HashMap<>();
 
     public CommandRegistry() {
-        addCommands(new TestCommand(), new PingCommand());
+        addCommands(new TestCommand(), new PingCommand(), new HelpCommand(this));
     }
 
     public void addCommand(Command command) {
@@ -31,10 +33,11 @@ public class CommandRegistry {
         return COMMAND_MAP.values().stream().collect(Collectors.toUnmodifiableList());
     }
 
-    public List<Command> getCommandsByCategory(Category category) {
+    public List<Command> getCommandsByCategory(Member member, Category category) {
         return COMMAND_MAP.values()
                 .stream()
                 .filter(command -> command.getCategory() == category)
+                .filter(command -> member.hasPermission(command.getPermission()))
                 .sorted(Comparator.comparing(Command::getName))
                 .collect(Collectors.toUnmodifiableList());
     }
