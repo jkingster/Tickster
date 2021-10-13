@@ -2,6 +2,7 @@ package io.jking.untitled.core;
 
 
 import io.jking.untitled.command.CommandRegistry;
+import io.jking.untitled.event.InteractionEvent;
 import io.jking.untitled.event.SlashEvent;
 import io.jking.untitled.event.StartEvent;
 import net.dv8tion.jda.api.JDABuilder;
@@ -31,7 +32,8 @@ public class Untitled {
         final CommandRegistry commandRegistry = new CommandRegistry();
 
         JDABuilder.createDefault(token)
-                .addEventListeners(new SlashEvent(commandRegistry, config), new StartEvent(commandRegistry))
+                .addEventListeners(new SlashEvent(commandRegistry, config), new StartEvent(commandRegistry),
+                        new InteractionEvent(commandRegistry))
                 .build()
                 .awaitReady();
     }
