@@ -4,6 +4,7 @@ import io.jking.untitled.command.Category;
 import io.jking.untitled.command.Command;
 import io.jking.untitled.command.CommandContext;
 import io.jking.untitled.command.CommandRegistry;
+import io.jking.untitled.command.error.CommandError;
 import io.jking.untitled.utility.EmbedUtil;
 import io.jking.untitled.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -66,7 +67,7 @@ public class HelpCommand extends Command {
 
         final Command command = registry.getCommand(input.toLowerCase());
         if (command == null) {
-            ctx.reply("An error occurred.. please try again.")
+            ctx.replyError(CommandError.UNKNOWN)
                     .setEphemeral(true)
                     .queue();
             return;
@@ -148,7 +149,7 @@ public class HelpCommand extends Command {
     private void sendCategories(CommandContext ctx, Member member) {
         final SelectionMenu.Builder menu = getCategoriesMenu(member);
         if (menu == null) {
-            ctx.reply("It seems you have access to no categories to view.")
+            ctx.replyError(CommandError.CUSTOM, "It seems you have access to no categories.")
                     .setEphemeral(true)
                     .queue();
             return;
@@ -167,7 +168,7 @@ public class HelpCommand extends Command {
     private void sendCategory(CommandContext ctx, Category category) {
         final SelectionMenu.Builder menu = getCommandsMenu(ctx.getMember(), category);
         if (menu == null) {
-            ctx.reply("It seems you have access to no commands in that category.")
+            ctx.replyError(CommandError.CUSTOM, "It seems you have access to no commands in that category.")
                     .setEphemeral(true)
                     .queue();
             return;
