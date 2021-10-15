@@ -4,11 +4,12 @@ import io.jking.untitled.command.Category;
 import io.jking.untitled.command.Command;
 import io.jking.untitled.command.CommandContext;
 import io.jking.untitled.command.CommandRegistry;
+import io.jking.untitled.command.error.CommandError;
 import io.jking.untitled.core.Config;
+import io.jking.untitled.utility.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -32,7 +33,9 @@ public class SlashEvent extends ListenerAdapter {
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
         if (!event.isFromGuild()) {
-            sendPrivateMessage(event.getUser(), "This bot does not process commands in private messages.");
+            event.getUser().openPrivateChannel()
+                    .flatMap(channel -> channel.sendMessage("I do not perform slash commands via private messages."))
+                    .queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER));
             return;
         }
 
@@ -54,7 +57,9 @@ public class SlashEvent extends ListenerAdapter {
             return;
 
         if (command.getCategory() == Category.BOT_OWNER && !isOwner(member.getIdLong())) {
-            // TODO: Implement _error_ handling and respond with an error that member has no access.
+            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, "You").build())
+                    .setEphemeral(true)
+                    .queue();
             return;
         }
 
@@ -62,22 +67,20 @@ public class SlashEvent extends ListenerAdapter {
         final Permission permission = command.getPermission();
 
         if (!self.hasPermission(permission)) {
-            sendPrivateMessage(member.getUser(), "I do not have the necessary permission(s) to execute this command.");
+            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, "I", permission).build())
+                    .setEphemeral(true)
+                    .queue();
             return;
         }
 
         if (!member.hasPermission(permission)) {
-            sendPrivateMessage(member.getUser(), "You do not have the necessary permission(s) to execute that command.");
+            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, "You", permission).build())
+                    .setEphemeral(true)
+                    .queue();
             return;
         }
 
         command.onCommand(new CommandContext(event, config, messageEvent));
-    }
-
-    private void sendPrivateMessage(User user, String content) {
-        user.openPrivateChannel()
-                .flatMap(channel -> channel.sendMessage(content))
-                .queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER));
     }
 
     private boolean isOwner(long targetId) {
