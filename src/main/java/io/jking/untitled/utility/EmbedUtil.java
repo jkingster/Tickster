@@ -27,5 +27,12 @@ public final class EmbedUtil {
                 .setTimestamp(Instant.now());
     }
 
+    public static EmbedBuilder getSuccess(String content, Object... objects) {
+        return new EmbedBuilder()
+                .setColor(Color.GRAY)
+                .setDescription(content.formatted(objects))
+                .setTimestamp(Instant.now());
+    }
+
 
 }

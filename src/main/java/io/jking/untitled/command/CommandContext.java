@@ -4,6 +4,7 @@ import io.jking.untitled.command.error.CommandError;
 import io.jking.untitled.core.Config;
 import io.jking.untitled.event.MessageEvent;
 import io.jking.untitled.utility.EmbedUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -35,7 +36,7 @@ public class CommandContext {
         return getEvent().getJDA();
     }
 
-    private Guild getGuild() {
+    public Guild getGuild() {
         return getEvent().getGuild();
     }
 
@@ -99,6 +100,10 @@ public class CommandContext {
 
     public ReplyAction reply(MessageEmbed embed) {
         return getEvent().replyEmbeds(embed);
+    }
+
+    public ReplyAction replySuccess(EmbedBuilder embedBuilder) {
+        return reply(embedBuilder.build());
     }
 
     public ReplyAction replyError(CommandError error, Object... objects) {

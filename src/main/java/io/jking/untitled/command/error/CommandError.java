@@ -4,8 +4,9 @@ public enum CommandError {
 
     INTERACTION("%s cannot interact with %s."),
     PERMISSION("%s is missing the required permission(s)."),
-    UNKNOWN("An unknown error occurred."),
+    UNKNOWN("An unknown error occurred. %s"),
     COOLDOWN("You are on cooldown for that command."),
+    ARGUMENTS("You did not provide valid command argument(s). Try again."),
     CUSTOM("%s");
 
     private final String errorResponse;

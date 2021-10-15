@@ -57,7 +57,7 @@ public class SlashEvent extends ListenerAdapter {
             return;
 
         if (command.getCategory() == Category.BOT_OWNER && !isOwner(member.getIdLong())) {
-            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, "You").build())
+            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, member.getUser().getAsTag()).build())
                     .setEphemeral(true)
                     .queue();
             return;
@@ -67,7 +67,7 @@ public class SlashEvent extends ListenerAdapter {
         final Permission permission = command.getPermission();
 
         if (!self.hasPermission(permission)) {
-            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, "I", permission).build())
+            event.replyEmbeds(EmbedUtil.getError(CommandError.PERMISSION, self.getUser().getAsTag(), permission).build())
                     .setEphemeral(true)
                     .queue();
             return;
