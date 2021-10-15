@@ -58,7 +58,7 @@ public class HelpCommand extends Command {
         }
 
         final String[] categories = getCategories();
-        if (MiscUtil.isAnyChoice(input, categories)) {
+        if (MiscUtil.isAnyOption(input, categories)) {
             final Category category = Category.getCategoryByName(input);
             sendCategory(ctx, category);
             return;
