@@ -1,7 +1,9 @@
 package io.jking.untitled.command;
 
+import io.jking.untitled.command.error.CommandError;
 import io.jking.untitled.core.Config;
 import io.jking.untitled.event.MessageEvent;
+import io.jking.untitled.utility.EmbedUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -97,6 +99,10 @@ public class CommandContext {
 
     public ReplyAction reply(MessageEmbed embed) {
         return getEvent().replyEmbeds(embed);
+    }
+
+    public ReplyAction replyError(CommandError error, Object... objects) {
+        return reply(EmbedUtil.getError(error, objects).build());
     }
 
     private OptionMapping getMapping(String name) {
