@@ -32,9 +32,11 @@ public class Untitled {
 
         final CommandRegistry commandRegistry = new CommandRegistry();
 
+        MessageEvent messageEvent = new MessageEvent(config);
+
         JDABuilder.createDefault(token)
-                .addEventListeners(new SlashEvent(commandRegistry, config), new StartEvent(commandRegistry),
-                        new InteractionEvent(commandRegistry), new MessageEvent(config))
+                .addEventListeners(new SlashEvent(commandRegistry, config, messageEvent), new StartEvent(commandRegistry),
+                        new InteractionEvent(commandRegistry), messageEvent)
                 .build()
                 .awaitReady();
     }

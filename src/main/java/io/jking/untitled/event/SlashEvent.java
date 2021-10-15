@@ -21,9 +21,12 @@ public class SlashEvent extends ListenerAdapter {
 
     private final Config config;
 
-    public SlashEvent(CommandRegistry registry, Config config) {
+    private final MessageEvent messageEvent;
+
+    public SlashEvent(CommandRegistry registry, Config config, MessageEvent event) {
         this.registry = registry;
         this.config = config;
+        this.messageEvent = event;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class SlashEvent extends ListenerAdapter {
             return;
         }
 
-        command.onCommand(new CommandContext(event, config));
+        command.onCommand(new CommandContext(event, config, messageEvent));
     }
 
     private void sendPrivateMessage(User user, String content) {

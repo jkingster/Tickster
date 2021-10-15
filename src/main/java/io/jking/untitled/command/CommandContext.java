@@ -1,6 +1,7 @@
 package io.jking.untitled.command;
 
 import io.jking.untitled.core.Config;
+import io.jking.untitled.event.MessageEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -12,10 +13,12 @@ public class CommandContext {
 
     private final SlashCommandEvent event;
     private final Config config;
+    private final MessageEvent messageEvent;
 
-    public CommandContext(SlashCommandEvent event, Config config) {
+    public CommandContext(SlashCommandEvent event, Config config, MessageEvent messageEvent) {
         this.event = event;
         this.config = config;
+        this.messageEvent = messageEvent;
     }
 
     public SlashCommandEvent getEvent() {
@@ -56,6 +59,10 @@ public class CommandContext {
 
     public User getSelfUser() {
         return getSelf() == null ? null : getSelf().getUser();
+    }
+
+    public MessageEvent getMessageEvent() {
+        return messageEvent;
     }
 
     public String getStringOption(String name) {

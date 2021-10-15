@@ -10,8 +10,10 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class MessageEvent extends ListenerAdapter {
 
@@ -22,6 +24,7 @@ public class MessageEvent extends ListenerAdapter {
      */
 
     private final Map<Long, MessageData> MESSAGE_MAP = new ConcurrentHashMap<>();
+    private final Map<Long, MessageData> DELETED_MAP = new ConcurrentHashMap<>();
 
     private final Config config;
 
@@ -43,6 +46,11 @@ public class MessageEvent extends ListenerAdapter {
         final MessageData data = MESSAGE_MAP.getOrDefault(event.getMessageIdLong(), null);
         if (data == null)
             return;
+
+        MESSAGE_MAP.remove(data.getMessageId());
+
+        final long channelId = data.getChannelId();
+        DELETED_MAP.put(channelId, data);
 
         final long logId = config.getObject("bot").getLong("log_id", 0L);
         if (logId == 0L)
@@ -79,5 +87,15 @@ public class MessageEvent extends ListenerAdapter {
 
         data.setEditedContent(event.getMessage().getContentDisplay());
         channel.sendMessageFormat("**Message Updated:** %s", data).queue();
+    }
+
+    public List<MessageData> getCachedMessages() {
+        return MESSAGE_MAP.values()
+                .stream()
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public MessageData getMostRecentDeleted(long channelId) {
+        return DELETED_MAP.getOrDefault(channelId, null);
     }
 }
