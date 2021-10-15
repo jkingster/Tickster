@@ -2,6 +2,7 @@ package io.jking.untitled.command;
 
 import io.jking.untitled.command.impl.bot_owner.TestCommand;
 import io.jking.untitled.command.impl.misc.SnipeCommand;
+import io.jking.untitled.command.impl.moderation.KickCommand;
 import io.jking.untitled.command.impl.utility.HelpCommand;
 import io.jking.untitled.command.impl.utility.PingCommand;
 import net.dv8tion.jda.api.entities.Member;
@@ -14,7 +15,7 @@ public class CommandRegistry {
     private final Map<String, Command> COMMAND_MAP = new HashMap<>();
 
     public CommandRegistry() {
-        addCommands(new TestCommand(), new PingCommand(), new HelpCommand(this), new SnipeCommand());
+        addCommands(new TestCommand(), new PingCommand(), new HelpCommand(this), new SnipeCommand(), new KickCommand());
     }
 
     public void addCommand(Command command) {
