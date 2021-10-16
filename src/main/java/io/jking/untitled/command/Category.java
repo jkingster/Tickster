@@ -10,7 +10,8 @@ public enum Category {
     MODERATION(Permission.KICK_MEMBERS, "category:moderation"),
     MISC(Permission.MESSAGE_WRITE, "category:misc"),
     UNKNOWN(Permission.MESSAGE_WRITE, "category:unknown"),
-    UTILITY(Permission.MESSAGE_WRITE, "category:utility");
+    UTILITY(Permission.MESSAGE_WRITE, "category:utility"),
+    INFO(Permission.MESSAGE_WRITE, "category:info");
 
     private Permission permission;
     private String categoryKey;
