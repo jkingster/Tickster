@@ -7,6 +7,7 @@ public enum CommandError {
     UNKNOWN("An unknown error occurred. %s"),
     COOLDOWN("You are on cooldown for that command."),
     ARGUMENTS("You did not provide valid command argument(s). Try again."),
+    INVALID("You provided an invalid ID: %s"),
     CUSTOM("%s");
 
     private final String errorResponse;

@@ -24,6 +24,10 @@ public final class MiscUtil {
         }
     }
 
+    public static boolean isSnowflake(long id) {
+        return isSnowflake(String.valueOf(id));
+    }
+
     public static int getAge(OffsetDateTime dateTime) {
         return (int) ChronoUnit.DAYS.between(dateTime, OffsetDateTime.now());
     }

@@ -5,6 +5,7 @@ import io.jking.untitled.command.Command;
 import io.jking.untitled.command.CommandContext;
 import io.jking.untitled.command.error.CommandError;
 import io.jking.untitled.utility.EmbedUtil;
+import io.jking.untitled.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -44,6 +45,13 @@ public class KickCommand extends Command {
 
         if (target != null) {
             onPunishment(ctx, target, ctx.getMember(), finalReason);
+            return;
+        }
+
+        if (!MiscUtil.isSnowflake(targetId)) {
+            ctx.replyError(CommandError.INVALID, targetId)
+                    .setEphemeral(true)
+                    .queue();
             return;
         }
 
