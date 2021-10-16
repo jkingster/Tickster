@@ -1,5 +1,9 @@
 package io.jking.untitled.utility;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
 public final class MiscUtil {
     private MiscUtil() {
     }
@@ -20,5 +24,12 @@ public final class MiscUtil {
         }
     }
 
+    public static int getAge(OffsetDateTime dateTime) {
+        return (int) ChronoUnit.DAYS.between(dateTime, OffsetDateTime.now());
+    }
+
+    public static String getFormattedDate(OffsetDateTime dateTime) {
+        return DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm").format(dateTime);
+    }
 
 }
