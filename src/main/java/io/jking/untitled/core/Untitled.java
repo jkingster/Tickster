@@ -2,11 +2,10 @@ package io.jking.untitled.core;
 
 
 import io.jking.untitled.command.CommandRegistry;
-import io.jking.untitled.event.InteractionEvent;
-import io.jking.untitled.event.MessageEvent;
-import io.jking.untitled.event.SlashEvent;
-import io.jking.untitled.event.StartEvent;
+import io.jking.untitled.event.*;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.Checks;
 
 import javax.security.auth.login.LoginException;
@@ -35,8 +34,15 @@ public class Untitled {
         MessageEvent messageEvent = new MessageEvent(config);
 
         JDABuilder.createDefault(token)
-                .addEventListeners(new SlashEvent(commandRegistry, config, messageEvent), new StartEvent(commandRegistry),
-                        new InteractionEvent(commandRegistry), messageEvent)
+                .setEnabledIntents(GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
+                .disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE)
+                .addEventListeners(
+                        new SlashEvent(commandRegistry, config, messageEvent),
+                        new StartEvent(commandRegistry),
+                        new InteractionEvent(commandRegistry),
+                        new InviteEvent(config),
+                        messageEvent
+                )
                 .build()
                 .awaitReady();
     }
