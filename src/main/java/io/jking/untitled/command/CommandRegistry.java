@@ -1,6 +1,7 @@
 package io.jking.untitled.command;
 
 import io.jking.untitled.command.impl.bot_owner.TestCommand;
+import io.jking.untitled.command.impl.bot_owner.UpdateCommand;
 import io.jking.untitled.command.impl.info.InfoCommand;
 import io.jking.untitled.command.impl.info.MeCommand;
 import io.jking.untitled.command.impl.misc.SnipeCommand;
@@ -20,7 +21,7 @@ public class CommandRegistry {
         addCommands(
                 new TestCommand(), new PingCommand(), new HelpCommand(this),
                 new SnipeCommand(), new KickCommand(), new MeCommand(),
-                new InfoCommand()
+                new InfoCommand(), new UpdateCommand(this)
         );
     }
 

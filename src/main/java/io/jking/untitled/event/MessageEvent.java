@@ -32,6 +32,7 @@ public class MessageEvent extends ListenerAdapter {
         this.config = config;
     }
 
+
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         final User user = event.getAuthor();
