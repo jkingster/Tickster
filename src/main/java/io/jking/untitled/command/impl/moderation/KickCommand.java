@@ -22,8 +22,7 @@ public class KickCommand extends Command {
     public KickCommand() {
         super("kick", "Kicks a member from the server. Provide an ID or mention.", Category.MODERATION, Permission.KICK_MEMBERS);
         addOptions(
-                new OptionData(OptionType.USER, "target", "Mention the user you want kicked.", false),
-                new OptionData(OptionType.INTEGER, "target_id", "Provide the users ID that you want kicked.", false),
+                new OptionData(OptionType.USER, "target", "Mention the user you want kicked.", true),
                 new OptionData(OptionType.STRING, "reason", "The reason this user was kicked.", false)
         );
     }
@@ -31,34 +30,15 @@ public class KickCommand extends Command {
     @Override
     public void onCommand(CommandContext ctx) {
         final Member target = ctx.getMemberOption("target");
-        final long targetId = ctx.getLongOption("target_id");
-
-        if (target == null && targetId == 0L) {
-            ctx.replyError(CommandError.ARGUMENTS)
-                    .setEphemeral(true)
-                    .queue();
+        if (target == null) {
+            ctx.replyError(CommandError.ARGUMENTS);
             return;
         }
 
         final String reason = ctx.getStringOption("reason");
         final String finalReason = reason == null ? "No reason provided." : reason;
 
-        if (target != null) {
-            onPunishment(ctx, target, ctx.getMember(), finalReason);
-            return;
-        }
-
-        if (!MiscUtil.isSnowflake(targetId)) {
-            ctx.replyError(CommandError.INVALID, targetId)
-                    .setEphemeral(true)
-                    .queue();
-            return;
-        }
-
-        ctx.getGuild().retrieveMemberById(targetId).queue(member -> onPunishment(ctx, member, ctx.getMember(), finalReason),
-                error -> ctx.replyError(CommandError.UNKNOWN, "Could not retrieve member with ID: " + targetId)
-        );
-
+        onPunishment(ctx, target, ctx.getMember(), finalReason);
     }
 
     private void onPunishment(CommandContext ctx, Member target, Member issuing, String reason) {
