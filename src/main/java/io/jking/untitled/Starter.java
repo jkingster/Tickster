@@ -17,13 +17,11 @@ public class Starter {
 
             final Config config = new Config("config.json");
 
-            final String mode = args[0];
-            if (mode.equalsIgnoreCase("dev")) {
-                Untitled.build(config, true);
-            } else {
+            if (args.length == 0) {
                 Untitled.build(config);
+            } else if (args[0].equalsIgnoreCase("dev")) {
+                Untitled.build(config, true);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

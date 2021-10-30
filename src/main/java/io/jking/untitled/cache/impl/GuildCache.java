@@ -6,6 +6,7 @@ import io.jking.untitled.jooq.tables.GuildData;
 import io.jking.untitled.jooq.tables.records.GuildDataRecord;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
+import org.jooq.*;
 import org.jooq.Record;
 
 import java.util.Map;
@@ -23,7 +24,6 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
                 .expirationPolicy(ExpirationPolicy.ACCESSED)
                 .build();
     }
-
 
 
     @Override
@@ -67,6 +67,28 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
                 .where(GUILD_DATA.GUILD_ID.eq(key))
                 .executeAsync();
     }
+
+    @Override
+    public <T> void update(Long key, Field<T> targetField, T value,
+                           Consumer<Integer> success,
+                           Consumer<Throwable> throwableConsumer) {
+
+        final UpdateResultStep<GuildDataRecord> record = Hikari.getInstance().getDSL()
+                .update(GUILD_DATA)
+                .set(targetField, value)
+                .returning();
+
+
+        record.stream().parallel().findFirst().ifPresent(it -> put(key, it));
+        record.executeAsync().whenCompleteAsync((integer, throwable) -> {
+            if (throwable != null) {
+                throwableConsumer.accept(throwable);
+                return;
+            }
+            success.accept(integer);
+        });
+    }
+
 
     @Override
     public Record get(Long key) {

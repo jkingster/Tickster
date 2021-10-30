@@ -52,7 +52,7 @@ public class Untitled {
                 .setEnabledIntents(GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
                 .disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE)
                 .addEventListeners(
-                        new SlashEvent(commandRegistry, config, messageEvent),
+                        new SlashEvent(commandRegistry, config, messageEvent, cache),
                         new StartEvent(commandRegistry, cache, this),
                         new InteractionEvent(commandRegistry),
                         new InviteEvent(config),

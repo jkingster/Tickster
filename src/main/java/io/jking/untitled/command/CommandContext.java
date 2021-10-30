@@ -1,5 +1,7 @@
 package io.jking.untitled.command;
 
+import io.jking.untitled.cache.Cache;
+import io.jking.untitled.cache.impl.GuildCache;
 import io.jking.untitled.command.error.CommandError;
 import io.jking.untitled.core.Config;
 import io.jking.untitled.event.MessageEvent;
@@ -9,6 +11,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
@@ -17,11 +20,13 @@ public class CommandContext {
     private final SlashCommandEvent event;
     private final Config config;
     private final MessageEvent messageEvent;
+    private final Cache cache;
 
-    public CommandContext(SlashCommandEvent event, Config config, MessageEvent messageEvent) {
+    public CommandContext(SlashCommandEvent event, Config config, MessageEvent messageEvent, Cache cache) {
         this.event = event;
         this.config = config;
         this.messageEvent = messageEvent;
+        this.cache = cache;
     }
 
     public SlashCommandEvent getEvent() {
@@ -68,8 +73,16 @@ public class CommandContext {
         return messageEvent;
     }
 
+    public String getSubcommand() {
+        return getEvent().getSubcommandName();
+    }
+
     public String getStringOption(String name) {
         return getMapping(name) == null ? null : getMapping(name).getAsString();
+    }
+
+    public TextChannel getChannelOption(String name) {
+        return getMapping(name) == null ? null : (TextChannel) getMapping(name).getAsMessageChannel();
     }
 
     public User getUserOption(String name) {
@@ -112,5 +125,9 @@ public class CommandContext {
 
     private OptionMapping getMapping(String name) {
         return getEvent().getOption(name);
+    }
+
+    public GuildCache getGuildCache() {
+        return cache.getGuildCache();
     }
 }

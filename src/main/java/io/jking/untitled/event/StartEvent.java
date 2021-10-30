@@ -74,7 +74,10 @@ public class StartEvent implements EventListener {
                 .values(guildId, ownerId)
                 .executeAsync();
 
-        cache.getGuildCache().put(guildId, new GuildDataRecord(guildId, ownerId));
+        cache.getGuildCache().put(guildId, new GuildDataRecord()
+                .value1(guildId)
+                .value2(ownerId)
+        );
     }
 
     private void onGuildReady(@NotNull GuildReadyEvent event) {
