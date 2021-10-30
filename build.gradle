@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
     implementation group: 'org.jooq', name: 'jooq', version: '3.15.4'
@@ -43,8 +44,8 @@ jooq {
                 jdbc {
                     driver = 'org.postgresql.Driver'
                     url = 'jdbc:postgresql://localhost:5432/postgres'
-                    user = ''
-                    password = ''
+                    user = 'postgres'
+                    password = 'password'
                 }
                 generator {
                     name = 'org.jooq.codegen.DefaultGenerator'
@@ -60,7 +61,7 @@ jooq {
                     }
                     target {
                         packageName = 'io.jking.untitled.jooq'
-                        directory = "src/main/java/"
+                        directory = "src/main/jooq"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }
