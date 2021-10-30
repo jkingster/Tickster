@@ -14,7 +14,16 @@ public class Starter {
                     "sql/guild_infractions.sql",
                     "sql/guild_settings.sql"
             );
-            Untitled.build(new Config("config.json"));
+
+            final Config config = new Config("config.json");
+
+            final String mode = args[0];
+            if (mode.equalsIgnoreCase("dev")) {
+                Untitled.build(config, true);
+            } else {
+                Untitled.build(config);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
