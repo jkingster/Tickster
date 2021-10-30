@@ -4,7 +4,6 @@ package io.jking.untitled.core;
 import io.jking.untitled.cache.Cache;
 import io.jking.untitled.command.CommandRegistry;
 import io.jking.untitled.event.*;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -53,9 +52,9 @@ public class Untitled {
                 .disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE)
                 .addEventListeners(
                         new SlashEvent(commandRegistry, config, messageEvent, cache),
-                        new StartEvent(commandRegistry, cache, this),
+                        new GuildEvent(commandRegistry, cache, this),
                         new InteractionEvent(commandRegistry),
-                        new InviteEvent(config),
+                        new InviteEvent(cache),
                         messageEvent
                 )
                 .build()

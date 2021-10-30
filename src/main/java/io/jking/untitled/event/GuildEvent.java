@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -21,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
 
 
-public class StartEvent implements EventListener {
+public class GuildEvent implements EventListener {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(StartEvent.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(GuildEvent.class);
 
     private final CommandRegistry registry;
 
@@ -31,7 +32,7 @@ public class StartEvent implements EventListener {
 
     private final Untitled untitled;
 
-    public StartEvent(CommandRegistry registry, Cache cache, Untitled untitled) {
+    public GuildEvent(CommandRegistry registry, Cache cache, Untitled untitled) {
         this.registry = registry;
         this.cache = cache;
         this.untitled = untitled;
@@ -47,6 +48,8 @@ public class StartEvent implements EventListener {
             onOwnerChange((GuildUpdateOwnerEvent) event);
         else if (event instanceof GuildJoinEvent)
             onNewGuild((GuildJoinEvent) event);
+        else if (event instanceof GuildLeaveEvent)
+            onGuildLeave((GuildLeaveEvent) event);
     }
 
     private void onReady(ReadyEvent event) {
@@ -57,7 +60,6 @@ public class StartEvent implements EventListener {
                 LOGGER.warn("DEV GUILD IS NULL!");
                 return;
             }
-
             registry.getCommands().forEach(command -> guild.upsertCommand(command).queue());
         }
     }
@@ -88,6 +90,10 @@ public class StartEvent implements EventListener {
                 .update(GUILD_DATA)
                 .set(GUILD_DATA.OWNER_ID, event.getNewOwnerIdLong())
                 .executeAsync();
+    }
+
+    private void onGuildLeave(GuildLeaveEvent event) {
+        cache.getGuildCache().delete(event.getGuild().getIdLong());
     }
 
 

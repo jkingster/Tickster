@@ -1,5 +1,6 @@
 package io.jking.untitled.event;
 
+import io.jking.untitled.cache.Cache;
 import io.jking.untitled.core.Config;
 import io.jking.untitled.data.InviteData;
 import io.jking.untitled.utility.EmbedUtil;
@@ -17,14 +18,16 @@ import java.awt.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
+
 public class InviteEvent implements EventListener {
 
     private final Map<String, InviteData> INVITE_MAP = new ConcurrentHashMap<>();
 
-    private final Config config;
+    private final Cache cache;
 
-    public InviteEvent(Config config) {
-        this.config = config;
+    public InviteEvent(Cache cache) {
+        this.cache = cache;
     }
 
     @Override
@@ -77,25 +80,27 @@ public class InviteEvent implements EventListener {
     }
 
     private void sendInformation(Member member, Invite invite) {
-        final long logId = config.getObject("bot").getLong("log_id", 0L);
-        if (logId == 0L)
-            return;
-
         final Guild guild = member.getGuild();
-        final TextChannel textChannel = guild.getTextChannelById(logId);
-        if (textChannel == null)
-            return;
+        final long guildId = guild.getIdLong();
 
-        final User user = member.getUser();
+        cache.getGuildCache().retrieve(guildId, data -> {
+            final TextChannel channel = guild.getTextChannelById(data.get(GUILD_DATA.LOGS_ID));
+            if (channel == null)
+                return;
 
-        final String inviter = invite.getInviter() == null ? "Unknown" : invite.getInviter().getAsTag();
-        final EmbedBuilder embedBuilder = EmbedUtil.getDefault()
-                .setColor(Color.ORANGE)
-                .setAuthor(user.getAsTag() + " has joined.", null, user.getEffectiveAvatarUrl())
-                .setDescription(String.format("**Code Used:** `%s`\n**Uses:** `%s`\n**Invite Creator:** `%s`",
-                        invite.getCode(), invite.getUses(), inviter))
-                .setFooter("ID: " + user.getIdLong());
+            final User user = member.getUser();
 
-        textChannel.sendMessageEmbeds(embedBuilder.build()).queue();
+            final String inviter = invite.getInviter() == null ? "Unknown" : invite.getInviter().getAsTag();
+            final EmbedBuilder embedBuilder = EmbedUtil.getDefault()
+                    .setColor(Color.ORANGE)
+                    .setAuthor(user.getAsTag() + " has joined.", null, user.getEffectiveAvatarUrl())
+                    .setDescription(String.format("**Code Used:** `%s`\n**Uses:** `%s`\n**Invite Creator:** `%s`",
+                            invite.getCode(), invite.getUses(), inviter))
+                    .setFooter("ID: " + user.getIdLong());
+
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        });
+
+
     }
 }
