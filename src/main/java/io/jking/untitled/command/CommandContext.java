@@ -37,6 +37,10 @@ public class CommandContext {
         return config;
     }
 
+    public void acknowledge() {
+        getEvent().deferReply().queue();
+    }
+
     public JDA getJDA() {
         return getEvent().getJDA();
     }
