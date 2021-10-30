@@ -2,7 +2,6 @@ package io.jking.untitled.cache.impl;
 
 import io.jking.untitled.cache.ICache;
 import io.jking.untitled.database.Hikari;
-import io.jking.untitled.jooq.tables.GuildData;
 import io.jking.untitled.jooq.tables.records.GuildDataRecord;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;

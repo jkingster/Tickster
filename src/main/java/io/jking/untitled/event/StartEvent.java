@@ -5,7 +5,6 @@ import io.jking.untitled.cache.impl.GuildCache;
 import io.jking.untitled.command.CommandRegistry;
 import io.jking.untitled.core.Untitled;
 import io.jking.untitled.database.Hikari;
-import io.jking.untitled.jooq.tables.GuildData;
 import io.jking.untitled.jooq.tables.records.GuildDataRecord;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -14,9 +13,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,14 +1,12 @@
 package io.jking.untitled.cache;
 
-import io.jking.untitled.database.Hikari;
-import net.jodah.expiringmap.ExpirationPolicy;
-import net.jodah.expiringmap.ExpiringMap;
+
 import org.jooq.*;
 import org.jooq.Record;
 
-import java.util.concurrent.ConcurrentMap;
+
 import java.util.function.Consumer;
-import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
+
 
 public interface ICache<K, V> {
 
