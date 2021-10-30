@@ -6,6 +6,7 @@ import io.jking.untitled.command.impl.info.InfoCommand;
 import io.jking.untitled.command.impl.info.MeCommand;
 import io.jking.untitled.command.impl.misc.SnipeCommand;
 import io.jking.untitled.command.impl.moderation.KickCommand;
+import io.jking.untitled.command.impl.setting.SettingsCommand;
 import io.jking.untitled.command.impl.utility.HelpCommand;
 import io.jking.untitled.command.impl.utility.PingCommand;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,7 +22,7 @@ public class CommandRegistry {
         addCommands(
                 new TestCommand(), new PingCommand(), new HelpCommand(this),
                 new SnipeCommand(), new KickCommand(), new MeCommand(),
-                new InfoCommand(), new UpdateCommand(this)
+                new InfoCommand(), new UpdateCommand(this), new SettingsCommand()
         );
     }
 
