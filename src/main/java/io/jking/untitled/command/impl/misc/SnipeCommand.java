@@ -17,20 +17,6 @@ public class SnipeCommand extends Command {
 
     @Override
     public void onCommand(CommandContext ctx) {
-        final TextChannel channel = ctx.getChannel();
-        final MessageData data = ctx.getMessageEvent().getMostRecentDeleted(channel.getIdLong());
-
-        if (data == null) {
-            ctx.reply("There are no deleted messages to snipe!")
-                    .delay(15, TimeUnit.SECONDS)
-                    .flatMap(InteractionHook::deleteOriginal)
-                    .queue();
-            return;
-        }
-
-        ctx.reply("**Message Sniper:** " + data)
-                .delay(15, TimeUnit.SECONDS)
-                .flatMap(InteractionHook::deleteOriginal)
-                .queue();
+        // TODO: REVAMP.
     }
 }
