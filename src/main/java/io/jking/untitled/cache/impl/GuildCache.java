@@ -44,6 +44,7 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
                 .executeAsync();
     }
 
+    @Override
     public void retrieve(Long key, Consumer<GuildDataRecord> result, Consumer<Throwable> throwableConsumer) {
         final GuildDataRecord record = guildMap.getOrDefault(key, null);
         if (record == null) {
