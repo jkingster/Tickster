@@ -35,11 +35,6 @@ public class UpdateCommand extends Command {
             updateByGuild(ctx.getGuild());
         }
 
-
-
-
-
-
     }
 
     private void updateGlobally(CommandContext ctx) {
