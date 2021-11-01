@@ -45,17 +45,15 @@ public class Untitled {
         final Cache cache = new Cache();
         final CommandRegistry commandRegistry = new CommandRegistry();
 
-        MessageEvent messageEvent = new MessageEvent(config);
-
         JDABuilder.createDefault(token)
-                .setEnabledIntents(GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
+                .setEnabledIntents(GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES)
                 .disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE)
                 .addEventListeners(
-                        new SlashEvent(commandRegistry, config, messageEvent, cache),
+                        new MessageEvent(cache),
+                        new SlashEvent(commandRegistry, config, cache),
                         new GuildEvent(commandRegistry, cache, this),
                         new InteractionEvent(commandRegistry),
-                        new InviteEvent(cache),
-                        messageEvent
+                        new InviteEvent(cache)
                 )
                 .build()
                 .awaitReady();
