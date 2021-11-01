@@ -19,13 +19,11 @@ public class CommandContext {
 
     private final SlashCommandEvent event;
     private final Config config;
-    private final MessageEvent messageEvent;
     private final Cache cache;
 
-    public CommandContext(SlashCommandEvent event, Config config, MessageEvent messageEvent, Cache cache) {
+    public CommandContext(SlashCommandEvent event, Config config, Cache cache) {
         this.event = event;
         this.config = config;
-        this.messageEvent = messageEvent;
         this.cache = cache;
     }
 
@@ -71,10 +69,6 @@ public class CommandContext {
 
     public User getSelfUser() {
         return getSelf() == null ? null : getSelf().getUser();
-    }
-
-    public MessageEvent getMessageEvent() {
-        return messageEvent;
     }
 
     public String getSubcommand() {

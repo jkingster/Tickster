@@ -23,14 +23,11 @@ public class SlashEvent extends ListenerAdapter {
 
     private final Config config;
 
-    private final MessageEvent messageEvent;
-
     private final Cache cache;
 
-    public SlashEvent(CommandRegistry registry, Config config, MessageEvent event, Cache cache) {
+    public SlashEvent(CommandRegistry registry, Config config, Cache cache) {
         this.registry = registry;
         this.config = config;
-        this.messageEvent = event;
         this.cache = cache;
     }
 
@@ -84,7 +81,7 @@ public class SlashEvent extends ListenerAdapter {
             return;
         }
 
-        command.onCommand(new CommandContext(event, config, messageEvent, cache));
+        command.onCommand(new CommandContext(event, config, cache));
     }
 
     private boolean isOwner(long targetId) {
