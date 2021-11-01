@@ -65,7 +65,6 @@ public class MessageEvent extends ListenerAdapter {
 
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
-        System.out.println("FIRING");
         final MessageData data = MESSAGE_MAP.getOrDefault(event.getMessageIdLong(), null);
         if (data == null)
             return;
