@@ -38,7 +38,6 @@ public class MessageEvent extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        System.out.println("FIRING");
         final User user = event.getAuthor();
         if (user.isBot() || event.isWebhookMessage())
             return;
@@ -48,7 +47,6 @@ public class MessageEvent extends ListenerAdapter {
 
     @Override
     public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
-        System.out.println("Firinbg");
         final MessageData data = MESSAGE_MAP.getOrDefault(event.getMessageIdLong(), null);
         if (data == null)
             return;
