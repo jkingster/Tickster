@@ -99,8 +99,7 @@ public class InviteEvent implements EventListener {
                     .setFooter("ID: " + user.getIdLong());
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
-        });
-
+        }, null);
 
     }
 }

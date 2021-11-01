@@ -24,7 +24,6 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
                 .build();
     }
 
-
     @Override
     public void put(Long key, GuildDataRecord value) {
         guildMap.put(key, value);
@@ -45,16 +44,25 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
                 .executeAsync();
     }
 
-    @Override
-    public void retrieve(Long key, Consumer<GuildDataRecord> value) {
+    public void retrieve(Long key, Consumer<GuildDataRecord> result, Consumer<Throwable> throwableConsumer) {
         final GuildDataRecord record = guildMap.getOrDefault(key, null);
         if (record == null) {
-            final GuildDataRecord syncRecord = get(key).into(GUILD_DATA);
-            put(key, syncRecord);
-            value.accept(syncRecord);
-            return;
+            Hikari.getInstance().getDSL()
+                    .selectFrom(GUILD_DATA)
+                    .where(GUILD_DATA.GUILD_ID.eq(key))
+                    .fetchAsync()
+                    .whenCompleteAsync((success, throwable) -> {
+                        if (throwable != null) {
+                            throwableConsumer.accept(throwable);
+                            return;
+                        }
+
+                        final GuildDataRecord fetched = success.get(0);
+                        put(key, fetched);
+                        result.accept(fetched);
+                    });
         }
-        value.accept(record);
+        result.accept(record);
     }
 
     @Override
@@ -66,6 +74,7 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
                 .where(GUILD_DATA.GUILD_ID.eq(key))
                 .executeAsync();
     }
+
 
     @Override
     public <T> void update(Long key, Field<T> targetField, T value,
@@ -91,10 +100,24 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
 
     @Override
     public Record get(Long key) {
-        return Hikari.getInstance()
-                .getDSL()
-                .selectFrom(GUILD_DATA)
-                .where(GUILD_DATA.GUILD_ID.eq(key))
-                .fetchOne();
+        final Record record = guildMap.getOrDefault(key, null);
+
+        if (record == null) {
+            final Record fetched = Hikari.getInstance()
+                    .getDSL()
+                    .selectFrom(GUILD_DATA)
+                    .where(GUILD_DATA.GUILD_ID.eq(key))
+                    .fetchOne();
+            if (fetched != null)
+                put(key, fetched.into(GUILD_DATA));
+            return fetched;
+        }
+
+        return record;
+    }
+
+    @Override
+    public int size() {
+        return guildMap.size();
     }
 }

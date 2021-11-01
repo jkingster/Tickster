@@ -16,7 +16,7 @@ public interface ICache<K, V> {
 
     void delete(K key);
 
-    void retrieve(K key, Consumer<V> value);
+    void retrieve(K key, Consumer<V> success, Consumer<Throwable> error);
 
     void update(K key, V newValue);
 
@@ -24,4 +24,5 @@ public interface ICache<K, V> {
 
     Record get(K key);
 
+    int size();
 }
