@@ -21,12 +21,6 @@ import java.util.stream.Collectors;
 
 public class MessageEvent extends ListenerAdapter {
 
-    /**
-     * TODO- Once we implement database support to have logging channels per server,
-     * we then can send to the particular channel necessary if this module is enabled.
-     * Otherwise the functionality is done and everything seems to be working.
-     */
-
     private final Map<Long, MessageData> MESSAGE_MAP = new ConcurrentHashMap<>();
     private final Map<Long, MessageData> DELETED_MAP = new ConcurrentHashMap<>();
 
