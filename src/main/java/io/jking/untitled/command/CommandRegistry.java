@@ -4,6 +4,7 @@ import io.jking.untitled.command.impl.bot_owner.TestCommand;
 import io.jking.untitled.command.impl.bot_owner.UpdateCommand;
 import io.jking.untitled.command.impl.info.InfoCommand;
 import io.jking.untitled.command.impl.info.MeCommand;
+import io.jking.untitled.command.impl.info.UserInfoCommand;
 import io.jking.untitled.command.impl.misc.SnipeCommand;
 import io.jking.untitled.command.impl.moderation.KickCommand;
 import io.jking.untitled.command.impl.setting.SettingsCommand;
@@ -19,7 +20,7 @@ public class CommandRegistry {
     private final Map<String, Command> COMMAND_MAP = new HashMap<>();
 
     public CommandRegistry() {
-        addCommands(
+          addCommands(
                 new TestCommand(), new PingCommand(), new HelpCommand(this),
                 new SnipeCommand(), new KickCommand(), new MeCommand(),
                 new InfoCommand(), new UpdateCommand(this), new SettingsCommand()
