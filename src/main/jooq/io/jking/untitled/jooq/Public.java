@@ -7,6 +7,7 @@ package io.jking.untitled.jooq;
 import io.jking.untitled.jooq.tables.GuildData;
 import io.jking.untitled.jooq.tables.GuildInfractions;
 import io.jking.untitled.jooq.tables.GuildSettings;
+import io.jking.untitled.jooq.tables.GuildTickets;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +46,11 @@ public class Public extends SchemaImpl {
     public final GuildSettings GUILD_SETTINGS = GuildSettings.GUILD_SETTINGS;
 
     /**
+     * The table <code>public.guild_tickets</code>.
+     */
+    public final GuildTickets GUILD_TICKETS = GuildTickets.GUILD_TICKETS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -62,7 +68,8 @@ public class Public extends SchemaImpl {
         return Arrays.asList(
             GuildData.GUILD_DATA,
             GuildInfractions.GUILD_INFRACTIONS,
-            GuildSettings.GUILD_SETTINGS
+            GuildSettings.GUILD_SETTINGS,
+            GuildTickets.GUILD_TICKETS
         );
     }
 }

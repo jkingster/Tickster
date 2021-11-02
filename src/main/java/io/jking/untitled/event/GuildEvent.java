@@ -81,8 +81,13 @@ public class GuildEvent implements EventListener {
 
     private void onGuildReady(@NotNull GuildReadyEvent event) {
         final long guildId = event.getGuild().getIdLong();
-        final GuildCache guildCache = cache.getGuildCache();
-        guildCache.push(guildId);
+        final long ownerId = event.getGuild().getOwnerIdLong();
+
+        Hikari.getInstance().getDSL()
+                .insertInto(GUILD_DATA)
+                .set(GUILD_DATA.GUILD_ID, guildId)
+                .set(GUILD_DATA.OWNER_ID, ownerId)
+                .executeAsync();
     }
 
     private void onOwnerChange(@NotNull GuildUpdateOwnerEvent event) {

@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS guild_data
     owner_id         BIGINT NOT NULL,
     logs_id          BIGINT NOT NULL default 0,
     moderator_id     BIGINT NOT NULL default 0,
-    notifications_id BIGINT NOT NULL default 0
+    notifications_id BIGINT NOT NULL default 0,
+    ticket_id        BIGINT NOT NULL default 0
 );

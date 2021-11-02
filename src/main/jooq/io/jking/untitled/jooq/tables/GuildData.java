@@ -12,7 +12,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +68,11 @@ public class GuildData extends TableImpl<GuildDataRecord> {
      * The column <code>public.guild_data.notifications_id</code>.
      */
     public final TableField<GuildDataRecord, Long> NOTIFICATIONS_ID = createField(DSL.name("notifications_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.guild_data.ticket_id</code>.
+     */
+    public final TableField<GuildDataRecord, Long> TICKET_ID = createField(DSL.name("ticket_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     private GuildData(Name alias, Table<GuildDataRecord> aliased) {
         this(alias, aliased, null);
@@ -139,11 +144,11 @@ public class GuildData extends TableImpl<GuildDataRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, Long, Long, Long> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long, Long, Long, Long, Long> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

@@ -31,8 +31,10 @@ public class GuildCache implements ICache<Long, GuildDataRecord> {
 
     @Override
     public void push(Long key) {
-        final GuildDataRecord record = get(key).into(GUILD_DATA);
-        put(key, record);
+        final Record record = get(key);
+        if (record == null)
+            return;
+        put(key, record.into(GUILD_DATA));
     }
 
     @Override

@@ -12,7 +12,8 @@ public class Starter {
             Database.getInstance().buildTables(
                     "sql/guild_data.sql",
                     "sql/guild_infractions.sql",
-                    "sql/guild_settings.sql"
+                    "sql/guild_settings.sql",
+                    "sql/guild_tickets.sql"
             );
 
             final Config config = new Config("config.json");

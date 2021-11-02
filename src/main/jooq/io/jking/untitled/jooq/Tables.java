@@ -7,6 +7,7 @@ package io.jking.untitled.jooq;
 import io.jking.untitled.jooq.tables.GuildData;
 import io.jking.untitled.jooq.tables.GuildInfractions;
 import io.jking.untitled.jooq.tables.GuildSettings;
+import io.jking.untitled.jooq.tables.GuildTickets;
 
 
 /**
@@ -29,4 +30,9 @@ public class Tables {
      * The table <code>public.guild_settings</code>.
      */
     public static final GuildSettings GUILD_SETTINGS = GuildSettings.GUILD_SETTINGS;
+
+    /**
+     * The table <code>public.guild_tickets</code>.
+     */
+    public static final GuildTickets GUILD_TICKETS = GuildTickets.GUILD_TICKETS;
 }
