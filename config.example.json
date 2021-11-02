@@ -1,7 +1,12 @@
 {
   "bot": {
-    "token": YOUR BOT TOKEN,
-    "owner_ids": BOT OWNER IDS,
-    "log_id": LOG CHANNEL ID (TESTING)
+    "token": "",
+    "owner_ids": [],
+    "log_id": 0,
+    "dev_id": 0
+  },
+  "database": {
+    "username": "",
+    "password": ""
   }
 }

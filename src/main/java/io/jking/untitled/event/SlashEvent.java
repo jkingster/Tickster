@@ -1,5 +1,6 @@
 package io.jking.untitled.event;
 
+import io.jking.untitled.cache.Cache;
 import io.jking.untitled.command.Category;
 import io.jking.untitled.command.Command;
 import io.jking.untitled.command.CommandContext;
@@ -22,12 +23,12 @@ public class SlashEvent extends ListenerAdapter {
 
     private final Config config;
 
-    private final MessageEvent messageEvent;
+    private final Cache cache;
 
-    public SlashEvent(CommandRegistry registry, Config config, MessageEvent event) {
+    public SlashEvent(CommandRegistry registry, Config config, Cache cache) {
         this.registry = registry;
         this.config = config;
-        this.messageEvent = event;
+        this.cache = cache;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class SlashEvent extends ListenerAdapter {
             return;
         }
 
-        command.onCommand(new CommandContext(event, config, messageEvent));
+        command.onCommand(new CommandContext(event, config, cache));
     }
 
     private boolean isOwner(long targetId) {

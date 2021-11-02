@@ -7,6 +7,7 @@ public enum Category {
 
     BOT_OWNER(),
     ADMIN(Permission.ADMINISTRATOR, "category:admin"),
+    SETTINGS(Permission.ADMINISTRATOR, "category:settings"),
     MODERATION(Permission.KICK_MEMBERS, "category:moderation"),
     MISC(Permission.MESSAGE_WRITE, "category:misc"),
     UNKNOWN(Permission.MESSAGE_WRITE, "category:unknown"),

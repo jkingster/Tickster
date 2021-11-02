@@ -8,6 +8,7 @@ public enum CommandError {
     COOLDOWN("You are on cooldown for that command."),
     ARGUMENTS("You did not provide valid command argument(s). Try again."),
     INVALID("You provided an invalid ID: %s"),
+    CANT_TALK("I can't talk in the channel: %s"),
     CUSTOM("%s");
 
     private final String errorResponse;
