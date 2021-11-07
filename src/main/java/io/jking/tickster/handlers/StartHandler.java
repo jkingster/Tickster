@@ -21,5 +21,6 @@ public class StartHandler implements EventListener {
     }
 
     private void onReady(ReadyEvent event) {
+
     }
 }

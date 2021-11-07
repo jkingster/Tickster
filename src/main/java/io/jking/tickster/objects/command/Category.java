@@ -4,7 +4,8 @@ public enum Category {
 
     UTILITY("Useful utility commands."),
     TICKETS("Commands related to tickets."),
-    SETUP("Configuration/Settings to help me function.");
+    SETUP("Configuration/Settings to help me function."),
+    INFO("Informational commands.");
 
     private final String description;
 

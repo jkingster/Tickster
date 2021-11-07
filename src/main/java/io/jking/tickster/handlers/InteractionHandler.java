@@ -1,5 +1,7 @@
 package io.jking.tickster.handlers;
 
+import io.jking.tickster.commands.info.AboutCommand;
+import io.jking.tickster.commands.utility.PingCommand;
 import io.jking.tickster.commands.utility.TestCommand;
 import io.jking.tickster.objects.command.Command;
 import io.jking.tickster.objects.command.CommandContext;
@@ -9,6 +11,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
@@ -22,12 +25,14 @@ public class InteractionHandler implements EventListener {
     };
 
     private final CommandRegistry commandRegistry = new CommandRegistry()
-            .addCommands(new TestCommand());
+            .addCommands(new TestCommand(), new PingCommand())
+            .addCommands(new AboutCommand());
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof SlashCommandEvent)
             onSlashCommand((SlashCommandEvent) event);
+
     }
 
     private void onSlashCommand(SlashCommandEvent event) {

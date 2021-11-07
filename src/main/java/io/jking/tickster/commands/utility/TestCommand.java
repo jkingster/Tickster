@@ -10,6 +10,6 @@ public class TestCommand extends Command {
 
     @Override
     public void onCommand(CommandContext ctx, CommandError err) {
-        err.replyUnknown();
+        ctx.reply("I am working, leave me alone.").setEphemeral(true).queue();
     }
 }
