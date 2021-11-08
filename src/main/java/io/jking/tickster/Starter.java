@@ -7,7 +7,7 @@ public class Starter {
     public static void main(String[] args) {
         try {
             if (args.length == 0) {
-                Tickster.buildDefault("config.json");
+                Tickster.buildProduction("config.json");
             } else if (args[0].equalsIgnoreCase("dev")) {
                 Tickster.buildDev("config.json");
             }

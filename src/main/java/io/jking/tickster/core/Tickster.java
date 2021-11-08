@@ -1,5 +1,8 @@
 package io.jking.tickster.core;
 
+import io.jking.tickster.database.Database;
+import io.jking.tickster.database.Hikari;
+import io.jking.tickster.handlers.GuildHandler;
 import io.jking.tickster.handlers.InteractionHandler;
 import io.jking.tickster.handlers.StartHandler;
 import net.dv8tion.jda.api.JDA;
@@ -25,25 +28,25 @@ public class Tickster {
 
     private final DataObject data;
     private final JDA jda;
+    private final Database database;
 
-    private boolean devMode;
-
-    private Tickster(String configPath) throws IOException, LoginException, InterruptedException {
-        this.data = loadConfig(configPath);
-        this.jda = startTickster(false);
-    }
+    private boolean isDev;
 
     private Tickster(String configPath, boolean isDev) throws IOException, LoginException, InterruptedException {
         this.data = loadConfig(configPath);
         this.jda = startTickster(isDev);
+        this.isDev = isDev;
+        this.database = new Database(new Hikari(data)).createTables(
+                "sql/guild_data.sql"
+        );
     }
 
-    public static Tickster buildDefault(String configPath) throws IOException, LoginException, InterruptedException {
-        return new Tickster(configPath);
+    public static void buildProduction(String configPath) throws LoginException, InterruptedException, IOException {
+        new Tickster(configPath, false);
     }
 
-    public static Tickster buildDev(String configPath) throws IOException, LoginException, InterruptedException {
-        return new Tickster(configPath, true);
+    public static void buildDev(String configPath) throws IOException, LoginException, InterruptedException {
+        new Tickster(configPath, true);
     }
 
     private DataObject loadConfig(String configPath) throws IOException {
@@ -58,14 +61,15 @@ public class Tickster {
         final String token = data.getObject("bot").getString("token", null);
         Checks.notNull(token, "Config Token");
 
-        this.devMode = devMode;
+        final Hikari hikari = new Hikari(data);
+        final Database database = new Database(hikari);
 
         return JDABuilder.createDefault(token)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
                 .setChunkingFilter(ChunkingFilter.NONE)
                 .setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES)
                 .disableCache(Arrays.asList(CacheFlag.values()))
-                .addEventListeners(new InteractionHandler(), new StartHandler(this))
+                .addEventListeners(new InteractionHandler(database), new StartHandler(this), new GuildHandler(database))
                 .build()
                 .awaitReady();
     }
@@ -78,7 +82,11 @@ public class Tickster {
         return jda;
     }
 
-    public boolean isDevMode() {
-        return devMode;
+    public Database getDatabase() {
+        return database;
+    }
+
+    public boolean isDev() {
+        return isDev;
     }
 }
