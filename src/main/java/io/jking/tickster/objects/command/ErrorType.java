@@ -4,7 +4,8 @@ public enum ErrorType {
 
     UNKNOWN("An unknown error occurred."),
     CUSTOM("%s"),
-    PERMISSION("%s is missing the required permission(s): %s.");
+    PERMISSION("%s is missing the required permission(s): %s."),
+    CANT_INTERACT("%s cannot interact with %s.");
 
     private final String errorResponse;
 

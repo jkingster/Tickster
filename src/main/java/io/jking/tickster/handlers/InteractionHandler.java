@@ -3,6 +3,7 @@ package io.jking.tickster.handlers;
 import io.jking.tickster.commands.info.AboutCommand;
 import io.jking.tickster.commands.utility.PingCommand;
 import io.jking.tickster.commands.utility.TestCommand;
+import io.jking.tickster.database.Database;
 import io.jking.tickster.objects.command.Command;
 import io.jking.tickster.objects.command.CommandContext;
 import io.jking.tickster.objects.command.CommandError;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +27,12 @@ public class InteractionHandler implements EventListener {
     private final CommandRegistry commandRegistry = new CommandRegistry()
             .addCommands(new TestCommand(), new PingCommand())
             .addCommands(new AboutCommand());
+
+    private final Database database;
+
+    public InteractionHandler(Database database) {
+        this.database = database;
+    }
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
@@ -57,7 +63,7 @@ public class InteractionHandler implements EventListener {
         if (command == null)
             return;
 
-        final CommandContext commandContext = new CommandContext(event);
+        final CommandContext commandContext = new CommandContext(event, database);
         final CommandError errorContext = new CommandError(commandContext);
 
         command.onCommand(commandContext, errorContext);
