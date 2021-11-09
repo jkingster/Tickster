@@ -1,10 +1,16 @@
 package io.jking.tickster.core;
 
+import io.jking.tickster.commands.info.AboutCommand;
+import io.jking.tickster.commands.setup.SetupCommand;
+import io.jking.tickster.commands.utility.PingCommand;
+import io.jking.tickster.commands.utility.TestCommand;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.database.Hikari;
 import io.jking.tickster.handlers.GuildHandler;
 import io.jking.tickster.handlers.InteractionHandler;
 import io.jking.tickster.handlers.StartHandler;
+import io.jking.tickster.objects.cache.Cache;
+import io.jking.tickster.objects.command.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -26,11 +32,16 @@ public class Tickster {
 
     private final Logger logger = LoggerFactory.getLogger(Tickster.class);
 
+    private final CommandRegistry commandRegistry = new CommandRegistry()
+            .addCommands(new TestCommand(), new PingCommand())
+            .addCommands(new AboutCommand(), new SetupCommand());
+
+
     private final DataObject data;
     private final JDA jda;
     private final Database database;
 
-    private boolean isDev;
+    private final boolean isDev;
 
     private Tickster(String configPath, boolean isDev) throws IOException, LoginException, InterruptedException {
         this.data = loadConfig(configPath);
@@ -63,13 +74,18 @@ public class Tickster {
 
         final Hikari hikari = new Hikari(data);
         final Database database = new Database(hikari);
+        final Cache cache = new Cache(database);
 
         return JDABuilder.createDefault(token)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
                 .setChunkingFilter(ChunkingFilter.NONE)
                 .setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES)
                 .disableCache(Arrays.asList(CacheFlag.values()))
-                .addEventListeners(new InteractionHandler(database), new StartHandler(this), new GuildHandler(database))
+                .addEventListeners(
+                        new InteractionHandler(commandRegistry, database, cache),
+                        new StartHandler(this, cache),
+                        new GuildHandler(commandRegistry, database, cache)
+                )
                 .build()
                 .awaitReady();
     }

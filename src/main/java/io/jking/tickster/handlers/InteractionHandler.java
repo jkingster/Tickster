@@ -1,9 +1,7 @@
 package io.jking.tickster.handlers;
 
-import io.jking.tickster.commands.info.AboutCommand;
-import io.jking.tickster.commands.utility.PingCommand;
-import io.jking.tickster.commands.utility.TestCommand;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.objects.cache.Cache;
 import io.jking.tickster.objects.command.Command;
 import io.jking.tickster.objects.command.CommandContext;
 import io.jking.tickster.objects.command.CommandError;
@@ -24,14 +22,15 @@ public class InteractionHandler implements EventListener {
             Permission.MESSAGE_WRITE, Permission.MANAGE_PERMISSIONS
     };
 
-    private final CommandRegistry commandRegistry = new CommandRegistry()
-            .addCommands(new TestCommand(), new PingCommand())
-            .addCommands(new AboutCommand());
-
+    private final CommandRegistry commandRegistry;
     private final Database database;
+    private final Cache cache;
 
-    public InteractionHandler(Database database) {
+
+    public InteractionHandler(CommandRegistry registry, Database database, Cache cache) {
+        this.commandRegistry = registry;
         this.database = database;
+        this.cache = cache;
     }
 
     @Override
@@ -63,7 +62,7 @@ public class InteractionHandler implements EventListener {
         if (command == null)
             return;
 
-        final CommandContext commandContext = new CommandContext(event, database);
+        final CommandContext commandContext = new CommandContext(event, database, cache);
         final CommandError errorContext = new CommandError(commandContext);
 
         command.onCommand(commandContext, errorContext);
