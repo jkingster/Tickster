@@ -1,12 +1,17 @@
 package io.jking.tickster.commands.setup;
 
 import io.jking.tickster.objects.command.*;
+import io.jking.tickster.utility.EmbedFactory;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
 
@@ -69,6 +74,7 @@ public class SetupCommand extends Command {
             }
 
             ctx.replySuccess(SuccessType.UPDATED, "The ticket channel", channel.getId());
+            createTicketInput(ctx, channel);
         });
     }
 
@@ -94,5 +100,15 @@ public class SetupCommand extends Command {
             return true;
         }
         return false;
+    }
+
+    private void createTicketInput(CommandContext ctx, TextChannel channel) {
+        final EmbedBuilder embed = EmbedFactory.getDefault()
+                .setDescription("To **create** a ticket, click the button below.\nPlease also consider using `/ticket create` for convenience.")
+                .setFooter("Tickster • Easy ticket management and user reporting.", ctx.getSelf().getEffectiveAvatarUrl());
+
+        channel.sendMessageEmbeds(embed.build())
+                .setActionRow(Button.of(ButtonStyle.SECONDARY, "create_ticket", "Create Ticket", Emoji.fromUnicode("\uD83C\uDFAB")))
+                .queue();
     }
 }
