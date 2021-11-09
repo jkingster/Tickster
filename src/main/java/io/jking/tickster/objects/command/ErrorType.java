@@ -5,7 +5,8 @@ public enum ErrorType {
     UNKNOWN("An unknown error occurred."),
     CUSTOM("%s"),
     PERMISSION("%s is missing the required permission(s): %s."),
-    CANT_INTERACT("%s cannot interact with %s.");
+    CANT_INTERACT("%s cannot interact with %s."),
+    CANT_ACCESS("%s cannot access the following channel: %s.");
 
     private final String errorResponse;
 
