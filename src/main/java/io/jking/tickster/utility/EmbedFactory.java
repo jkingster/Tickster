@@ -1,6 +1,7 @@
 package io.jking.tickster.utility;
 
 import io.jking.tickster.objects.command.ErrorType;
+import io.jking.tickster.objects.command.SuccessType;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -26,6 +27,14 @@ public final class EmbedFactory {
                 .setColor(Color.RED)
                 .setDescription(String.format("**An error occurred.**\n**Code:** %s\n**Response:** ```%s```",
                         errorType.getName(), errorType.getErrorResponse().formatted(objects)))
+                .setTimestamp(Instant.now());
+    }
+
+    public static EmbedBuilder getSuccess(SuccessType successType, Object... objects) {
+        return new EmbedBuilder()
+                .setColor(Color.GREEN)
+                .setDescription(String.format("**Action Successful**\n**Action Type:** `%s`\n```%s```",
+                        successType.getName(), successType.getSuccessType(objects)))
                 .setTimestamp(Instant.now());
     }
 }
