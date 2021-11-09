@@ -8,7 +8,6 @@ import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.components.Button;
-import org.jetbrains.annotations.NotNull;
 
 public class AboutCommand extends Command {
 
@@ -23,8 +22,7 @@ public class AboutCommand extends Command {
                 .setAuthor("About me...", null, self.getEffectiveAvatarUrl())
                 .setDescription(String.format(
                         """
-                        I am a bot specifically designed to aid with server moderation tailored around tickets and member reports.
-                        While I do not provide general moderation commands, I am equipped with unique features for convenience.
+                        I am a bot specifically designed to aid with server moderation tailored around tickets and member reports. While I do not provide general moderation commands, I am equipped with unique features for convenience.
                                                 
                         **Systems Information:**
                         Version: `%s`
@@ -33,7 +31,11 @@ public class AboutCommand extends Command {
                         "0.0.1-alpha"));
 
         ctx.reply(embed).setEphemeral(true)
-                .addActionRow(Button.link("Library", ""), Button.link("Support Server", ""), Button.link("GitHub Repo", ""))
+                .addActionRow(
+                        Button.link("https://github.com/DV8FromTheWorld/JDA", "Library"),
+                        Button.link("https://no.com", "Support Server"),
+                        Button.link("https://github.com/JacobDevelopment/SchoolBot", "GitHub Repo")
+                )
                 .queue();
     }
 }
