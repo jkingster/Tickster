@@ -1,22 +1,29 @@
 package io.jking.tickster.cache;
 
 
-import io.jking.tickster.database.Database;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.jooq.Record;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 public abstract class CachedObject<K, V extends Record> implements ICache<K, V> {
 
-    private final Database database;
     private final Map<K, V> expiringMap;
 
-    public CachedObject(Database database, ExpirationPolicy expirationPolicy) {
-        this.database = database;
-        this.expiringMap = ExpiringMap.builder().expirationPolicy(expirationPolicy).build();
+    public CachedObject(ExpirationPolicy expirationPolicy) {
+        this.expiringMap = ExpiringMap.builder()
+                .expirationPolicy(expirationPolicy)
+                .build();
+    }
+
+    public CachedObject(ExpirationPolicy expirationPolicy, int expireTime, TimeUnit timeUnit) {
+        this.expiringMap = ExpiringMap.builder()
+                .expirationPolicy(expirationPolicy)
+                .expiration(expireTime, timeUnit)
+                .build();
     }
 
     public Map<K, V> getMap() {
