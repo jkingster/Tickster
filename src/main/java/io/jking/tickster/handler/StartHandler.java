@@ -1,7 +1,7 @@
-package io.jking.tickster.handlers;
+package io.jking.tickster.handler;
 
+import io.jking.tickster.cache.Cache;
 import io.jking.tickster.core.Tickster;
-import io.jking.tickster.objects.cache.Cache;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.EventListener;

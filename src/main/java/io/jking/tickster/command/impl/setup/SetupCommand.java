@@ -1,6 +1,11 @@
-package io.jking.tickster.commands.setup;
+package io.jking.tickster.command.impl.setup;
 
-import io.jking.tickster.objects.command.*;
+import io.jking.tickster.command.Category;
+import io.jking.tickster.command.Command;
+import io.jking.tickster.command.CommandContext;
+import io.jking.tickster.command.CommandError;
+import io.jking.tickster.command.type.ErrorType;
+import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

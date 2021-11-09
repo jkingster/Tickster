@@ -1,7 +1,7 @@
 package io.jking.tickster.utility;
 
-import io.jking.tickster.objects.command.ErrorType;
-import io.jking.tickster.objects.command.SuccessType;
+import io.jking.tickster.command.type.ErrorType;
+import io.jking.tickster.command.type.SuccessType;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;

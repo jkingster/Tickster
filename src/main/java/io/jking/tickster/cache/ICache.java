@@ -1,4 +1,4 @@
-package io.jking.tickster.objects.cache;
+package io.jking.tickster.cache;
 
 
 import org.jooq.Field;

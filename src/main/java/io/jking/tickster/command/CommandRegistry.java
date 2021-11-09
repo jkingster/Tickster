@@ -1,4 +1,4 @@
-package io.jking.tickster.objects.command;
+package io.jking.tickster.command;
 
 import java.util.Arrays;
 import java.util.HashMap;

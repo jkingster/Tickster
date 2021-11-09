@@ -1,7 +1,7 @@
-package io.jking.tickster.objects.cache;
+package io.jking.tickster.cache;
 
+import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.objects.cache.impl.GuildCache;
 
 public class Cache {
 

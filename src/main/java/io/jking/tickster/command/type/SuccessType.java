@@ -1,4 +1,4 @@
-package io.jking.tickster.objects.command;
+package io.jking.tickster.command.type;
 
 public enum SuccessType {
 

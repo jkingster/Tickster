@@ -1,4 +1,4 @@
-package io.jking.tickster.objects.command;
+package io.jking.tickster.command;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;

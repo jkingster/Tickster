@@ -1,8 +1,12 @@
-package io.jking.tickster.handlers;
+package io.jking.tickster.handler;
 
+import io.jking.tickster.cache.Cache;
+import io.jking.tickster.command.Command;
+import io.jking.tickster.command.CommandContext;
+import io.jking.tickster.command.CommandError;
+import io.jking.tickster.command.CommandRegistry;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.objects.cache.Cache;
-import io.jking.tickster.objects.command.*;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;

@@ -1,6 +1,9 @@
-package io.jking.tickster.commands.utility;
+package io.jking.tickster.command.impl.utility;
 
-import io.jking.tickster.objects.command.*;
+import io.jking.tickster.command.Category;
+import io.jking.tickster.command.Command;
+import io.jking.tickster.command.CommandContext;
+import io.jking.tickster.command.CommandError;
 
 public class TestCommand extends Command {
 

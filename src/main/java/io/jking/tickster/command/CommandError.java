@@ -1,5 +1,6 @@
-package io.jking.tickster.objects.command;
+package io.jking.tickster.command;
 
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.utility.EmbedFactory;
 
 public class CommandError {

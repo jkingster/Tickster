@@ -1,8 +1,9 @@
-package io.jking.tickster.objects.command;
+package io.jking.tickster.command;
 
+import io.jking.tickster.cache.Cache;
+import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.objects.cache.Cache;
-import io.jking.tickster.objects.cache.impl.GuildCache;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
