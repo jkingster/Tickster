@@ -2,7 +2,9 @@ package io.jking.tickster.objects.command;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CommandRegistry {
 
@@ -23,5 +25,11 @@ public class CommandRegistry {
     public CommandRegistry addCommands(Command... commands) {
         Arrays.asList(commands).forEach(this::addCommand);
         return this;
+    }
+
+    public List<Command> getCommands() {
+        return COMMAND_MAP.values()
+                .stream()
+                .collect(Collectors.toUnmodifiableList());
     }
 }
