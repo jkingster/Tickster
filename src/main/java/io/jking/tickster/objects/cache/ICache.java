@@ -1,9 +1,7 @@
 package io.jking.tickster.objects.cache;
 
-import org.jooq.Condition;
+
 import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Table;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

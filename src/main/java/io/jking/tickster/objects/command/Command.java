@@ -4,8 +4,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
 
-
-
 public abstract class Command extends CommandData {
 
     private final Category category;
@@ -29,5 +27,7 @@ public abstract class Command extends CommandData {
         return category;
     }
 
-
+    public Permission getPermission() {
+        return permission;
+    }
 }

@@ -4,11 +4,10 @@ package io.jking.tickster.objects.cache;
 import io.jking.tickster.database.Database;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.jooq.*;
 import org.jooq.Record;
 
 import java.util.Map;
-import java.util.function.BiConsumer;
+
 
 public abstract class CachedObject<K, V extends Record> implements ICache<K, V> {
 

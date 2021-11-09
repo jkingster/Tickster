@@ -2,10 +2,8 @@ package io.jking.tickster.handlers;
 
 import io.jking.tickster.database.Database;
 import io.jking.tickster.objects.cache.Cache;
-import io.jking.tickster.objects.command.Command;
-import io.jking.tickster.objects.command.CommandContext;
-import io.jking.tickster.objects.command.CommandError;
-import io.jking.tickster.objects.command.CommandRegistry;
+import io.jking.tickster.objects.command.*;
+import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -61,6 +59,17 @@ public class InteractionHandler implements EventListener {
         final Command command = commandRegistry.getCommand(event.getName());
         if (command == null)
             return;
+
+        if (!member.hasPermission(command.getPermission())) {
+            event.replyEmbeds(EmbedFactory.getError(
+                    ErrorType.PERMISSION,
+                    member.getUser().getAsTag(),
+                    command.getPermission())
+                    .build())
+                    .setEphemeral(true)
+                    .queue();
+            return;
+        }
 
         final CommandContext commandContext = new CommandContext(event, database, cache);
         final CommandError errorContext = new CommandError(commandContext);
