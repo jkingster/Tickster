@@ -5,6 +5,7 @@ package io.jking.untitled.jooq;
 
 
 import io.jking.untitled.jooq.tables.GuildData;
+import io.jking.untitled.jooq.tables.GuildTickets;
 
 
 /**
@@ -17,4 +18,9 @@ public class Tables {
      * The table <code>public.guild_data</code>.
      */
     public static final GuildData GUILD_DATA = GuildData.GUILD_DATA;
+
+    /**
+     * The table <code>public.guild_tickets</code>.
+     */
+    public static final GuildTickets GUILD_TICKETS = GuildTickets.GUILD_TICKETS;
 }

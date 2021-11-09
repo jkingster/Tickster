@@ -1,5 +1,9 @@
 package io.jking.tickster.handler;
 
+import io.jking.tickster.button.ButtonContext;
+import io.jking.tickster.button.ButtonRegistry;
+import io.jking.tickster.button.IButton;
+import io.jking.tickster.button.impl.ticket.*;
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
@@ -12,8 +16,10 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.interactions.components.ButtonInteraction;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -23,6 +29,12 @@ public class InteractionHandler implements EventListener {
             Permission.MANAGE_CHANNEL, Permission.MANAGE_SERVER,
             Permission.MESSAGE_WRITE, Permission.MANAGE_PERMISSIONS
     };
+
+    private final ButtonRegistry buttonRegistry = new ButtonRegistry()
+            .addButtons(new CreateTicketButton(), new CloseTicketButton())
+            .addButtons(new YesCloseTicketButton(), new NoCloseTicketButton())
+            .addButtons(new TranscriptButton(), new ReOpenTicketButton())
+            .addButtons(new DeleteTicketButton());
 
     private final CommandRegistry commandRegistry;
     private final Database database;
@@ -39,6 +51,20 @@ public class InteractionHandler implements EventListener {
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof SlashCommandEvent)
             onSlashCommand((SlashCommandEvent) event);
+        else if (event instanceof ButtonInteraction)
+            onButtonInteraction((ButtonClickEvent) event);
+
+    }
+
+    private void onButtonInteraction(ButtonClickEvent event) {
+        final String buttonId = event.getComponentId();
+        final IButton button = buttonRegistry.getButton(buttonId);
+
+        System.out.println(buttonId);
+        System.out.println(button);
+
+        if (button != null)
+            button.onButtonPress(new ButtonContext(event, cache));
 
     }
 

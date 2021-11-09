@@ -5,13 +5,13 @@ package io.jking.untitled.jooq;
 
 
 import io.jking.untitled.jooq.tables.GuildData;
-
-import java.util.Arrays;
-import java.util.List;
-
+import io.jking.untitled.jooq.tables.GuildTickets;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -33,6 +33,11 @@ public class Public extends SchemaImpl {
     public final GuildData GUILD_DATA = GuildData.GUILD_DATA;
 
     /**
+     * The table <code>public.guild_tickets</code>.
+     */
+    public final GuildTickets GUILD_TICKETS = GuildTickets.GUILD_TICKETS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -48,7 +53,8 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            GuildData.GUILD_DATA
+            GuildData.GUILD_DATA,
+            GuildTickets.GUILD_TICKETS
         );
     }
 }

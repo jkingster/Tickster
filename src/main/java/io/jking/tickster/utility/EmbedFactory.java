@@ -3,6 +3,7 @@ package io.jking.tickster.utility;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.time.Instant;
@@ -37,4 +38,14 @@ public final class EmbedFactory {
                         successType.getName(), successType.getSuccessType(objects)))
                 .setTimestamp(Instant.now());
     }
+
+    public static EmbedBuilder getNewTicket(User user) {
+        return new EmbedBuilder()
+                .setColor(Color.decode(getRandomColor()))
+                .setAuthor("Ticket Created", null, user.getEffectiveAvatarUrl())
+                .setDescription("Please wait for a staff member. In the meantime, please provide any necessary information.")
+                .setTimestamp(Instant.now())
+                .setFooter("Creator ID: " + user.getId());
+    }
+
 }

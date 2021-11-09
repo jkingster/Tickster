@@ -48,7 +48,7 @@ public class Tickster {
         this.jda = startTickster(isDev);
         this.isDev = isDev;
         this.database = new Database(new Hikari(data)).createTables(
-                "sql/guild_data.sql"
+                "sql/guild_data.sql", "sql/guild_tickets.sql"
         );
     }
 

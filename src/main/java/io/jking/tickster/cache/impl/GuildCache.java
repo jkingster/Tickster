@@ -17,7 +17,7 @@ public class GuildCache extends CachedObject<Long, GuildDataRecord> {
     private final Database database;
 
     public GuildCache(Database database) {
-        super(database, ExpirationPolicy.ACCESSED);
+        super(ExpirationPolicy.ACCESSED);
         this.database = database;
     }
 
