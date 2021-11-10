@@ -61,7 +61,7 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'io.jking.untitled.jooq'
+                        packageName = 'io.jking.tickster.jooq'
                         directory = "src/main/jooq"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
