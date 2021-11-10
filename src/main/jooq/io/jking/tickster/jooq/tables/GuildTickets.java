@@ -66,6 +66,11 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     public final TableField<GuildTicketsRecord, String> TICKET_TIMESTAMP = createField(DSL.name("ticket_timestamp"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
+     * The column <code>public.guild_tickets.open</code>.
+     */
+    public final TableField<GuildTicketsRecord, Boolean> OPEN = createField(DSL.name("open"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
      * The column <code>public.guild_tickets.transcript</code>.
      */
     public final TableField<GuildTicketsRecord, JSON> TRANSCRIPT = createField(DSL.name("transcript"), SQLDataType.JSON, this, "");
@@ -145,11 +150,11 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, Long, Long, Long, Long, String, JSON> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, Long, Long, Long, Long, String, Boolean, JSON> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

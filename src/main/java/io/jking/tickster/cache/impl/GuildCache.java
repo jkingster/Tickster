@@ -2,7 +2,7 @@ package io.jking.tickster.cache.impl;
 
 import io.jking.tickster.cache.CachedObject;
 import io.jking.tickster.database.Database;
-import io.jking.untitled.jooq.tables.records.GuildDataRecord;
+import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import net.jodah.expiringmap.ExpirationPolicy;
 import org.jooq.Field;
 import org.jooq.UpdateResultStep;
@@ -10,7 +10,7 @@ import org.jooq.UpdateResultStep;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
+import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
 public class GuildCache extends CachedObject<Long, GuildDataRecord> {
 

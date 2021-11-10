@@ -2,6 +2,7 @@ package io.jking.tickster.command;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.utility.EmbedFactory;
@@ -112,12 +113,19 @@ public class CommandContext {
         return getEvent().getOption(name);
     }
 
-    public GuildCache getGuildCache() {
-        return cache.getGuildCache();
-    }
-
     public Cache getCache() {
         return cache;
 
     }
+
+    public GuildCache getGuildCache() {
+        return cache.getGuildCache();
+    }
+
+    public TicketCache getTicketCache() {
+        return cache.getTicketCache();
+    }
+
+
+
 }

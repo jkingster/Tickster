@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.Collectors;
 
-import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
+import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
 public class GuildHandler implements EventListener {
 

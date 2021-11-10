@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
-import static io.jking.untitled.jooq.tables.GuildData.GUILD_DATA;
+import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
 public class SetupCommand extends Command {
 
