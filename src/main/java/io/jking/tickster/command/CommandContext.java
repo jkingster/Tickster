@@ -9,13 +9,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class CommandContext {
@@ -62,20 +59,27 @@ public class CommandContext {
         return event.reply(content);
     }
 
-    public void replySuccess(SuccessType successType, Object... objects) {
-        final long guildId = getGuild().getIdLong();
-        final long logId = getGuildCache().get(guildId).getLogChannel();
-        final TextChannel channel = getGuild().getTextChannelById(logId);
-        final EmbedBuilder embed = EmbedFactory.getSuccess(successType, objects);
+    public void replySuccess(SuccessType type, boolean log, Object... objects) {
+        final EmbedBuilder embed = EmbedFactory.getSuccess(type, objects);
 
         reply(embed).delay(15, TimeUnit.SECONDS)
                 .flatMap(InteractionHook::deleteOriginal)
                 .queue();
 
-        if (channel != null) {
-            channel.sendMessageEmbeds(embed.build()).queue(null,
-                    new ErrorHandler().ignore(Arrays.asList(ErrorResponse.values())));
-        }
+        if (log)
+            sendLog(embed);
+    }
+
+    private void sendLog(EmbedBuilder embed) {
+        getGuildCache().retrieve(getGuild().getIdLong(), record -> {
+            final long logsId = record.getLogChannel();
+            final TextChannel channel = getGuild().getTextChannelById(logsId);
+
+            if (channel == null || channel.canTalk())
+                return;
+
+            channel.sendMessageEmbeds(embed.build()).queue();
+        }, null);
     }
 
     public String getSubCommand() {

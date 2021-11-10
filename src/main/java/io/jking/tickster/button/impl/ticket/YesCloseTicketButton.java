@@ -11,9 +11,6 @@ import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 public class YesCloseTicketButton implements IButton {
 
-    // TODO:
-    //  - Revoke member permission(s) disabling them from sending messages in the channel anymore.
-
     @Override
     public void onButtonPress(ButtonContext context) {
 

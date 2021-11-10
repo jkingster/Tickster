@@ -62,7 +62,7 @@ public class SetupCommand extends Command {
                 return;
             }
 
-            ctx.replySuccess(SuccessType.UPDATED, "The ticket manager role", role.getId());
+            ctx.replySuccess(SuccessType.UPDATED, true, "The ticket manager role", role.getId());
         });
     }
 
@@ -78,7 +78,7 @@ public class SetupCommand extends Command {
                 return;
             }
 
-            ctx.replySuccess(SuccessType.UPDATED, "The ticket channel", channel.getId());
+            ctx.replySuccess(SuccessType.UPDATED, true, "The ticket channel", channel.getId());
             createTicketInput(ctx, channel);
         });
     }
@@ -95,7 +95,7 @@ public class SetupCommand extends Command {
                 return;
             }
 
-            ctx.replySuccess(SuccessType.UPDATED, "The log channel", channel.getId());
+            ctx.replySuccess(SuccessType.UPDATED, true, "The log channel", channel.getId());
         });
     }
 

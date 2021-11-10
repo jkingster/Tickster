@@ -40,7 +40,6 @@ public class InteractionHandler implements EventListener {
     private final Database database;
     private final Cache cache;
 
-
     public InteractionHandler(CommandRegistry registry, Database database, Cache cache) {
         this.commandRegistry = registry;
         this.database = database;
@@ -59,9 +58,6 @@ public class InteractionHandler implements EventListener {
     private void onButtonInteraction(ButtonClickEvent event) {
         final String buttonId = event.getComponentId();
         final IButton button = buttonRegistry.getButton(buttonId);
-
-        System.out.println(buttonId);
-        System.out.println(button);
 
         if (button != null)
             button.onButtonPress(new ButtonContext(event, cache));
