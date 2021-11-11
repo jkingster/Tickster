@@ -2,8 +2,8 @@ package io.jking.tickster.button;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
-import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.command.type.ErrorType;
+import io.jking.tickster.database.Database;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -18,15 +18,21 @@ import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 public class ButtonContext {
 
     private final ButtonClickEvent event;
+    private final Database database;
     private final Cache cache;
 
-    public ButtonContext(ButtonClickEvent event, Cache cache) {
+    public ButtonContext(ButtonClickEvent event, Database database, Cache cache) {
         this.event = event;
+        this.database = database;
         this.cache = cache;
     }
 
     public ButtonClickEvent getEvent() {
         return event;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
     public Cache getCache() {
@@ -35,10 +41,6 @@ public class ButtonContext {
 
     public GuildCache getGuildCache() {
         return cache.getGuildCache();
-    }
-
-    public TicketCache getTicketCache() {
-        return cache.getTicketCache();
     }
 
     public TextChannel getChannel() {
@@ -84,4 +86,6 @@ public class ButtonContext {
     public ReplyAction replyError(ErrorType errorType, Object... objects) {
         return getInteraction().replyEmbeds(EmbedFactory.getError(errorType, objects).build());
     }
+
+
 }

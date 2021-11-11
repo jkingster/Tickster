@@ -60,7 +60,7 @@ public class InteractionHandler implements EventListener {
         final IButton button = buttonRegistry.getButton(buttonId);
 
         if (button != null)
-            button.onButtonPress(new ButtonContext(event, cache));
+            button.onButtonPress(new ButtonContext(event, database, cache));
 
     }
 

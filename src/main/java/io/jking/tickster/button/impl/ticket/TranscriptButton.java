@@ -9,11 +9,14 @@ import io.jking.tickster.object.MessageData;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import org.jooq.JSON;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
 
 public class TranscriptButton implements IButton {
     @Override
@@ -48,6 +51,15 @@ public class TranscriptButton implements IButton {
         try {
             final String jsonify = new ObjectMapper().writerWithDefaultPrettyPrinter()
                     .writeValueAsString(messageList);
+
+            final long guildId = context.getGuild().getIdLong();
+            final long channelId = context.getChannel().getIdLong();
+
+            context.getDatabase().getDSL().update(GUILD_TICKETS)
+                    .set(GUILD_TICKETS.TRANSCRIPT, JSON.json(jsonify))
+                    .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
+                    .and(GUILD_TICKETS.CHANNEL_ID.eq(channelId))
+                    .executeAsync();
 
             final EmbedBuilder embed = EmbedFactory.getDefault()
                     .setDescription("Here is your ticket transcript, in prettified JSON format.")

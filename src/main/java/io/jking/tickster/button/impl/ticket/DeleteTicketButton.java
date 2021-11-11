@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
+
 public class DeleteTicketButton implements IButton {
 
     @Override
@@ -60,7 +62,14 @@ public class DeleteTicketButton implements IButton {
                                 .queue();
                         return null;
                     })
-                    .queue();
+                    .queue(deleted -> {
+                        final long guildId = context.getGuild().getIdLong();
+                        final long channelId = context.getChannel().getIdLong();
+                        context.getDatabase().getDSL().deleteFrom(GUILD_TICKETS)
+                                .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
+                                .and(GUILD_TICKETS.CHANNEL_ID.eq(channelId))
+                                .executeAsync();
+                    });
         });
 
 

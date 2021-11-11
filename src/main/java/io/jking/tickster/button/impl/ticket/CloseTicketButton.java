@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 public class CloseTicketButton implements IButton {
     @Override
     public void onButtonPress(ButtonContext context) {
-
         context.getInteraction().deferEdit().queue(hook -> context.getChannel().sendMessage("Are you sure you want to close this ticket?")
                 .setActionRow(
                         Button.of(ButtonStyle.SUCCESS, "yes:ticket_close", "Yes"),
