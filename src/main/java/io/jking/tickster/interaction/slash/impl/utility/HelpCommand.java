@@ -3,6 +3,7 @@ package io.jking.tickster.interaction.slash.impl.utility;
 
 import io.jking.tickster.interaction.slash.object.*;
 import io.jking.tickster.interaction.slash.object.type.ErrorType;
+import io.jking.tickster.utility.EmbedFactory;
 import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -58,7 +59,7 @@ public class HelpCommand extends Command {
             return;
         }
 
-        context.reply(new EmbedBuilder().setDescription("Test"))
+        context.reply(getSelectionEmbed(context.getMember()))
                 .addActionRows(
                         ActionRow.of(categoriesMenu),
                         ActionRow.of(Button.primary("button_trash", Emoji.fromUnicode("\uD83D\uDEAE"))
@@ -76,7 +77,7 @@ public class HelpCommand extends Command {
             return;
         }
 
-        context.reply(new EmbedBuilder().setDescription("TEst"))
+        context.reply(getSelectionEmbed(context.getMember()))
                 .addActionRows(
                         ActionRow.of(categoryMenu),
                         ActionRow.of(Button.primary("button_trash", Emoji.fromUnicode("\uD83D\uDEAE")))
@@ -124,5 +125,11 @@ public class HelpCommand extends Command {
         );
 
         return menu.build();
+    }
+
+    private EmbedBuilder getSelectionEmbed(Member member) {
+        return EmbedFactory.getDefault()
+                .setAuthor("Make a selection!", null, member.getUser().getEffectiveAvatarUrl())
+                .setDescription("Please select an option to continue, or run the command again with an input token!");
     }
 }
