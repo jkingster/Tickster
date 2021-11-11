@@ -21,30 +21,32 @@ import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
 public class TranscriptButton implements IButton {
     @Override
     public void onButtonPress(ButtonContext context) {
-        context.getInteraction().deferEdit().queue(success -> context.getChannel().getIterableHistory().takeAsync(1000)
-                .whenCompleteAsync((messages, throwable) -> {
-                    if (throwable != null) {
-                        context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "There was an error processing your transcript.").build())
-                                .setEphemeral(true)
-                                .queue();
-                        return;
-                    }
+        context.getInteraction().deferEdit().queue(success -> {
+            context.getChannel().getIterableHistory().takeAsync(1000)
+                    .whenCompleteAsync((messages, throwable) -> {
+                        if (throwable != null) {
+                            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "There was an error processing your transcript.").build())
+                                    .setEphemeral(true)
+                                    .queue();
+                            return;
+                        }
 
-                    final List<MessageData> filteredList = messages.parallelStream()
-                            .filter(message -> !message.getAuthor().isBot())
-                            .sorted(Comparator.comparing(Message::getTimeCreated))
-                            .map(MessageData::new)
-                            .collect(Collectors.toUnmodifiableList());
+                        final List<MessageData> filteredList = messages.parallelStream()
+                                .filter(message -> !message.getAuthor().isBot())
+                                .sorted(Comparator.comparing(Message::getTimeCreated))
+                                .map(MessageData::new)
+                                .collect(Collectors.toUnmodifiableList());
 
-                    if (filteredList.isEmpty()) {
-                        context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "There were no messages to transpire.").build())
-                                .setEphemeral(true)
-                                .queue();
-                        return;
-                    }
+                        if (filteredList.isEmpty()) {
+                            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "There were no messages to transpire.").build())
+                                    .setEphemeral(true)
+                                    .queue();
+                            return;
+                        }
 
-                    buildTranscript(context, filteredList);
-                }));
+                        buildTranscript(context, filteredList);
+                    });
+        });
     }
 
     private void buildTranscript(ButtonContext context, List<MessageData> messageList) {

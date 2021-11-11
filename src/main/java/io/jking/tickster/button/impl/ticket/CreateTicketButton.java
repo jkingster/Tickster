@@ -92,10 +92,9 @@ public class CreateTicketButton implements IButton {
         final long categoryId = 0L;
         final long creatorId = member.getIdLong();
         final String timestamp = OffsetDateTime.now().toString();
-        final String transcript = "{\"data\": null}";
 
         database.getDSL().insertInto(GUILD_TICKETS)
-                .values(guildId, channelId, categoryId, creatorId, timestamp, true, transcript)
+                .values(guildId, channelId, categoryId, creatorId, timestamp, true, null)
                 .executeAsync(database.getExecutor());
     }
 
