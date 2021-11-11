@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClassName = 'io.jking.untitled.Starter'
+    mainClassName = 'io.jking.tickster.Starter'
 }
 
 repositories {
@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
@@ -60,7 +61,7 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'io.jking.untitled.jooq'
+                        packageName = 'io.jking.tickster.jooq'
                         directory = "src/main/jooq"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"

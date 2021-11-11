@@ -1,9 +1,6 @@
 {
   "bot": {
-    "token": "",
-    "owner_ids": [],
-    "log_id": 0,
-    "dev_id": 0
+    "token": ""
   },
   "database": {
     "username": "",
