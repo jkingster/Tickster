@@ -34,7 +34,7 @@ public class CreateTicketButton implements IButton {
             context.getDatabase().getDSL().selectFrom(GUILD_TICKETS)
                     .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
                     .and(GUILD_TICKETS.CREATOR_ID.eq(memberId))
-                    .fetchAsync()
+                    .fetchAsync(context.getDatabase().getExecutor())
                     .thenAcceptAsync(record -> {
                         final GuildTicketsRecord fetchedRecord = record.get(0);
                         if (!fetchedRecord.getOpen()) {
@@ -96,7 +96,7 @@ public class CreateTicketButton implements IButton {
 
         database.getDSL().insertInto(GUILD_TICKETS)
                 .values(guildId, channelId, categoryId, creatorId, timestamp, true, transcript)
-                .executeAsync();
+                .executeAsync(database.getExecutor());
     }
 
     private RestAction<Result<TextChannel>> createTicketChannel(ButtonContext context) {

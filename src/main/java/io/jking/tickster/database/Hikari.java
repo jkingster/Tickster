@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.utils.Checks;
 import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
@@ -25,7 +26,7 @@ public class Hikari {
         hikariConfig.setDriverClassName("org.postgresql.Driver");
         hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
         hikariConfig.setUsername(dataObject.getObject("database").getString("username"));
-        hikariConfig.setPassword(dataObject.getObject("database").getString("password"));
+        hikariConfig.setPassword(dataObject.getObject("database").getString("password"));;
 
         System.getProperties().setProperty("org.jooq.no-logo", "true");
         System.getProperties().setProperty("org.jooq.no-tips", "true");
@@ -44,7 +45,7 @@ public class Hikari {
     public DSLContext getDSL() {
         try {
             final Connection connection = getConnection();
-            return DSL.using(connection);
+            return DSL.using(connection, SQLDialect.POSTGRES);
         } catch (Exception ignored) {
             return getDSL();
         }

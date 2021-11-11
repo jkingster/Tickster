@@ -68,7 +68,7 @@ public class DeleteTicketButton implements IButton {
                         context.getDatabase().getDSL().deleteFrom(GUILD_TICKETS)
                                 .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
                                 .and(GUILD_TICKETS.CHANNEL_ID.eq(channelId))
-                                .executeAsync();
+                                .executeAsync(context.getDatabase().getExecutor());
                     });
         });
 

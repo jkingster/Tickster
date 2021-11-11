@@ -6,8 +6,12 @@ import org.jooq.DSLContext;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Database {
+
+    private final ExecutorService THREAD_POOL = Executors.newCachedThreadPool();
 
     private final Hikari hikari;
 
@@ -36,5 +40,9 @@ public class Database {
 
     public DSLContext getDSL() {
         return hikari.getDSL();
+    }
+
+    public ExecutorService getExecutor() {
+        return THREAD_POOL;
     }
 }

@@ -59,7 +59,7 @@ public class TranscriptButton implements IButton {
                     .set(GUILD_TICKETS.TRANSCRIPT, JSON.json(jsonify))
                     .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
                     .and(GUILD_TICKETS.CHANNEL_ID.eq(channelId))
-                    .executeAsync();
+                    .executeAsync(context.getDatabase().getExecutor());
 
             final EmbedBuilder embed = EmbedFactory.getDefault()
                     .setDescription("Here is your ticket transcript, in prettified JSON format.")

@@ -20,7 +20,7 @@ public class ReOpenTicketButton implements IButton {
                             .set(GUILD_TICKETS.OPEN, true)
                             .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
                             .and(GUILD_TICKETS.CHANNEL_ID.eq(channelId))
-                            .executeAsync();
+                            .executeAsync(context.getDatabase().getExecutor());
                 }));
     }
     @Override
