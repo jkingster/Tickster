@@ -1,16 +1,16 @@
 package io.jking.tickster.core;
 
 import io.jking.tickster.cache.Cache;
-import io.jking.tickster.command.CommandRegistry;
-import io.jking.tickster.command.impl.info.AboutCommand;
-import io.jking.tickster.command.impl.setup.SetupCommand;
-import io.jking.tickster.command.impl.utility.PingCommand;
-import io.jking.tickster.command.impl.utility.TestCommand;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.database.Hikari;
 import io.jking.tickster.handler.GuildHandler;
 import io.jking.tickster.handler.InteractionHandler;
 import io.jking.tickster.handler.StartHandler;
+import io.jking.tickster.interaction.slash.impl.info.AboutCommand;
+import io.jking.tickster.interaction.slash.impl.setup.SetupCommand;
+import io.jking.tickster.interaction.slash.impl.utility.PingCommand;
+import io.jking.tickster.interaction.slash.impl.utility.TestCommand;
+import io.jking.tickster.interaction.slash.object.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;

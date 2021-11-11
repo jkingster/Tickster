@@ -1,16 +1,18 @@
 package io.jking.tickster.handler;
 
-import io.jking.tickster.button.ButtonContext;
-import io.jking.tickster.button.ButtonRegistry;
-import io.jking.tickster.button.IButton;
-import io.jking.tickster.button.impl.ticket.*;
 import io.jking.tickster.cache.Cache;
-import io.jking.tickster.command.Command;
-import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
-import io.jking.tickster.command.CommandRegistry;
-import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.interaction.button.impl.misc.GarbageButton;
+import io.jking.tickster.interaction.button.impl.ticket.*;
+import io.jking.tickster.interaction.button.object.ButtonContext;
+import io.jking.tickster.interaction.button.object.ButtonRegistry;
+import io.jking.tickster.interaction.button.object.IButton;
+import io.jking.tickster.interaction.slash.impl.utility.HelpCommand;
+import io.jking.tickster.interaction.slash.object.Command;
+import io.jking.tickster.interaction.slash.object.CommandContext;
+import io.jking.tickster.interaction.slash.object.CommandError;
+import io.jking.tickster.interaction.slash.object.CommandRegistry;
+import io.jking.tickster.interaction.slash.object.type.ErrorType;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -34,7 +36,7 @@ public class InteractionHandler implements EventListener {
             .addButtons(new CreateTicketButton(), new CloseTicketButton())
             .addButtons(new YesCloseTicketButton(), new NoCloseTicketButton())
             .addButtons(new TranscriptButton(), new ReOpenTicketButton())
-            .addButtons(new DeleteTicketButton());
+            .addButtons(new DeleteTicketButton(), new GarbageButton());
 
     private final CommandRegistry commandRegistry;
     private final Database database;
@@ -42,6 +44,7 @@ public class InteractionHandler implements EventListener {
 
     public InteractionHandler(CommandRegistry registry, Database database, Cache cache) {
         this.commandRegistry = registry;
+        registry.addCommand(new HelpCommand(registry));
         this.database = database;
         this.cache = cache;
     }
