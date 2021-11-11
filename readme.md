@@ -13,7 +13,7 @@
 
 ### Nerd Information/Links
 > Tools Used
-> - [PostgreSQL - Open-Srouce Relational Database System](https://www.postgresql.org/)
+> - [PostgreSQL - Open-Source Relational Database System](https://www.postgresql.org/)
 > - [jOOQ - Light Database-Mapping Software Library](https://www.jooq.org/)
 > - [HikariCP - "Zero-overhead" production ready JDBC connection pool.](https://github.com/brettwooldridge/HikariCP)
 > - [Java Discord API](https://github.com/DV8FromTheWorld/JDA)
