@@ -17,6 +17,7 @@
 > - [jOOQ - Light Database-Mapping Software Library](https://www.jooq.org/)
 > - [HikariCP - "Zero-overhead" production ready JDBC connection pool.](https://github.com/brettwooldridge/HikariCP)
 > - [Java Discord API](https://github.com/DV8FromTheWorld/JDA)
+> - [ExpiringMap - A high performance, low-overhead, thread-safe ConcurrentMap implementation that expires entries.](https://github.com/jhalterman/expiringmap)
 
 # :warning: Unsupported Self-Hosting
 > This bot is not intended to be self-hosted, and any issues/questions related will not be answered and instantly closed. This repo serves to house all progress made and nothing more/nothing less (*other than purposeful git things of course.*)
