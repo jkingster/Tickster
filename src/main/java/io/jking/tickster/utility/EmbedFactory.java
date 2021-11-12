@@ -1,7 +1,7 @@
 package io.jking.tickster.utility;
 
-import io.jking.tickster.interaction.slash.object.type.ErrorType;
-import io.jking.tickster.interaction.slash.object.type.SuccessType;
+import io.jking.tickster.interaction.impl.slash.object.type.ErrorType;
+import io.jking.tickster.interaction.impl.slash.object.type.SuccessType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 

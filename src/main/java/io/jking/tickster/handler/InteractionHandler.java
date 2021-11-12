@@ -2,26 +2,26 @@ package io.jking.tickster.handler;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.interaction.button.impl.misc.GarbageButton;
-import io.jking.tickster.interaction.button.impl.ticket.*;
-import io.jking.tickster.interaction.button.object.ButtonContext;
-import io.jking.tickster.interaction.button.object.ButtonRegistry;
-import io.jking.tickster.interaction.button.object.IButton;
-import io.jking.tickster.interaction.slash.impl.utility.HelpCommand;
-import io.jking.tickster.interaction.slash.object.Command;
-import io.jking.tickster.interaction.slash.object.CommandContext;
-import io.jking.tickster.interaction.slash.object.CommandError;
-import io.jking.tickster.interaction.slash.object.CommandRegistry;
-import io.jking.tickster.interaction.slash.object.type.ErrorType;
+import io.jking.tickster.interaction.RegistryHandler;
+import io.jking.tickster.interaction.context.ButtonContext;
+import io.jking.tickster.interaction.context.CommandContext;
+import io.jking.tickster.interaction.impl.slash.impl.utility.HelpCommand;
+import io.jking.tickster.interaction.impl.slash.object.Command;
+import io.jking.tickster.interaction.impl.slash.object.CommandError;
+import io.jking.tickster.interaction.impl.slash.object.CommandRegistry;
+import io.jking.tickster.interaction.impl.slash.object.type.ErrorType;
+import io.jking.tickster.interaction.type.IButton;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.interactions.components.ButtonInteraction;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenuInteraction;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -32,18 +32,14 @@ public class InteractionHandler implements EventListener {
             Permission.MESSAGE_WRITE, Permission.MANAGE_PERMISSIONS
     };
 
-    private final ButtonRegistry buttonRegistry = new ButtonRegistry()
-            .addButtons(new CreateTicketButton(), new CloseTicketButton())
-            .addButtons(new YesCloseTicketButton(), new NoCloseTicketButton())
-            .addButtons(new TranscriptButton(), new ReOpenTicketButton())
-            .addButtons(new DeleteTicketButton(), new GarbageButton());
-
     private final CommandRegistry commandRegistry;
+    private final RegistryHandler handler;
     private final Database database;
     private final Cache cache;
 
     public InteractionHandler(CommandRegistry registry, Database database, Cache cache) {
         this.commandRegistry = registry;
+        this.handler = new RegistryHandler().registerButtons();
         registry.addCommand(new HelpCommand(registry));
         this.database = database;
         this.cache = cache;
@@ -55,16 +51,20 @@ public class InteractionHandler implements EventListener {
             onSlashCommand((SlashCommandEvent) event);
         else if (event instanceof ButtonInteraction)
             onButtonInteraction((ButtonClickEvent) event);
+        else if (event instanceof SelectionMenuInteraction)
+            onSelectionInteraction((SelectionMenuEvent) event);
 
     }
 
+    private void onSelectionInteraction(SelectionMenuEvent event) {
+    }
+
     private void onButtonInteraction(ButtonClickEvent event) {
-        final String buttonId = event.getComponentId();
-        final IButton button = buttonRegistry.getButton(buttonId);
+        final IButton button = handler.getButton(event.getComponentId());
+        if (button == null)
+            return;
 
-        if (button != null)
-            button.onButtonPress(new ButtonContext(event, database, cache));
-
+        button.onInteraction(new ButtonContext(event, database, cache));
     }
 
     private void onSlashCommand(SlashCommandEvent event) {
