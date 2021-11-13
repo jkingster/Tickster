@@ -18,20 +18,20 @@ import net.dv8tion.jda.api.requests.restaction.interactions.UpdateInteractionAct
 
 public abstract class AbstractContext<T extends GenericComponentInteractionCreateEvent> {
 
-    private final T interactionEvent;
+    private final T event;
     private final CommandRegistry registry;
     private final Database database;
     private final Cache cache;
 
-    public AbstractContext(T interactionEvent, CommandRegistry registry, Database database, Cache cache) {
-        this.interactionEvent = interactionEvent;
+    public AbstractContext(T event, CommandRegistry registry, Database database, Cache cache) {
+        this.event = event;
         this.registry = registry;
         this.database = database;
         this.cache = cache;
     }
 
     public T getEvent() {
-        return interactionEvent;
+        return event;
     }
 
     public CommandRegistry getRegistry() {
@@ -47,15 +47,15 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
     }
 
     public Interaction getInteraction() {
-        return interactionEvent.getInteraction();
+        return event.getInteraction();
     }
 
     public InteractionHook getHook() {
-        return interactionEvent.getHook();
+        return event.getHook();
     }
 
     public String getComponentId() {
-        return interactionEvent.getComponentId();
+        return event.getComponentId();
     }
 
     public Guild getGuild() {
@@ -71,15 +71,15 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
     }
 
     public Member getMember() {
-        return interactionEvent.getMember();
+        return event.getMember();
     }
 
     public User getUser() {
-        return interactionEvent.getUser();
+        return event.getUser();
     }
 
     public TextChannel getChannel() {
-        return interactionEvent.getTextChannel();
+        return event.getTextChannel();
     }
 
     public ReplyAction reply(String content) {
