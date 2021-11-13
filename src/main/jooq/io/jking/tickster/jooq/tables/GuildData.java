@@ -56,6 +56,11 @@ public class GuildData extends TableImpl<GuildDataRecord> {
     public final TableField<GuildDataRecord, Long> TICKET_CHANNEL = createField(DSL.name("ticket_channel"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
+     * The column <code>public.guild_data.ticket_category</code>.
+     */
+    public final TableField<GuildDataRecord, Long> TICKET_CATEGORY = createField(DSL.name("ticket_category"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+
+    /**
      * The column <code>public.guild_data.log_channel</code>.
      */
     public final TableField<GuildDataRecord, Long> LOG_CHANNEL = createField(DSL.name("log_channel"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
@@ -130,11 +135,11 @@ public class GuildData extends TableImpl<GuildDataRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, Long, Long, Long> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long, Long, Long, Long, Long> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
