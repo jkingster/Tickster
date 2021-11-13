@@ -53,7 +53,16 @@ public class SetupCommand extends Command {
     }
 
     private void setupTicketCategory(CommandContext ctx, CommandError err) {
+        final long guildId = ctx.getGuild().getIdLong();
         final String categoryId = ctx.getOptionString("category");
+        if (MiscUtil.containsAnyOption(categoryId, "0", "none")) {
+            ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CATEGORY, 0L,
+                    (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The ticket category", 0),
+                    (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket category.")
+            );
+            return;
+        }
+
         if (categoryId == null || !MiscUtil.isSnowflake(categoryId)) {
             err.reply(ErrorType.INVALID_ID);
             return;
@@ -65,7 +74,6 @@ public class SetupCommand extends Command {
             return;
         }
 
-        final long guildId = ctx.getGuild().getIdLong();
         ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CATEGORY, category.getIdLong(),
                 (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The ticket category", category.getIdLong()),
                 (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket category.")
