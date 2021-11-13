@@ -5,9 +5,7 @@ import io.jking.tickster.database.Database;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import net.jodah.expiringmap.ExpirationPolicy;
 import org.jooq.Field;
-import org.jooq.UpdateResultStep;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
@@ -53,12 +51,23 @@ public class GuildCache extends CachedObject<Long, GuildDataRecord> {
     }
 
     @Override
-    public <T> void update(Long key, Field<T> field, T value, BiConsumer<? super Integer, Throwable> biConsumer) {
-        final UpdateResultStep<GuildDataRecord> record = database.getDSL()
+    public <T> void update(Long key, Field<T> field, T value, Consumer<GuildDataRecord> record, Consumer<Throwable> throwable) {
+        database.getDSL()
                 .update(GUILD_DATA).set(field, value).where(GUILD_DATA.GUILD_ID.eq(key))
-                .returning();
+                .returning()
+                .fetchAsync(database.getExecutor())
+                .whenCompleteAsync((result, error) -> {
+                    if (error != null) {
+                        throwable.accept(error);
+                        return;
+                    }
 
-        record.stream().parallel().findFirst().ifPresent(it -> put(key, it));
-        record.executeAsync().whenCompleteAsync(biConsumer);
+                    final GuildDataRecord retrievedResult = result.get(0);
+                    if (retrievedResult == null)
+                        return;
+
+                    record.accept(retrievedResult);
+                    put(key, retrievedResult);
+                });
     }
 }

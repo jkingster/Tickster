@@ -3,7 +3,6 @@ package io.jking.tickster.cache;
 
 import org.jooq.Field;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface ICache<K, V> {
@@ -18,6 +17,7 @@ public interface ICache<K, V> {
 
     V forceGet(K key);
 
-    <T> void update(K key, Field<T> field, T value, BiConsumer<? super Integer, Throwable> biConsumer);
+    <T> void update(Long key, Field<T> field, T value, Consumer<V> record, Consumer<Throwable> throwable);
+
 
 }
