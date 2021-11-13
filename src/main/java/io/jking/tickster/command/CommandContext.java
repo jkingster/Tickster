@@ -13,10 +13,14 @@ import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
 public class CommandContext {
+
+    private final Logger logger = LoggerFactory.getLogger(CommandContext.class);
 
     private final SlashCommandEvent event;
     private final Database database;
@@ -93,7 +97,7 @@ public class CommandContext {
             final long logsId = record.getLogChannel();
             final TextChannel channel = getGuild().getTextChannelById(logsId);
 
-            if (channel == null || channel.canTalk())
+            if (channel == null || !channel.canTalk())
                 return;
 
             channel.sendMessageEmbeds(embed.build()).queue();
@@ -146,5 +150,7 @@ public class CommandContext {
         return cache.getGuildCache();
     }
 
-
+    public Logger getLogger() {
+        return logger;
+    }
 }
