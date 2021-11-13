@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS guild_tickets
     channel_id       BIGINT UNIQUE NOT NULL,
     category_id      BIGINT        NOT NULL,
     creator_id       BIGINT        NOT NULL,
-    ticket_timestamp TEXT          NOT NULL,
+    ticket_timestamp TIMESTAMP     NOT NULL,
     open             BOOLEAN       NOT NULL,
     transcript       json default NULL
 );

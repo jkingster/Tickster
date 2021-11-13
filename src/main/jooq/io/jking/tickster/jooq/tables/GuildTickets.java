@@ -13,6 +13,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     /**
      * The column <code>public.guild_tickets.ticket_timestamp</code>.
      */
-    public final TableField<GuildTicketsRecord, String> TICKET_TIMESTAMP = createField(DSL.name("ticket_timestamp"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<GuildTicketsRecord, LocalDateTime> TICKET_TIMESTAMP = createField(DSL.name("ticket_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
     /**
      * The column <code>public.guild_tickets.open</code>.
@@ -147,7 +148,7 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, Long, Long, String, Boolean, JSON> fieldsRow() {
+    public Row7<Long, Long, Long, Long, LocalDateTime, Boolean, JSON> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

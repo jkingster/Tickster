@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.Result;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -91,7 +91,8 @@ public class CreateTicketButton implements IButton {
         final long channelId = channel.getIdLong();
         final long categoryId = 0L;
         final long creatorId = member.getIdLong();
-        final String timestamp = OffsetDateTime.now().toString();
+        final LocalDateTime timestamp = LocalDateTime.now();
+
 
         database.getDSL().insertInto(GUILD_TICKETS)
                 .values(guildId, channelId, categoryId, creatorId, timestamp, true, null)
