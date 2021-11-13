@@ -6,7 +6,8 @@ public enum ErrorType {
     CUSTOM("%s"),
     PERMISSION("%s is missing the required permission(s): %s."),
     CANT_INTERACT("%s cannot interact with %s."),
-    CANT_ACCESS("%s cannot access the following channel: %s.");
+    CANT_ACCESS("%s cannot access the following channel: %s."),
+    INVALID_ID("The ID you provided is invalid.");
 
     private final String errorResponse;
 
