@@ -11,4 +11,13 @@ public final class MiscUtil {
         }
         return false;
     }
+
+    public static boolean isSnowflake(String id) {
+        try {
+            net.dv8tion.jda.api.utils.MiscUtil.parseSnowflake(id);
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
 }
