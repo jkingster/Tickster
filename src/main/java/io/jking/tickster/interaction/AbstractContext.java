@@ -2,6 +2,7 @@ package io.jking.tickster.interaction;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.database.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -18,17 +19,23 @@ import net.dv8tion.jda.api.requests.restaction.interactions.UpdateInteractionAct
 public abstract class AbstractContext<T extends GenericComponentInteractionCreateEvent> {
 
     private final T interactionEvent;
+    private final CommandRegistry registry;
     private final Database database;
     private final Cache cache;
 
-    public AbstractContext(T interactionEvent, Database database, Cache cache) {
+    public AbstractContext(T interactionEvent, CommandRegistry registry, Database database, Cache cache) {
         this.interactionEvent = interactionEvent;
+        this.registry = registry;
         this.database = database;
         this.cache = cache;
     }
 
     public T getEvent() {
         return interactionEvent;
+    }
+
+    public CommandRegistry getRegistry() {
+        return registry;
     }
 
     public Database getDatabase() {
@@ -86,4 +93,6 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
     public UpdateInteractionAction deferEdit() {
         return getEvent().deferEdit();
     }
+
+
 }

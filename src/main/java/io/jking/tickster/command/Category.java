@@ -1,4 +1,4 @@
-package io.jking.tickster.interaction.impl.slash.object;
+package io.jking.tickster.command;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -29,7 +29,7 @@ public enum Category {
         return array;
     }
 
-    public static Category getCategory(String name) {
+    public static Category fromName(String name) {
         for (Category category : values()) {
             if (category.getName().equalsIgnoreCase(name)) {
                 return category;

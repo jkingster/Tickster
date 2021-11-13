@@ -1,4 +1,4 @@
-package io.jking.tickster.interaction.impl.slash.object.type;
+package io.jking.tickster.command.type;
 
 public enum ErrorType {
 

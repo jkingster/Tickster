@@ -2,8 +2,8 @@ package io.jking.tickster.handler;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.interaction.impl.slash.object.CommandRegistry;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;

@@ -1,6 +1,5 @@
 package io.jking.tickster.interaction.impl.button.ticket;
 
-
 import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.context.ButtonContext;
 import io.jking.tickster.interaction.type.IButton;
@@ -37,6 +36,7 @@ public class CreateTicketButton implements IButton {
                     .fetchAsync(context.getDatabase().getExecutor())
                     .thenAcceptAsync(record -> {
                         final GuildTicketsRecord fetchedRecord = record.get(0);
+                        System.out.println(fetchedRecord.get(0));
                         if (!fetchedRecord.getOpen()) {
                             createTicketProcess(context);
                             return;

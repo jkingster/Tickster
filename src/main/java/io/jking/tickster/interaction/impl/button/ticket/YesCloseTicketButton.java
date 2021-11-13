@@ -1,7 +1,7 @@
 package io.jking.tickster.interaction.impl.button.ticket;
 
-import io.jking.tickster.interaction.InteractionImpl;
 import io.jking.tickster.interaction.context.ButtonContext;
+import io.jking.tickster.interaction.type.IButton;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
 
-public class YesCloseTicketButton implements InteractionImpl<ButtonContext> {
+public class YesCloseTicketButton implements IButton {
 
     @Override
     public void onInteraction(ButtonContext context) {

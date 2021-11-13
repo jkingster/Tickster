@@ -1,4 +1,4 @@
-package io.jking.tickster.interaction.impl.slash.object;
+package io.jking.tickster.command;
 
 import net.dv8tion.jda.api.entities.Member;
 

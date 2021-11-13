@@ -1,9 +1,9 @@
-package io.jking.tickster.interaction.impl.slash.impl.utility;
+package io.jking.tickster.command.impl.utility;
 
-import io.jking.tickster.interaction.context.CommandContext;
-import io.jking.tickster.interaction.impl.slash.object.Category;
-import io.jking.tickster.interaction.impl.slash.object.Command;
-import io.jking.tickster.interaction.impl.slash.object.CommandError;
+import io.jking.tickster.command.Category;
+import io.jking.tickster.command.Command;
+import io.jking.tickster.command.CommandContext;
+import io.jking.tickster.command.CommandError;
 
 public class PingCommand extends Command {
     public PingCommand() {

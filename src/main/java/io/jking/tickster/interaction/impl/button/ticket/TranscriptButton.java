@@ -2,8 +2,8 @@ package io.jking.tickster.interaction.impl.button.ticket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.ButtonContext;
-import io.jking.tickster.interaction.impl.slash.object.type.ErrorType;
 import io.jking.tickster.interaction.type.IButton;
 import io.jking.tickster.object.MessageData;
 import io.jking.tickster.utility.EmbedFactory;

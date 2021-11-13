@@ -1,7 +1,6 @@
-package io.jking.tickster.interaction.impl.slash.object;
+package io.jking.tickster.command;
 
-import io.jking.tickster.interaction.context.CommandContext;
-import io.jking.tickster.interaction.impl.slash.object.type.ErrorType;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.utility.EmbedFactory;
 
 public class CommandError {

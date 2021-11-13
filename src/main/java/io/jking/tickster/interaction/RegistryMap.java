@@ -19,4 +19,6 @@ public class RegistryMap<V extends InteractionImpl<?>> {
     public V get(String key) {
         return this.map.getOrDefault(key, null);
     }
+
+
 }

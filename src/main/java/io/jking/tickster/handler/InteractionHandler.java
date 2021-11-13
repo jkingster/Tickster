@@ -1,16 +1,18 @@
 package io.jking.tickster.handler;
 
 import io.jking.tickster.cache.Cache;
+import io.jking.tickster.command.Command;
+import io.jking.tickster.command.CommandContext;
+import io.jking.tickster.command.CommandError;
+import io.jking.tickster.command.CommandRegistry;
+import io.jking.tickster.command.impl.utility.HelpCommand;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.RegistryHandler;
 import io.jking.tickster.interaction.context.ButtonContext;
-import io.jking.tickster.interaction.context.CommandContext;
-import io.jking.tickster.interaction.impl.slash.impl.utility.HelpCommand;
-import io.jking.tickster.interaction.impl.slash.object.Command;
-import io.jking.tickster.interaction.impl.slash.object.CommandError;
-import io.jking.tickster.interaction.impl.slash.object.CommandRegistry;
-import io.jking.tickster.interaction.impl.slash.object.type.ErrorType;
+import io.jking.tickster.interaction.context.SelectionContext;
 import io.jking.tickster.interaction.type.IButton;
+import io.jking.tickster.interaction.type.ISelection;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -39,7 +41,7 @@ public class InteractionHandler implements EventListener {
 
     public InteractionHandler(CommandRegistry registry, Database database, Cache cache) {
         this.commandRegistry = registry;
-        this.handler = new RegistryHandler().registerButtons();
+        this.handler = new RegistryHandler().registerButtons().registerSelections();
         registry.addCommand(new HelpCommand(registry));
         this.database = database;
         this.cache = cache;
@@ -57,6 +59,11 @@ public class InteractionHandler implements EventListener {
     }
 
     private void onSelectionInteraction(SelectionMenuEvent event) {
+        final ISelection selection = handler.getSelection(event.getComponentId());
+        if (selection == null)
+            return;
+
+        selection.onInteraction(new SelectionContext(event, commandRegistry, database, cache));
     }
 
     private void onButtonInteraction(ButtonClickEvent event) {
@@ -64,7 +71,7 @@ public class InteractionHandler implements EventListener {
         if (button == null)
             return;
 
-        button.onInteraction(new ButtonContext(event, database, cache));
+        button.onInteraction(new ButtonContext(event, commandRegistry, database, cache));
     }
 
     private void onSlashCommand(SlashCommandEvent event) {

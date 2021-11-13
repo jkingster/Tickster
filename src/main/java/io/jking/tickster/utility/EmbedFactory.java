@@ -1,8 +1,9 @@
 package io.jking.tickster.utility;
 
-import io.jking.tickster.interaction.impl.slash.object.type.ErrorType;
-import io.jking.tickster.interaction.impl.slash.object.type.SuccessType;
+import io.jking.tickster.command.type.ErrorType;
+import io.jking.tickster.command.type.SuccessType;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
@@ -46,6 +47,12 @@ public final class EmbedFactory {
                 .setDescription("Please wait for a staff member. In the meantime, please provide any necessary information.")
                 .setTimestamp(Instant.now())
                 .setFooter("Creator ID: " + user.getId());
+    }
+
+    public static EmbedBuilder getSelectionEmbed(Member member, String content) {
+        return EmbedFactory.getDefault()
+                .setAuthor(content, null, member.getUser().getEffectiveAvatarUrl())
+                .setDescription("Please select an option to continue.");
     }
 
 }
