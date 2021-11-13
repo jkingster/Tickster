@@ -52,7 +52,7 @@ public class Tickster {
 
     private JDA jda;
 
-    private Tickster(String configPath) throws IOException, LoginException, InterruptedException {
+    private Tickster(String configPath) throws IOException {
         this.data = loadConfig(configPath);
         this.database = new Database(new Hikari(data)).createTables(
                 "sql/guild_data.sql", "sql/guild_tickets.sql", "sql/guild_reports.sql"
