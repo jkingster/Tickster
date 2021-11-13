@@ -85,6 +85,8 @@ public class GuildHandler implements EventListener {
     }
 
     private void onGuildReady(GuildReadyEvent event) {
+        commandRegistry.getCommands().forEach(command -> event.getGuild().upsertCommand(command).queue());
+
         cacheGuild(event.getGuild());
         insertGuild(event.getGuild());
     }
