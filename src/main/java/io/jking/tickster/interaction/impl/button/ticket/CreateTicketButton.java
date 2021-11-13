@@ -58,7 +58,7 @@ public class CreateTicketButton implements IButton {
         ctx.getGuildCache().retrieve(ctx.getGuild().getIdLong(), value -> {
             final Role manager = ctx.getGuild().getRoleById(value.getTicketManager());
             if (manager == null) {
-                ctx.getHook().editOriginal("You cannot utilize ticket creation if you do not have  configured ticket manager role!")
+                ctx.getHook().editOriginal("You cannot utilize ticket creation if the ticket manager role isn't configured!")
                         .delay(5, TimeUnit.SECONDS)
                         .flatMap(Message::delete)
                         .queue();
