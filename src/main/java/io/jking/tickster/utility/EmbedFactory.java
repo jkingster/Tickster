@@ -50,9 +50,10 @@ public final class EmbedFactory {
     }
 
     public static EmbedBuilder getSelectionEmbed(Member member, String content) {
-        return EmbedFactory.getDefault()
+        return getDefault()
                 .setAuthor(content, null, member.getUser().getEffectiveAvatarUrl())
                 .setDescription("Please select an option to continue.");
     }
+
 
 }

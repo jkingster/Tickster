@@ -12,10 +12,12 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CommandContext {
@@ -135,6 +137,10 @@ public class CommandContext {
         if (mapping == null)
             return null;
         return mapping.getAsString();
+    }
+
+    public List<OptionMapping> getOptionsByType(OptionType optionType) {
+        return getEvent().getOptionsByType(optionType);
     }
 
     private OptionMapping getMapping(String name) {

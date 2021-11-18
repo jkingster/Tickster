@@ -1,4 +1,4 @@
-package io.jking.tickster.object;
+package io.jking.tickster.utility;
 
 
 import org.slf4j.Logger;

@@ -11,7 +11,7 @@ import io.jking.tickster.database.Hikari;
 import io.jking.tickster.handler.GuildHandler;
 import io.jking.tickster.handler.InteractionHandler;
 import io.jking.tickster.handler.StartHandler;
-import io.jking.tickster.object.ScheduledTask;
+import io.jking.tickster.utility.ScheduledTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;

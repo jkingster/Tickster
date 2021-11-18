@@ -12,6 +12,14 @@ public final class MiscUtil {
         return false;
     }
 
+    public static boolean containsAnyNull(Object... objects) {
+        for (Object object : objects) {
+            if (object == null)
+                return true;
+        }
+        return false;
+    }
+
     public static boolean isSnowflake(String id) {
         try {
             net.dv8tion.jda.api.utils.MiscUtil.parseSnowflake(id);
