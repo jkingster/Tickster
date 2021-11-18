@@ -56,4 +56,17 @@ public final class EmbedFactory {
     }
 
 
+    public static EmbedBuilder getNewReport(User author, String reason) {
+        return new EmbedBuilder().setColor(Color.RED).setAuthor(author.getAsTag() + " created a new report!")
+                .setDescription("**Click the view report button to see it!**")
+                .setTimestamp(Instant.now());
+
+    }
+
+    public static EmbedBuilder getReportedCreated(User author) {
+        return new EmbedBuilder().setColor(Color.RED)
+                .setDescription(String.format("**%s**: Your report was successfuly created!", author.getAsTag()))
+                .setTimestamp(Instant.now());
+    }
+
 }

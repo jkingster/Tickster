@@ -9,7 +9,8 @@ public enum Category {
     UTILITY(Permission.MESSAGE_WRITE, "Useful utility commands.", Emoji.fromUnicode("\uD83D\uDEE0")),
     TICKETS(Permission.MESSAGE_WRITE, "Commands related to tickets.", Emoji.fromUnicode("\uD83C\uDF9F")),
     SETUP(Permission.ADMINISTRATOR, "Configuration/Settings to help me function.", Emoji.fromUnicode("⚙")),
-    INFO(Permission.MESSAGE_WRITE, "Informational commands.", Emoji.fromUnicode("\uD83D\uDCDD"));
+    INFO(Permission.MESSAGE_WRITE, "Informational commands.", Emoji.fromUnicode("\uD83D\uDCDD")),
+    REPORTS(Permission.MESSAGE_WRITE, "Reporting commands.", Emoji.fromUnicode("\uD83D\uDCDB"));
 
     private final Permission permission;
     private final String description;

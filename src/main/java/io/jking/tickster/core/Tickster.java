@@ -3,6 +3,7 @@ package io.jking.tickster.core;
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.command.impl.info.AboutCommand;
+import io.jking.tickster.command.impl.report.ReportCommand;
 import io.jking.tickster.command.impl.setup.SetupCommand;
 import io.jking.tickster.command.impl.utility.PingCommand;
 import io.jking.tickster.command.impl.utility.TestCommand;
@@ -43,7 +44,8 @@ public class Tickster {
 
     private final CommandRegistry commandRegistry = new CommandRegistry()
             .addCommands(new TestCommand(), new PingCommand())
-            .addCommands(new AboutCommand(), new SetupCommand());
+            .addCommands(new AboutCommand(), new SetupCommand())
+            .addCommands(new ReportCommand());
 
 
     private final DataObject data;
@@ -120,7 +122,7 @@ public class Tickster {
                             }
                         });
                     });
-        }, 1, TimeUnit.MINUTES);
+        }, 20, TimeUnit.MINUTES);
 
     }
 

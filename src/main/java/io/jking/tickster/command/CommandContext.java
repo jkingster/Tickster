@@ -4,6 +4,7 @@ import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -13,12 +14,14 @@ import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class CommandContext {
 
@@ -94,6 +97,10 @@ public class CommandContext {
             sendLog(embed);
     }
 
+    public RestAction<Message> retrieveOriginal() {
+        return getEvent().getHook().retrieveOriginal();
+    }
+
     private void sendLog(EmbedBuilder embed) {
         getGuildCache().retrieve(getGuild().getIdLong(), record -> {
             final long logsId = record.getLogChannel();
@@ -154,6 +161,11 @@ public class CommandContext {
 
     public GuildCache getGuildCache() {
         return cache.getGuildCache();
+    }
+
+    public void retrieveRecord(Consumer<GuildDataRecord> record, Consumer<Throwable> throwable) {
+        final long guildId = getGuild().getIdLong();
+        getGuildCache().retrieve(guildId, record, throwable);
     }
 
     public Logger getLogger() {
