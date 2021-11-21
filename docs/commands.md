@@ -25,7 +25,7 @@
 
 <hr>
 
-###Setup Category
+### Setup Category
 
 <b>SetupCommand</b></br>
 <b>Description:</b> This command allows you to configure certain channels, roles and categories to help Tickster properly function within your server. Some are required for me to even begin creating tickets or reports.
