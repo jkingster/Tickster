@@ -15,9 +15,10 @@ public interface ICache<K, V> {
 
     V get(K key);
 
-    V forceGet(K key);
+    default V forceGet(K key){ return null; }
 
-    <T> void update(Long key, Field<T> field, T value, Consumer<V> record, Consumer<Throwable> throwable);
+    default <T> void update(Long key, Field<T> field, T value, Consumer<V> record, Consumer<Throwable> throwable) {
+    }
 
 
 }

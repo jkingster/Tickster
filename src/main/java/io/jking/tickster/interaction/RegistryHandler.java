@@ -1,6 +1,7 @@
 package io.jking.tickster.interaction;
 
 import io.jking.tickster.interaction.impl.button.GarbageButton;
+import io.jking.tickster.interaction.impl.button.report.ViewReportButton;
 import io.jking.tickster.interaction.impl.button.ticket.*;
 import io.jking.tickster.interaction.impl.selection.MenuCategoriesSelection;
 import io.jking.tickster.interaction.impl.selection.MenuCategorySelection;
@@ -20,7 +21,8 @@ public class RegistryHandler {
                 .put(new NoCloseTicketButton())
                 .put(new ReOpenTicketButton())
                 .put(new TranscriptButton())
-                .put(new YesCloseTicketButton());
+                .put(new YesCloseTicketButton())
+                .put(new ViewReportButton());
         return this;
     }
 

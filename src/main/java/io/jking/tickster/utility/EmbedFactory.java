@@ -2,12 +2,14 @@ package io.jking.tickster.utility;
 
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
+import io.jking.tickster.jooq.tables.records.GuildReportsRecord;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class EmbedFactory {
@@ -68,5 +70,29 @@ public final class EmbedFactory {
                 .setDescription(String.format("**%s**: Your report was successfuly created!", author.getAsTag()))
                 .setTimestamp(Instant.now());
     }
+
+    public static EmbedBuilder getReport(GuildReportsRecord record, List<Member> reportedUsers) {
+        final EmbedBuilder embed = new EmbedBuilder()
+                .setColor(Color.RED)
+                .setAuthor("Viewing Ticket: " + record.getUuid());
+
+
+        final StringBuilder memberList = new StringBuilder();
+        if (reportedUsers.isEmpty()) {
+            for (long id : record.getReportedUsers()) {
+                memberList.append(id).append("\n");
+            }
+        } else {
+            reportedUsers.forEach(member -> memberList.append(member.getUser().getAsTag()).append("\n"));
+        }
+
+
+        embed.setDescription(String.format("**Reported Member(s):** ```%s```\n**Reason:** ```%s```", memberList, record.getReportReason()))
+                .setTimestamp(record.getReportTimestamp())
+                .setFooter("Report Created by: " + record.getIssuerId());
+
+        return embed;
+    }
+
 
 }

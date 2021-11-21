@@ -2,6 +2,7 @@ package io.jking.tickster.command;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.ReportCache;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
@@ -61,6 +62,9 @@ public class CommandContext {
         return getEvent().getInteraction();
     }
 
+    public ReportCache getReportCache() {
+        return cache.getReportCache();
+    }
 
     public JDA getJda() {
         return event.getJDA();

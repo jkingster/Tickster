@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static io.jking.tickster.jooq.tables.GuildReports.GUILD_REPORTS;
@@ -85,8 +86,8 @@ public class ReportCommand extends Command {
         }
 
         ctx.retrieveRecord(record -> {
-            final TextChannel logChannel = ctx.getGuild().getTextChannelById(record.getLogChannel());
-            if (logChannel == null || !logChannel.canTalk()) {
+            final TextChannel reportChannel = ctx.getGuild().getTextChannelById(record.getReportChannel());
+            if (reportChannel == null || !reportChannel.canTalk()) {
                 err.reply(ErrorType.CUSTOM, "The report channel is unset or could not be found!");
                 return;
             }
@@ -94,9 +95,10 @@ public class ReportCommand extends Command {
             final long guildId = ctx.getGuild().getIdLong();
             final long issuerId = ctx.getAuthor().getIdLong();
             final LocalDateTime timestamp = LocalDateTime.now();
+            final String uuid = UUID.randomUUID().toString();
 
             final GuildReportsRecord reportRecord = GUILD_REPORTS.newRecord()
-                    .values(guildId, memberIds, issuerId, reason, timestamp);
+                    .values(guildId, memberIds, issuerId, reason, timestamp, uuid);
 
             ctx.getDatabase().getDSL().insertInto(GUILD_REPORTS)
                     .set(reportRecord)
@@ -104,11 +106,12 @@ public class ReportCommand extends Command {
                     .thenAcceptAsync(action -> {
                         final EmbedBuilder newReport = EmbedFactory.getReportedCreated(ctx.getAuthor());
                         ctx.reply(newReport).setEphemeral(true).queue();
-
-                        logChannel.sendMessageEmbeds(EmbedFactory.getNewReport(ctx.getAuthor(), reason).build())
+                        reportChannel.sendMessageEmbeds(EmbedFactory.getNewReport(ctx.getAuthor(), reason).build())
+                                .content(uuid)
                                 .setActionRow(Button.primary("view_report", "View Report"))
                                 .queue();
 
+                        ctx.getReportCache().put(uuid, reportRecord);
                     })
                     .exceptionallyAsync(throwable -> {
                         err.reply(ErrorType.CUSTOM, "The reported could not be created!");

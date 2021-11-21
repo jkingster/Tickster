@@ -61,6 +61,11 @@ public class GuildReports extends TableImpl<GuildReportsRecord> {
      */
     public final TableField<GuildReportsRecord, LocalDateTime> REPORT_TIMESTAMP = createField(DSL.name("report_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
+    /**
+     * The column <code>public.guild_reports.uuid</code>.
+     */
+    public final TableField<GuildReportsRecord, String> UUID = createField(DSL.name("uuid"), SQLDataType.CLOB.nullable(false), this, "");
+
     private GuildReports(Name alias, Table<GuildReportsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -126,11 +131,11 @@ public class GuildReports extends TableImpl<GuildReportsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long[], Long, String, LocalDateTime> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long[], Long, String, LocalDateTime, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

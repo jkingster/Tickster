@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class CachedObject<K, V extends Record> implements ICache<K, V> {
 
+
+
     private final Map<K, V> expiringMap;
 
     public CachedObject(ExpirationPolicy expirationPolicy) {

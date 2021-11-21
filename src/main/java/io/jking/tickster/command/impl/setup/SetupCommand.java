@@ -36,7 +36,10 @@ public class SetupCommand extends Command {
                         .addOption(OptionType.CHANNEL, "log_channel", "The mentioned channel."),
 
                 new SubcommandData("ticket_category", "The category where tickets will be created under.")
-                        .addOption(OptionType.STRING, "category", "The mentioned category.")
+                        .addOption(OptionType.STRING, "category", "The mentioned category."),
+
+                new SubcommandData("report_channel", "The channel where reports are sent.")
+                        .addOption(OptionType.CHANNEL, "report_channel", "The mentioned report channel.")
         );
     }
 
@@ -49,7 +52,19 @@ public class SetupCommand extends Command {
             case "ticket_channel" -> setupTicketChannel(ctx, err);
             case "log_channel" -> setupLogChannel(ctx, err);
             case "ticket_category" -> setupTicketCategory(ctx, err);
+            case "report_channel" -> setupReportChannel(ctx, err);
         }
+    }
+
+    private void setupReportChannel(CommandContext ctx, CommandError err) {
+        final TextChannel channel = ctx.getOptionChannel("report_channel");
+        if (cantAccess(channel, ctx.getSelf(), err))
+            return;
+
+        final long guildId = ctx.getGuild().getIdLong();
+        ctx.getGuildCache().update(guildId, GUILD_DATA.REPORT_CHANNEL, channel.getIdLong(),
+                (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The report channel", channel.getId()),
+                (error) -> err.reply(ErrorType.CUSTOM, "Could not update report channel."));
     }
 
     private void setupTicketCategory(CommandContext ctx, CommandError err) {

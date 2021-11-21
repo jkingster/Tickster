@@ -66,6 +66,7 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
         return getCache().getGuildCache();
     }
 
+
     public JDA getJDA() {
         return getEvent().getJDA();
     }
@@ -94,5 +95,8 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
         return getEvent().deferEdit();
     }
 
+    public ReplyAction deferReply() {
+       return getEvent().deferReply();
+    }
 
 }
