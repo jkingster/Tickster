@@ -46,8 +46,11 @@ public class CommandRegistry {
                 .values()
                 .parallelStream()
                 .filter(command -> member.hasPermission(command.getPermission()))
+                .filter(command -> command.getCategory() == category)
                 .sorted(Comparator.comparing(Command::getName))
                 .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
+
+
 }

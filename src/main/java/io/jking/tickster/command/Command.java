@@ -1,6 +1,7 @@
 package io.jking.tickster.command;
 
 import io.jking.tickster.utility.EmbedFactory;
+import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -41,6 +42,13 @@ public abstract class Command extends CommandData {
     }
 
     public EmbedBuilder asEmbed() {
+
+        if (!getSubcommands().isEmpty()) {
+            return EmbedFactory.getDefault()
+                    .setDescription(String.format("The information on this command is too long.\nPlease click %s to read about this command.",
+                            MiscUtil.urlMarkdown("https://www.google.com", "here")));
+        }
+
         final EmbedBuilder embed = EmbedFactory.getDefault()
                 .setTitle(getPrettyName() + " command.")
                 .setAuthor("Command Information")
@@ -53,11 +61,10 @@ public abstract class Command extends CommandData {
         if (!options.isEmpty()) {
             embed.appendDescription("**Possible Option(s):**\n```");
             for (OptionData optionData : options) {
-                embed.appendDescription(String.format("Name: %s\nDesc.: %s\nChoice(s): %s",
+                embed.appendDescription(String.format("Name: %s\nDescription: %s\n\n",
                         optionData.getName(),
-                        optionData.getDescription(),
-                        optionData.getChoices().isEmpty() ? "No choices." : optionData.getChoices())
-                );
+                        optionData.getDescription()
+                ));
             }
             embed.appendDescription("```");
         }

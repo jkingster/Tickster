@@ -21,5 +21,9 @@ public final class MiscUtil {
         }
     }
 
+    public static String urlMarkdown(String url, String content) {
+        return String.format("[%s](%s)", content, url);
+    }
+
 
 }
