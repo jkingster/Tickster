@@ -58,11 +58,10 @@ public final class EmbedFactory {
     }
 
 
-    public static EmbedBuilder getNewReport(User author, String reason) {
+    public static EmbedBuilder getNewReport(User author) {
         return new EmbedBuilder().setColor(Color.RED).setAuthor(author.getAsTag() + " created a new report!")
                 .setDescription("**Click the view report button to see it!**")
                 .setTimestamp(Instant.now());
-
     }
 
     public static EmbedBuilder getReportedCreated(User author) {
@@ -71,10 +70,10 @@ public final class EmbedFactory {
                 .setTimestamp(Instant.now());
     }
 
-    public static EmbedBuilder getReport(GuildReportsRecord record, List<Member> reportedUsers) {
+    public static EmbedBuilder getReport(GuildReportsRecord record, List<Member> reportedUsers, Member creator) {
         final EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Color.RED)
-                .setAuthor("Viewing Ticket: " + record.getUuid());
+                .setAuthor("Viewing Report: " + record.getUuid());
 
 
         final StringBuilder memberList = new StringBuilder();
@@ -86,10 +85,14 @@ public final class EmbedFactory {
             reportedUsers.forEach(member -> memberList.append(member.getUser().getAsTag()).append("\n"));
         }
 
-
         embed.setDescription(String.format("**Reported Member(s):** ```%s```\n**Reason:** ```%s```", memberList, record.getReportReason()))
-                .setTimestamp(record.getReportTimestamp())
-                .setFooter("Report Created by: " + record.getIssuerId());
+                .setTimestamp(record.getReportTimestamp());
+
+        if (creator != null) {
+            embed.setFooter("Report created by: " + creator.getUser().getAsTag());
+        } else {
+            embed.setFooter("Report created by: " + record.getIssuerId());
+        }
 
         return embed;
     }

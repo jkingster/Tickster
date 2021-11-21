@@ -8,12 +8,14 @@ import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.jooq.tables.records.GuildReportsRecord;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,14 +76,17 @@ public class ReportCommand extends Command {
         sendReport(ctx, err, memberList, reason);
     }
 
-    // TODO: Change logChannel -> reportChannel. New column in GUILD_DATA table.
-    // TODO: Start view_report (button) functionality. Otherwise this command is fully functional.
     private void sendReport(CommandContext ctx, CommandError err, List<Member> reportedMembers, String reason) {
         final Long[] memberIds = toLongArray(reportedMembers);
         final long selfId = ctx.getSelf().getIdLong();
 
         if (containsSelf(memberIds, selfId)) {
             err.reply(ErrorType.CUSTOM, "You cannot report me. Nice try though!");
+            return;
+        }
+
+        if (containsSelf(memberIds, ctx.getAuthor().getIdLong())) {
+            err.reply(ErrorType.CUSTOM, "You cannot report yourself...");
             return;
         }
 
@@ -97,6 +102,7 @@ public class ReportCommand extends Command {
             final LocalDateTime timestamp = LocalDateTime.now();
             final String uuid = UUID.randomUUID().toString();
 
+
             final GuildReportsRecord reportRecord = GUILD_REPORTS.newRecord()
                     .values(guildId, memberIds, issuerId, reason, timestamp, uuid);
 
@@ -106,9 +112,12 @@ public class ReportCommand extends Command {
                     .thenAcceptAsync(action -> {
                         final EmbedBuilder newReport = EmbedFactory.getReportedCreated(ctx.getAuthor());
                         ctx.reply(newReport).setEphemeral(true).queue();
-                        reportChannel.sendMessageEmbeds(EmbedFactory.getNewReport(ctx.getAuthor(), reason).build())
+                        reportChannel.sendMessageEmbeds(EmbedFactory.getNewReport(ctx.getAuthor()).build())
                                 .content(uuid)
-                                .setActionRow(Button.primary("view_report", "View Report"))
+                                .setActionRow(
+                                        Button.of(ButtonStyle.PRIMARY, "view_report", "View Report", Emoji.fromUnicode("\uD83D\uDD0D")),
+                                        Button.of(ButtonStyle.DANGER, "delete_report", "Delete Report", Emoji.fromUnicode("\uD83D\uDD28"))
+                                )
                                 .queue();
 
                         ctx.getReportCache().put(uuid, reportRecord);
