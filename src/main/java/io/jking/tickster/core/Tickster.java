@@ -5,6 +5,7 @@ import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.command.impl.info.AboutCommand;
 import io.jking.tickster.command.impl.report.ReportCommand;
 import io.jking.tickster.command.impl.setup.SetupCommand;
+import io.jking.tickster.command.impl.tickets.TicketCommand;
 import io.jking.tickster.command.impl.utility.PingCommand;
 import io.jking.tickster.command.impl.utility.TestCommand;
 import io.jking.tickster.database.Database;
@@ -45,7 +46,7 @@ public class Tickster {
     private final CommandRegistry commandRegistry = new CommandRegistry()
             .addCommands(new TestCommand(), new PingCommand())
             .addCommands(new AboutCommand(), new SetupCommand())
-            .addCommands(new ReportCommand());
+            .addCommands(new ReportCommand(), new TicketCommand());
 
 
     private final DataObject data;
