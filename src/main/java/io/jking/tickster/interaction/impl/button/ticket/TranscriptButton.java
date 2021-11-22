@@ -66,15 +66,11 @@ public class TranscriptButton implements IButton {
                                 .addFile(transcript.getBytes(StandardCharsets.UTF_8), "transcript.json")
                                 .queue();
 
-                    }, error -> context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred building your transcript.").build())
-                            .setEphemeral(true)
-                            .queue()
+                    }, error -> context.replyError(ErrorType.CUSTOM, "An error occurred building your transcript.")
             );
 
         } catch (JsonProcessingException e) {
-            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred building your transcript.").build())
-                    .setEphemeral(true)
-                    .queue();
+            context.replyError(ErrorType.CUSTOM, "An error occurred building your transcript.");
         }
     }
 

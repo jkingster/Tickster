@@ -5,7 +5,9 @@ import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.cache.impl.ReportCache;
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.command.CommandRegistry;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -107,6 +109,12 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
 
     public ReplyAction deferReply() {
         return getEvent().deferReply();
+    }
+
+    public void replyError(ErrorType errorType, Object... objects) {
+        getHook().sendMessageEmbeds(EmbedFactory.getError(errorType, objects).build())
+                .setEphemeral(true)
+                .queue();
     }
 
 }

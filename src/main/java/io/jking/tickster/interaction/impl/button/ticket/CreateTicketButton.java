@@ -60,9 +60,7 @@ public class CreateTicketButton implements IButton {
             final Role ticketManager = context.getGuild().getRoleById(managerId);
 
             if (ticketManager == null) {
-                context.reply(EmbedFactory.getError(ErrorType.CUSTOM, "Ticket Manager role is not set!"))
-                        .setEphemeral(true)
-                        .queue();
+                context.replyError(ErrorType.CUSTOM, "Ticket Manager role is not set!");
                 return;
             }
 
@@ -77,13 +75,9 @@ public class CreateTicketButton implements IButton {
                         .queue();
 
                 handleTicketInsertion(context, success, category);
-            }, error -> context.reply(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred creating the ticket channel."))
-                    .setEphemeral(true)
-                    .queue());
+            }, error -> context.replyError(ErrorType.CUSTOM, "An error occurred creating the ticket channel!"));
 
-        }, error -> context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "Could not create ticket channel!").build())
-                .setEphemeral(true)
-                .queue());
+        }, error -> context.replyError(ErrorType.CUSTOM, "Could not create ticket channel!"));
     }
 
     private ChannelAction<TextChannel> createTicketChannel(ButtonContext context, Category category, Role ticketManager) {
@@ -109,9 +103,9 @@ public class CreateTicketButton implements IButton {
 
     private void handleTicketInsertion(ButtonContext context, TextChannel channel, Category category) {
         insertTicket(context, channel, category).exceptionallyAsync(throwable -> {
-            channel.delete()
-                    .flatMap(success -> context.getHook().editOriginal("There was an error on our end, try again..."))
-                    .queue();
+            channel.delete().queue(success -> {
+                context.replyError(ErrorType.UNKNOWN);
+            });
             return null;
         });
     }

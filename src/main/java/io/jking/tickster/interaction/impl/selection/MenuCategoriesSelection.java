@@ -18,17 +18,13 @@ public class MenuCategoriesSelection implements ISelection {
         context.deferEdit().queue(deferred -> {
             final SelectOption selectedOption = context.getSelectedOption();
             if (selectedOption == null) {
-                context.reply(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred with your selection."))
-                        .setEphemeral(true)
-                        .queue();
+                context.replyError(ErrorType.SELECTION);
                 return;
             }
 
             final Category category = Category.fromName(selectedOption.getValue());
             if (category == null) {
-                context.reply(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred retrieving that category."))
-                        .setEphemeral(true)
-                        .queue();
+                context.replyError(ErrorType.RETRIEVING, "category.");
                 return;
             }
 

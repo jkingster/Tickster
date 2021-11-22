@@ -3,19 +3,19 @@ package io.jking.tickster.interaction.impl.selection;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.SelectionContext;
 import io.jking.tickster.interaction.type.ISelection;
-import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 
 public class ViewTicketsSelection implements ISelection {
 
+
+    // TODO: FINISH
     @Override
     public void onInteraction(SelectionContext context) {
         context.deferEdit().queue(deferred -> {
             final SelectOption option = context.getSelectedOption();
             if (option == null) {
-                context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "Invalid Selection").build())
-                        .setEphemeral(true)
-                        .queue();
+
+                context.replyError(ErrorType.SELECTION);
                 return;
             }
 

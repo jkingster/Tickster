@@ -8,7 +8,9 @@ public enum ErrorType {
     CANT_INTERACT("%s cannot interact with %s."),
     CANT_ACCESS("%s cannot access the following channel: %s."),
     INVALID_ID("The ID you provided is invalid."),
-    ARGS("You provided invalid arguments. %s");
+    ARGS("You provided invalid arguments. %s"),
+    SELECTION("An error occurred with your selection. %s"),
+    RETRIEVING("An error occurred retrieving %s.");
 
     private final String errorResponse;
 

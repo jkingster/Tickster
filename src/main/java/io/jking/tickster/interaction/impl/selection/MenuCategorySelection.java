@@ -4,7 +4,6 @@ import io.jking.tickster.command.Command;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.SelectionContext;
 import io.jking.tickster.interaction.type.ISelection;
-import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 
 public class MenuCategorySelection implements ISelection {
@@ -13,16 +12,14 @@ public class MenuCategorySelection implements ISelection {
         context.deferEdit().queue(deferred -> {
             final SelectOption selectedOption = context.getSelectedOption();
             if (selectedOption == null) {
-                context.getHook().editOriginalEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred with your selection.").build())
-                        .queue();
+                context.replyError(ErrorType.SELECTION);
                 return;
             }
 
 
             final Command command = context.getRegistry().getCommand(selectedOption.getValue());
             if (command == null) {
-                context.getHook().editOriginalEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred retrieving that command.").build())
-                        .queue();
+                context.replyError(ErrorType.RETRIEVING, "command.");
                 return;
             }
 

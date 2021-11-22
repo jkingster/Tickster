@@ -3,7 +3,6 @@ package io.jking.tickster.interaction.impl.button.ticket;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.ButtonContext;
 import io.jking.tickster.interaction.type.IButton;
-import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.requests.ErrorResponse;
@@ -29,9 +28,7 @@ public class DeleteTicketButton implements IButton {
                 }
 
                 context.getChannel().delete().queue(null, new ErrorHandler().ignore(Arrays.asList(ErrorResponse.values())));
-            }, error -> context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred deleting this ticket.").build())
-                    .setEphemeral(true)
-                    .queue());
+            }, error -> context.replyError(ErrorType.CUSTOM, "An error occurred deleting your ticket."));
         });
     }
 
