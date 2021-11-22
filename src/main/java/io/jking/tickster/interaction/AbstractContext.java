@@ -2,6 +2,8 @@ package io.jking.tickster.interaction;
 
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.ReportCache;
+import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.database.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -66,6 +68,14 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
         return getCache().getGuildCache();
     }
 
+    public ReportCache getReportCache() {
+        return getCache().getReportCache();
+    }
+
+    public TicketCache getTicketCache() {
+        return getCache().getTicketCache();
+    }
+
 
     public JDA getJDA() {
         return getEvent().getJDA();
@@ -96,7 +106,7 @@ public abstract class AbstractContext<T extends GenericComponentInteractionCreat
     }
 
     public ReplyAction deferReply() {
-       return getEvent().deferReply();
+        return getEvent().deferReply();
     }
 
 }

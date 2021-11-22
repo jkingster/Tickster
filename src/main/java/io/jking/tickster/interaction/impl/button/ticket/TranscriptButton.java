@@ -19,63 +19,69 @@ import java.util.stream.Collectors;
 import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
 
 public class TranscriptButton implements IButton {
+
     @Override
     public void onInteraction(ButtonContext context) {
-        context.deferEdit().queue(success -> {
-            context.getChannel().getIterableHistory().takeAsync(1000)
-                    .whenCompleteAsync((messages, throwable) -> {
-                        if (throwable != null) {
-                            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "There was an error processing your transcript.").build())
-                                    .setEphemeral(true)
-                                    .queue();
-                            return;
-                        }
+        context.deferEdit().queue(deferred -> context.getChannel().getIterableHistory().takeAsync(1000)
+                .whenCompleteAsync((messages, throwable) -> {
+                    if (throwable != null) {
+                        context.getHook().sendMessage("There was an error.")
+                                .setEphemeral(true)
+                                .queue();
+                        return;
+                    }
 
-                        final List<MessageData> filteredList = messages.parallelStream()
-                                .filter(message -> !message.getAuthor().isBot())
-                                .sorted(Comparator.comparing(Message::getTimeCreated))
-                                .map(MessageData::new)
-                                .collect(Collectors.toUnmodifiableList());
+                    final List<MessageData> filteredList = messages.parallelStream()
+                            .filter(message -> !message.getAuthor().isBot())
+                            .sorted(Comparator.comparing(Message::getTimeCreated))
+                            .map(MessageData::new)
+                            .collect(Collectors.toUnmodifiableList());
 
-                        if (filteredList.isEmpty()) {
-                            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "There were no messages to transpire.").build())
-                                    .setEphemeral(true)
-                                    .queue();
-                            return;
-                        }
+                    if (filteredList.isEmpty()) {
+                        context.getHook().sendMessage("No messages to build into a transcript!")
+                                .setEphemeral(true)
+                                .queue();
+                        return;
+                    }
 
-                        buildTranscript(context, filteredList);
-                    });
-        });
+                    sendTranscript(context, filteredList);
+                }));
     }
 
-    private void buildTranscript(ButtonContext context, List<MessageData> messageList) {
+    private void sendTranscript(ButtonContext context, List<MessageData> filteredList) {
         try {
-            final String jsonify = new ObjectMapper().writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(messageList);
+            final String transcript = getJSONTranscript(filteredList);
 
-            final long guildId = context.getGuild().getIdLong();
             final long channelId = context.getChannel().getIdLong();
+            context.getTicketCache().update(
+                    channelId,
+                    GUILD_TICKETS.TRANSCRIPT,
+                    JSON.json(transcript),
+                    success -> {
+                        final EmbedBuilder embed = EmbedFactory.getDefault()
+                                .setDescription("Here is your ticket transcript, in prettified JSON format.")
+                                .setFooter("Please note, some message(s) possibly got omitted due to discord caching.");
 
-            context.getDatabase().getDSL().update(GUILD_TICKETS)
-                    .set(GUILD_TICKETS.TRANSCRIPT, JSON.json(jsonify))
-                    .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
-                    .and(GUILD_TICKETS.CHANNEL_ID.eq(channelId))
-                    .executeAsync(context.getDatabase().getExecutor());
+                        context.getHook().sendMessageEmbeds(embed.build())
+                                .addFile(transcript.getBytes(StandardCharsets.UTF_8), "transcript.json")
+                                .queue();
 
-            final EmbedBuilder embed = EmbedFactory.getDefault()
-                    .setDescription("Here is your ticket transcript, in prettified JSON format.")
-                    .setFooter("Please note, some message(s) possibly got omitted due to discord caching.");
-
-            context.getHook().sendMessageEmbeds(embed.build())
-                    .addFile(jsonify.getBytes(StandardCharsets.UTF_8), "transcript.json")
-                    .queue();
+                    }, error -> context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred building your transcript.").build())
+                            .setEphemeral(true)
+                            .queue()
+            );
 
         } catch (JsonProcessingException e) {
-            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred building your transcript...").build())
+            context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred building your transcript.").build())
                     .setEphemeral(true)
                     .queue();
         }
+    }
+
+    private String getJSONTranscript(List<MessageData> messageList) throws JsonProcessingException {
+        return new ObjectMapper()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(messageList);
     }
 
     @Override

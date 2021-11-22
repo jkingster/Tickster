@@ -25,5 +25,4 @@ public final class MiscUtil {
         return String.format("[%s](%s)", content, url);
     }
 
-
 }

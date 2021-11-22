@@ -6,6 +6,7 @@ import io.jking.tickster.interaction.impl.button.report.ViewReportButton;
 import io.jking.tickster.interaction.impl.button.ticket.*;
 import io.jking.tickster.interaction.impl.selection.MenuCategoriesSelection;
 import io.jking.tickster.interaction.impl.selection.MenuCategorySelection;
+import io.jking.tickster.interaction.impl.selection.ViewTicketsSelection;
 import io.jking.tickster.interaction.type.IButton;
 import io.jking.tickster.interaction.type.ISelection;
 
@@ -29,7 +30,8 @@ public class RegistryHandler {
     }
 
     public RegistryHandler registerSelections() {
-        SELECTION_MAP.put(new MenuCategoriesSelection()).put(new MenuCategorySelection());
+        SELECTION_MAP.put(new MenuCategoriesSelection()).put(new MenuCategorySelection())
+                .put(new ViewTicketsSelection());
         return this;
     }
 

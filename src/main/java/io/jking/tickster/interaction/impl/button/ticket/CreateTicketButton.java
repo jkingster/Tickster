@@ -1,135 +1,130 @@
 package io.jking.tickster.interaction.impl.button.ticket;
 
-import io.jking.tickster.database.Database;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.ButtonContext;
 import io.jking.tickster.interaction.type.IButton;
-import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
-import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.utils.Result;
+import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletionStage;
 
 import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
 
 public class CreateTicketButton implements IButton {
 
+    private static final List<Permission> ALLOWED_PERMS = List.of(Permission.MESSAGE_WRITE, Permission.VIEW_CHANNEL);
+
     @Override
     public void onInteraction(ButtonContext context) {
-        context.reply("Please wait as I attempt to create a ticket...").queue(ignored -> {
-            final long guildId = context.getGuild().getIdLong();
-            final long memberId = context.getMember().getIdLong();
+        final long guildId = context.getGuild().getIdLong();
+        final long memberId = context.getMember().getIdLong();
 
+        context.deferEdit().queue(deferred -> {
             context.getDatabase().getDSL().selectFrom(GUILD_TICKETS)
                     .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
                     .and(GUILD_TICKETS.CREATOR_ID.eq(memberId))
-                    .fetchAsync(context.getDatabase().getExecutor())
-                    .thenAcceptAsync(record -> {
-                        final GuildTicketsRecord fetchedRecord = record.get(0);
-                        if (!fetchedRecord.getOpen()) {
-                            createTicketProcess(context);
+                    .and(GUILD_TICKETS.OPEN.eq(true))
+                    .fetchAsync()
+                    .thenAcceptAsync(result -> {
+                        if (result.isEmpty()) {
+                            startTicketChannelProcess(context);
                             return;
                         }
 
-                        final long ticketChannelId = fetchedRecord.getChannelId();
-                        final TextChannel channel = context.getGuild().getTextChannelById(ticketChannelId);
-                        if (channel != null) {
-                            context.getHook().editOriginalFormat("It seems you already have a ticket opened here... %s", channel.getAsMention())
-                                    .delay(3, TimeUnit.SECONDS)
-                                    .flatMap(Message::delete)
-                                    .queueAfter(3, TimeUnit.SECONDS);
-                        }
+                        context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "You have an open ticket already!").build())
+                                .setEphemeral(true)
+                                .queue();
 
                     })
                     .exceptionallyAsync(throwable -> {
-                        createTicketProcess(context);
+                        startTicketChannelProcess(context);
                         return null;
                     });
         });
     }
 
-    private void createTicketProcess(ButtonContext ctx) {
-        ctx.getGuildCache().retrieve(ctx.getGuild().getIdLong(), value -> {
-            final Role manager = ctx.getGuild().getRoleById(value.getTicketManager());
-            if (manager == null) {
-                ctx.getHook().editOriginal("You cannot utilize ticket creation if the ticket manager role isn't configured!")
-                        .delay(5, TimeUnit.SECONDS)
-                        .flatMap(Message::delete)
+    private void startTicketChannelProcess(ButtonContext context) {
+        final long guildId = context.getGuild().getIdLong();
+        context.getGuildCache().retrieve(guildId, record -> {
+
+            final long managerId = record.getTicketManager();
+            final Role ticketManager = context.getGuild().getRoleById(managerId);
+
+            if (ticketManager == null) {
+                context.reply(EmbedFactory.getError(ErrorType.CUSTOM, "Ticket Manager role is not set!"))
+                        .setEphemeral(true)
                         .queue();
                 return;
             }
 
-            final Category ticketCategory = ctx.getGuild().getCategoryById(value.getTicketCategory());
-            ctx.getHook().editOriginal("Creating your ticket now!")
-                    .flatMap(message -> ticketCategory == null ?
-                            createTicketChannel(ctx, manager) : createTicketChannel(ctx, manager, ticketCategory)
-                    )
-                    .queueAfter(3, TimeUnit.SECONDS, result -> {
-                        result.onSuccess(textChannel -> {
-                            insertTicket(ctx.getDatabase(), textChannel, ctx.getMember());
+            final long categoryId = record.getTicketCategory();
+            final Category category = context.getGuild().getCategoryById(categoryId);
 
-                            ctx.getHook().editOriginalFormat("Your ticket was created here: %s", textChannel.getAsMention())
-                                    .delay(3, TimeUnit.SECONDS)
-                                    .flatMap(Message::delete)
-                                    .queueAfter(3, TimeUnit.SECONDS);
+            createTicketChannel(context, category, ticketManager).queue(success -> {
+                sendTicketInfo(success, ticketManager, context);
+                context.getHook().sendMessageFormat("**%s:** Your ticket was created here. %s.", context.getMember().getUser().getName(),
+                        success.getAsMention())
+                        .setEphemeral(true)
+                        .queue();
 
-                            textChannel.sendMessageFormat("%s | %s", ctx.getMember().getAsMention(), manager.getAsMention())
-                                    .setActionRow(Button.of(ButtonStyle.DANGER, "close_ticket", "Close Ticket", Emoji.fromUnicode("\uD83D\uDD12")))
-                                    .flatMap(message -> message.editMessageEmbeds(EmbedFactory.getNewTicket(ctx.getUser()).build()))
-                                    .queue();
-                        });
+                handleTicketInsertion(context, success, category);
+            }, error -> context.reply(EmbedFactory.getError(ErrorType.CUSTOM, "An error occurred creating the ticket channel."))
+                    .setEphemeral(true)
+                    .queue());
 
-                        result.onFailure(failure -> ctx.getHook().editOriginal("An error occurred creating your ticket.. try again later.")
-                                .delay(8, TimeUnit.SECONDS)
-                                .flatMap(Message::delete)
-                                .queue());
-                    });
-        }, null);
-
-
-
+        }, error -> context.getHook().sendMessageEmbeds(EmbedFactory.getError(ErrorType.CUSTOM, "Could not create ticket channel!").build())
+                .setEphemeral(true)
+                .queue());
     }
 
-    private void insertTicket(Database database, TextChannel channel, Member member) {
+    private ChannelAction<TextChannel> createTicketChannel(ButtonContext context, Category category, Role ticketManager) {
+        final long memberId = context.getMember().getIdLong();
+        final String channelName = String.format("ticket-%s", context.getMember().getEffectiveName());
+        final ChannelAction<TextChannel> action = context.getGuild().createTextChannel(channelName)
+                .addMemberPermissionOverride(memberId, ALLOWED_PERMS, null)
+                .addRolePermissionOverride(ticketManager.getIdLong(), ALLOWED_PERMS, null);
+
+        if (category != null) {
+            return action.setParent(category);
+        }
+
+        return action;
+    }
+
+    private void sendTicketInfo(TextChannel channel, Role ticketManager, ButtonContext context) {
+        channel.sendMessageFormat("%s | %s", context.getMember().getAsMention(), ticketManager.getAsMention())
+                .setEmbeds(EmbedFactory.getNewTicket(context.getMember().getUser()).build())
+                .setActionRow(Button.of(ButtonStyle.DANGER, "close_ticket", "Close Ticket", Emoji.fromUnicode("\uD83D\uDD12")))
+                .queue();
+    }
+
+    private void handleTicketInsertion(ButtonContext context, TextChannel channel, Category category) {
+        insertTicket(context, channel, category).exceptionallyAsync(throwable -> {
+            channel.delete()
+                    .flatMap(success -> context.getHook().editOriginal("There was an error on our end, try again..."))
+                    .queue();
+            return null;
+        });
+    }
+
+    private CompletionStage<Integer> insertTicket(ButtonContext context, TextChannel channel, Category category) {
         final long guildId = channel.getGuild().getIdLong();
         final long channelId = channel.getIdLong();
-        final long categoryId = 0L;
-        final long creatorId = member.getIdLong();
-        final LocalDateTime timestamp = LocalDateTime.now();
+        final long categoryId = category == null ? 0L : category.getIdLong();
+        final long creatorId = context.getMember().getIdLong();
 
-
-        database.getDSL().insertInto(GUILD_TICKETS)
-                .values(guildId, channelId, categoryId, creatorId, timestamp, true, null)
-                .executeAsync(database.getExecutor());
-    }
-
-    private RestAction<Result<TextChannel>> createTicketChannel(ButtonContext context, Role ticketManager) {
-        final Member member = context.getMember();
-        final String channelName = String.format("ticket-%s", member.getUser().getName());
-        final List<Permission> permissionList = List.of(Permission.MESSAGE_WRITE, Permission.VIEW_CHANNEL);
-
-        return context.getGuild().createTextChannel(channelName)
-                .addMemberPermissionOverride(member.getIdLong(), permissionList, null)
-                .addMemberPermissionOverride(ticketManager.getIdLong(), permissionList, null)
-                .mapToResult();
-    }
-
-    private RestAction<Result<TextChannel>> createTicketChannel(ButtonContext context, Role ticketManager, Category category) {
-        final Member member = context.getMember();
-        final String channelName = String.format("ticket-%s", member.getUser().getName());
-        final List<Permission> permissionList = List.of(Permission.MESSAGE_WRITE, Permission.VIEW_CHANNEL);
-
-        return context.getGuild().createTextChannel(channelName)
-                .setParent(category)
-                .addMemberPermissionOverride(member.getIdLong(), permissionList, null)
-                .addMemberPermissionOverride(ticketManager.getIdLong(), permissionList, null)
-                .mapToResult();
+        return context.getDatabase().getDSL().insertInto(GUILD_TICKETS)
+                .values(guildId, channelId, categoryId, creatorId, LocalDateTime.now(), true, null)
+                .executeAsync(context.getDatabase().getExecutor());
     }
 
     @Override
