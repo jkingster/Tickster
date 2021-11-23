@@ -86,8 +86,8 @@ public class GuildHandler implements EventListener {
 
     private void onGuildReady(GuildReadyEvent event) {
         commandRegistry.getCommands().forEach(command -> event.getGuild().upsertCommand(command).queue(
-                success -> logger.info("Registered Command: {}", command),
-                error -> logger.warn("Could not register command: {}", command)
+                success -> logger.info("Registered Command: {}", command.getName()),
+                error -> logger.warn("Could not register command: {}", command.getName())
         ));
 
         cacheGuild(event.getGuild());
