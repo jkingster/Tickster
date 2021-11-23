@@ -7,6 +7,7 @@ import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedFactory;
+import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import org.jooq.Result;
@@ -41,7 +42,6 @@ public class TicketCommand extends Command {
         ctx.getDatabase().getDSL().selectFrom(GUILD_TICKETS)
                 .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
                 .and(GUILD_TICKETS.CREATOR_ID.eq(authorId))
-                .and(GUILD_TICKETS.OPEN.eq(true))
                 .fetchAsync()
                 .thenAcceptAsync(results -> {
 
@@ -50,7 +50,7 @@ public class TicketCommand extends Command {
                         return;
                     }
 
-                    final SelectionMenu.Builder menu = getTicketsMenu(authorId, results);
+                    final SelectionMenu.Builder menu = getTicketsMenu(results);
                     ctx.reply(EmbedFactory.getSelectionEmbed(ctx.getMember(), "Click any ticket to view it!"))
                             .addActionRow(menu.build())
                             .setEphemeral(true)
@@ -67,17 +67,18 @@ public class TicketCommand extends Command {
 
     }
 
-    private SelectionMenu.Builder getTicketsMenu(long authorId, Result<GuildTicketsRecord> results) {
+    private SelectionMenu.Builder getTicketsMenu(Result<GuildTicketsRecord> results) {
         final SelectionMenu.Builder menu = SelectionMenu.create("view_tickets");
 
-        int counter = 0;
-        results.forEach(ignored -> menu.addOption(
-                String.format("Ticket #%s", counter + 1),
-                String.format("%s_%s", counter, authorId),
-                "Click any ticket to view the status of it!"
-        ));
-
+        for (int i = 0; i < results.size(); i++) {
+            menu.addOption(
+                    String.format("Ticket #%s", i + 1),
+                    String.format("%s", results.get(i).getChannelId()),
+                    String.format("Status: [%s]", MiscUtil.getStatus(results.get(i).getOpen()))
+            );
+        }
 
         return menu;
     }
+
 }

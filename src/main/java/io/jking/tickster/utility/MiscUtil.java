@@ -25,4 +25,7 @@ public final class MiscUtil {
         return String.format("[%s](%s)", content, url);
     }
 
+    public static String getStatus(boolean expression) {
+        return expression ? "Open" : "Closed";
+    }
 }

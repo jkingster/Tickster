@@ -3,6 +3,7 @@ package io.jking.tickster.utility;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.jooq.tables.records.GuildReportsRecord;
+import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -97,5 +98,20 @@ public final class EmbedFactory {
         return embed;
     }
 
+    public static EmbedBuilder getTicket(GuildTicketsRecord record) {
+        final EmbedBuilder embed = getDefault().setAuthor("Viewing Ticket: " + record.getChannelId())
+                .setTimestamp(record.getTicketTimestamp())
+                .setDescription(String.format("**Status:** [%s]", MiscUtil.getStatus(record.getOpen())));
+
+        if (record.getTranscript() == null) {
+            embed.appendDescription("\nThere is no transcript to send over..");
+        }
+
+        if (!record.getOpen()) {
+            embed.setFooter("This ticket is scheduled to be deleted...");
+        }
+
+        return embed;
+    }
 
 }
