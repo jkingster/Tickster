@@ -28,9 +28,7 @@ public class YesCloseTicketButton implements IButton {
                             Button.of(ButtonStyle.DANGER, "ticket_delete", "Delete Ticket", Emoji.fromUnicode("⚪")),
                             Button.of(ButtonStyle.SECONDARY, "ticket_transcript", "Transcript", Emoji.fromUnicode("\uD83D\uDCDD"))
                     ))
-                    .queue(success -> context.getTicketCache()
-                            .update(context.getChannel().getIdLong(), GUILD_TICKETS.OPEN, true, null, null)
-                    );
+                    .queue(success -> context.getTicketCache().update(context.getChannel().getIdLong(), GUILD_TICKETS.OPEN, false));
         });
     }
 

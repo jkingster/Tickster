@@ -103,9 +103,7 @@ public class CreateTicketButton implements IButton {
 
     private void handleTicketInsertion(ButtonContext context, TextChannel channel, Category category) {
         insertTicket(context, channel, category).exceptionallyAsync(throwable -> {
-            channel.delete().queue(success -> {
-                context.replyError(ErrorType.UNKNOWN);
-            });
+            channel.delete().queue(success -> context.replyError(ErrorType.UNKNOWN));
             return null;
         });
     }

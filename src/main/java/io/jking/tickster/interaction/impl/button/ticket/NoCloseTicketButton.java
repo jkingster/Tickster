@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 public class NoCloseTicketButton implements IButton {
 
-
     @Override
     public void onInteraction(ButtonContext context) {
         context.deferEdit().queue(hook -> hook.editOriginal("Okay, I won't close this ticket!")

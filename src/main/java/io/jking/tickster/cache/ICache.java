@@ -20,5 +20,7 @@ public interface ICache<K, V> {
     default <T> void update(Long key, Field<T> field, T value, Consumer<V> record, Consumer<Throwable> throwable) {
     }
 
+    default <T> void update(Long key, Field<T> field, T value){}
+
 
 }

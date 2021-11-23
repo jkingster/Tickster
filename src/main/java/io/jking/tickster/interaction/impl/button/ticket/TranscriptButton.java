@@ -6,8 +6,6 @@ import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.ButtonContext;
 import io.jking.tickster.interaction.type.IButton;
 import io.jking.tickster.object.MessageData;
-import io.jking.tickster.utility.EmbedFactory;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import org.jooq.JSON;
 
@@ -51,23 +49,14 @@ public class TranscriptButton implements IButton {
     private void sendTranscript(ButtonContext context, List<MessageData> filteredList) {
         try {
             final String transcript = getJSONTranscript(filteredList);
-
             final long channelId = context.getChannel().getIdLong();
-            context.getTicketCache().update(
-                    channelId,
-                    GUILD_TICKETS.TRANSCRIPT,
-                    JSON.json(transcript),
-                    success -> {
-                        final EmbedBuilder embed = EmbedFactory.getDefault()
-                                .setDescription("Here is your ticket transcript, in prettified JSON format.")
-                                .setFooter("Please note, some message(s) possibly got omitted due to discord caching.");
 
-                        context.getHook().sendMessageEmbeds(embed.build())
-                                .addFile(transcript.getBytes(StandardCharsets.UTF_8), "transcript.json")
-                                .queue();
+            context.getTicketCache().update(channelId, GUILD_TICKETS.TRANSCRIPT, JSON.json(transcript));
 
-                    }, error -> context.replyError(ErrorType.CUSTOM, "An error occurred building your transcript.")
-            );
+            context.getChannel()
+                    .sendFile(transcript.getBytes(StandardCharsets.UTF_8), "transcript.json")
+                    .content("Here is your prettified transcript **(JSON)**.")
+                    .queue();
 
         } catch (JsonProcessingException e) {
             context.replyError(ErrorType.CUSTOM, "An error occurred building your transcript.");

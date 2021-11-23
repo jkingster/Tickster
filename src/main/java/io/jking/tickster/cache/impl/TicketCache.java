@@ -59,4 +59,12 @@ public class TicketCache extends CachedObject<Long, GuildTicketsRecord> {
                     put(key, retrievedResult);
                 });
     }
+
+    @Override
+    public <T> void update(Long key, Field<T> field, T value) {
+        database.getDSL().update(GUILD_TICKETS)
+                .set(field, value)
+                .where(GUILD_TICKETS.CHANNEL_ID.eq(key))
+                .executeAsync();
+    }
 }
