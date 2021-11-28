@@ -17,8 +17,6 @@ import io.jking.tickster.utility.ScheduledTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -119,7 +117,7 @@ public class Tickster {
                         channelIds.forEach(channelId -> {
                             final TextChannel channel = jda.getTextChannelById(channelId);
                             if (channel != null) {
-                                channel.delete().queue(null, new ErrorHandler().ignore(Arrays.asList(ErrorResponse.values())));
+                                channel.delete().queue();
                             }
                         });
                     });

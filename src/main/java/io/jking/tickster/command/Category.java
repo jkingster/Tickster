@@ -12,6 +12,8 @@ public enum Category {
     INFO(Permission.MESSAGE_WRITE, "Informational commands.", Emoji.fromUnicode("\uD83D\uDCDD")),
     REPORTS(Permission.MESSAGE_WRITE, "Reporting commands.", Emoji.fromUnicode("\uD83D\uDCDB"));
 
+    public static Category[] VALUES = Category.values();
+
     private final Permission permission;
     private final String description;
     private final Emoji emoji;
@@ -23,15 +25,15 @@ public enum Category {
     }
 
     public static String[] stringValues() {
-        final String[] array = new String[values().length];
+        final String[] array = new String[VALUES.length];
         for (int i = 0; i < array.length; i++) {
-            array[i] = values()[i].getName();
+            array[i] = VALUES[i].getName();
         }
         return array;
     }
 
     public static Category fromName(String name) {
-        for (Category category : values()) {
+        for (Category category : VALUES) {
             if (category.getName().equalsIgnoreCase(name)) {
                 return category;
             }
