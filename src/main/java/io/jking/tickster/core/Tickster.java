@@ -78,7 +78,7 @@ public class Tickster {
                 .addEventListeners(
                         new InteractionHandler(commandRegistry, database, cache),
                         new StartHandler(this, cache),
-                        new GuildHandler(commandRegistry, database, cache)
+                        new GuildHandler(database, cache)
                 )
                 .build();
 
