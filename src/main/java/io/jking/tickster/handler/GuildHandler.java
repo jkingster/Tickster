@@ -1,12 +1,14 @@
 package io.jking.tickster.handler;
 
 import io.jking.tickster.cache.Cache;
+import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.InviteCache;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.object.InviteData;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
+import io.jking.tickster.utility.EmbedFactory;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -55,14 +57,22 @@ public class GuildHandler implements EventListener {
     }
 
     private void onGuildJoin(GuildJoinEvent event) {
-        checkPopulation(event.getGuild());
-        cacheInvites(event.getGuild());
-        insertGuild(event.getGuild());
+        final Guild guild = event.getGuild();
+        checkPopulation(guild);
+        insertGuild(guild);
+
+        final Member self = event.getGuild().getSelfMember();
+        if (self.hasPermission(Permission.MANAGE_SERVER))
+            cacheInvites(guild);
     }
 
 
     private void onGuildReady(GuildReadyEvent event) {
-        insertGuild(event.getGuild());
+        final Guild guild = event.getGuild();
+        insertGuild(guild);
+        cacheInvites(guild);
+
+        System.out.println(event + " ready");
     }
 
     private void onGuildLeave(GuildLeaveEvent event) {
@@ -75,7 +85,29 @@ public class GuildHandler implements EventListener {
     }
 
     private void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        final Member self = event.getGuild().getSelfMember();
+        if (!self.hasPermission(Permission.MANAGE_SERVER) || event.getMember().getUser().isBot())
+            return;
 
+        event.getGuild().retrieveInvites().queue(invites -> {
+            for (Invite invite : invites) {
+                final String inviteCode = invite.getCode();
+                final InviteCache inviteCache = cache.getInviteCache();
+                final InviteData inviteData = inviteCache.get(inviteCode);
+
+                if (inviteData == null)
+                    continue;
+
+                if (invite.getUses() == inviteData.getUses())
+                    continue;
+
+                final int cachedUses = inviteData.getUses();
+                if (invite.getUses() > cachedUses) {
+                    attemptLogging(event, invite, cache.getGuildCache(), inviteData.incrementUses());
+                    break;
+                }
+            }
+        });
     }
 
     private void insertGuild(Guild guild) {
@@ -86,7 +118,8 @@ public class GuildHandler implements EventListener {
         final long ownerId = guild.getOwnerIdLong();
 
         database.getDSL().insertInto(GUILD_DATA)
-                .values(guildId, ownerId)
+                .set(GUILD_DATA.GUILD_ID, guildId)
+                .set(GUILD_DATA.OWNER_ID, ownerId)
                 .executeAsync();
     }
 
@@ -112,5 +145,22 @@ public class GuildHandler implements EventListener {
                 guild.leave().queue();
             }
         }).onError(Throwable::printStackTrace);
+    }
+
+    private void attemptLogging(GuildMemberJoinEvent event, Invite invite, GuildCache guildCache, InviteData inviteData) {
+        final long guildId = event.getGuild().getIdLong();
+        guildCache.retrieve(guildId, guildRecord -> {
+            final long logId = guildRecord.getLogChannel();
+            final TextChannel channel = event.getGuild().getTextChannelById(logId);
+
+            if (channel == null || !channel.canTalk())
+                return;
+
+            final String inviter = invite.getInviter() == null ? "Unknown." : invite.getInviter().getAsTag();
+            final EmbedBuilder inviteEmbed = EmbedFactory.getInvite(event.getMember(), inviter, inviteData);
+
+            channel.sendMessageEmbeds(inviteEmbed.build()).queue();
+        }, error -> {
+        });
     }
 }

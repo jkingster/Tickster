@@ -4,6 +4,7 @@ import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.jooq.tables.records.GuildReportsRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
+import io.jking.tickster.object.InviteData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -112,6 +113,17 @@ public final class EmbedFactory {
         }
 
         return embed;
+    }
+
+    public static EmbedBuilder getInvite(Member member, String inviterTag, InviteData inviteData) {
+        final String pattern = "**%s** joined from code: `%s`.\n**Created by:** `%s`.\n**Total Uses:** `%s`";
+        final String joinerTag = member.getUser().getAsTag();
+        final String code = inviteData.getCode();
+        final int uses = inviteData.getUses();
+
+        return getDefault().setTimestamp(Instant.now())
+                .setAuthor("Invite Tracker", null, member.getUser().getEffectiveAvatarUrl())
+                .setDescription(String.format(pattern, joinerTag, code, inviterTag, uses));
     }
 
 }

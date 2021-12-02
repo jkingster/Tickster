@@ -12,6 +12,7 @@ import io.jking.tickster.database.Database;
 import io.jking.tickster.database.Hikari;
 import io.jking.tickster.handler.GuildHandler;
 import io.jking.tickster.handler.InteractionHandler;
+import io.jking.tickster.handler.InviteHandler;
 import io.jking.tickster.handler.StartHandler;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -49,7 +50,9 @@ public class Tickster {
     private Tickster(String configPath) throws IOException {
         this.data = loadConfig(configPath);
         this.database = new Database(new Hikari(data)).createTables(
-                "sql/guild_data.sql", "sql/guild_tickets.sql", "sql/guild_reports.sql"
+                "sql/guild_data.sql",
+                "sql/guild_tickets.sql",
+                "sql/guild_reports.sql"
         );
         this.cache = new Cache(database);
     }
@@ -65,20 +68,22 @@ public class Tickster {
         }
     }
 
-    private void startTickster() throws LoginException, InterruptedException {
+    private void startTickster() throws LoginException {
         logger.info("Building Tickster...");
         final String token = data.getObject("bot").getString("token", null);
         Checks.notNull(token, "Config Token");
 
         this.shardManager = DefaultShardManagerBuilder.createDefault(token)
+                .setShardsTotal(-1)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
                 .setChunkingFilter(ChunkingFilter.NONE)
-                .setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES)
+                .setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES)
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .addEventListeners(
                         new InteractionHandler(commandRegistry, database, cache),
                         new StartHandler(this, cache),
-                        new GuildHandler(database, cache)
+                        new GuildHandler(database, cache),
+                        new InviteHandler(cache)
                 )
                 .build();
 
