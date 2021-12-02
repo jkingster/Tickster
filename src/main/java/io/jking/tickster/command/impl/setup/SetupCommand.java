@@ -6,6 +6,7 @@ import io.jking.tickster.command.CommandContext;
 import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
+import io.jking.tickster.object.CButton;
 import io.jking.tickster.utility.EmbedFactory;
 import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -16,8 +17,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
@@ -150,7 +149,7 @@ public class SetupCommand extends Command {
                 .setFooter("Tickster • Easy ticket management and user reporting.", ctx.getSelf().getEffectiveAvatarUrl());
 
         channel.sendMessageEmbeds(embed.build())
-                .setActionRow(Button.of(ButtonStyle.SECONDARY, "create_ticket", "Create Ticket", Emoji.fromUnicode("\uD83C\uDFAB")))
+                .setActionRow(CButton.SECONDARY.format("create_ticket", "Create Ticket", Emoji.fromUnicode("\uD83C\uDFAB")))
                 .queue();
     }
 }

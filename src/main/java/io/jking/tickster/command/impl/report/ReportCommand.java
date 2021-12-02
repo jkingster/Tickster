@@ -6,6 +6,7 @@ import io.jking.tickster.command.CommandContext;
 import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.jooq.tables.records.GuildReportsRecord;
+import io.jking.tickster.object.CButton;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -14,8 +15,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -115,8 +114,8 @@ public class ReportCommand extends Command {
                         reportChannel.sendMessageEmbeds(EmbedFactory.getNewReport(ctx.getAuthor()).build())
                                 .content(uuid)
                                 .setActionRow(
-                                        Button.of(ButtonStyle.PRIMARY, "view_report", "View Report", Emoji.fromUnicode("\uD83D\uDD0D")),
-                                        Button.of(ButtonStyle.DANGER, "delete_report", "Delete Report", Emoji.fromUnicode("\uD83D\uDD28"))
+                                        CButton.PRIMARY.format("view_report", "View Report", Emoji.fromUnicode("\uD83D\uDD0D")),
+                                        CButton.DANGER.format("delete_report", "Delete Report", Emoji.fromUnicode("\uD83D\uDD28"))
                                 )
                                 .queue();
 

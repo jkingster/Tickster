@@ -3,14 +3,13 @@ package io.jking.tickster.interaction.impl.button.ticket;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.interaction.context.ButtonContext;
 import io.jking.tickster.interaction.type.IButton;
+import io.jking.tickster.object.CButton;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 import java.time.LocalDateTime;
@@ -97,7 +96,7 @@ public class CreateTicketButton implements IButton {
     private void sendTicketInfo(TextChannel channel, Role ticketManager, ButtonContext context) {
         channel.sendMessageFormat("%s | %s", context.getMember().getAsMention(), ticketManager.getAsMention())
                 .setEmbeds(EmbedFactory.getNewTicket(context.getMember().getUser()).build())
-                .setActionRow(Button.of(ButtonStyle.DANGER, "close_ticket", "Close Ticket", Emoji.fromUnicode("\uD83D\uDD12")))
+                .setActionRow(CButton.DANGER.format("close_ticket", "Close Ticket", Emoji.fromUnicode("\uD83D\uDD12")))
                 .queue();
     }
 
