@@ -3,7 +3,6 @@ package io.jking.tickster.handler;
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.command.impl.utility.HelpCommand;
 import io.jking.tickster.command.type.ErrorType;
@@ -111,9 +110,8 @@ public class InteractionHandler implements EventListener {
         }
 
         final CommandContext commandContext = new CommandContext(event, database, cache, tickster.getData());
-        final CommandError errorContext = new CommandError(commandContext);
 
-        command.onCommand(commandContext, errorContext);
+        command.onCommand(commandContext);
     }
 
     private void sendPrivateMessage(Member member) {

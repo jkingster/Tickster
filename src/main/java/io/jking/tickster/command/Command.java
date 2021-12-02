@@ -27,7 +27,7 @@ public abstract class Command extends CommandData {
         this.permission = permission;
     }
 
-    public abstract void onCommand(CommandContext ctx, CommandError err);
+    public abstract void onCommand(CommandContext ctx);
 
     public Category getCategory() {
         return category;

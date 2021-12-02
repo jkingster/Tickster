@@ -1,7 +1,10 @@
 package io.jking.tickster.command.impl.utility;
 
 
-import io.jking.tickster.command.*;
+import io.jking.tickster.command.Category;
+import io.jking.tickster.command.Command;
+import io.jking.tickster.command.CommandContext;
+import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.utility.EmbedFactory;
 import io.jking.tickster.utility.MiscUtil;
@@ -22,7 +25,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandContext ctx, CommandError err) {
+    public void onCommand(CommandContext ctx) {
         final String input = ctx.getOptionString("input");
         if (input == null) {
             sendCategoriesMenu(ctx, ctx.getMember());
@@ -36,7 +39,7 @@ public class HelpCommand extends Command {
 
         final Command command = registry.getCommand(input);
         if (command == null) {
-            err.reply(ErrorType.CUSTOM, "Could not process your input.");
+            ctx.replyError(ErrorType.CUSTOM, "Could not process your input.");
             return;
         }
 

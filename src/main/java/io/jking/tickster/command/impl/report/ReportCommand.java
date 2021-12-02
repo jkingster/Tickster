@@ -3,7 +3,6 @@ package io.jking.tickster.command.impl.report;
 import io.jking.tickster.command.Category;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.jooq.tables.records.GuildReportsRecord;
 import io.jking.tickster.object.CButton;
@@ -36,17 +35,17 @@ public class ReportCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandContext ctx, CommandError err) {
+    public void onCommand(CommandContext ctx) {
         final List<OptionMapping> options = ctx.getOptionsByType(OptionType.USER);
 
         if (options.isEmpty()) {
-            err.reply(ErrorType.ARGS);
+            ctx.replyError(ErrorType.ARGS);
             return;
         }
 
         final String reason = ctx.getOptionString("reason");
         if (reason == null || reason.isEmpty()) {
-            err.reply(ErrorType.ARGS, "The report reason.");
+            ctx.replyError(ErrorType.ARGS, "The report reason.");
             return;
         }
 
@@ -54,11 +53,11 @@ public class ReportCommand extends Command {
             final Member target = options.get(0).getAsMember();
 
             if (target == null) {
-                err.reply(ErrorType.UNKNOWN);
+                ctx.replyError(ErrorType.UNKNOWN);
                 return;
             }
 
-            sendReport(ctx, err, List.of(target), reason);
+            sendReport(ctx, List.of(target), reason);
             return;
         }
 
@@ -68,31 +67,31 @@ public class ReportCommand extends Command {
                 .collect(Collectors.toUnmodifiableList());
 
         if (memberList.isEmpty()) {
-            err.reply(ErrorType.UNKNOWN);
+            ctx.replyError(ErrorType.UNKNOWN);
             return;
         }
 
-        sendReport(ctx, err, memberList, reason);
+        sendReport(ctx, memberList, reason);
     }
 
-    private void sendReport(CommandContext ctx, CommandError err, List<Member> reportedMembers, String reason) {
+    private void sendReport(CommandContext ctx, List<Member> reportedMembers, String reason) {
         final Long[] memberIds = toLongArray(reportedMembers);
         final long selfId = ctx.getSelf().getIdLong();
 
         if (containsSelf(memberIds, selfId)) {
-            err.reply(ErrorType.CUSTOM, "You cannot report me. Nice try though!");
+            ctx.replyError(ErrorType.CUSTOM, "You cannot report me. Nice try though!");
             return;
         }
 
         if (containsSelf(memberIds, ctx.getAuthor().getIdLong())) {
-            err.reply(ErrorType.CUSTOM, "You cannot report yourself...");
+            ctx.replyError(ErrorType.CUSTOM, "You cannot report yourself...");
             return;
         }
 
         ctx.retrieveRecord(record -> {
             final TextChannel reportChannel = ctx.getGuild().getTextChannelById(record.getReportChannel());
             if (reportChannel == null || !reportChannel.canTalk()) {
-                err.reply(ErrorType.CUSTOM, "The report channel is unset or could not be found!");
+                ctx.replyError(ErrorType.CUSTOM, "The report channel is unset or could not be found!");
                 return;
             }
 
@@ -122,10 +121,10 @@ public class ReportCommand extends Command {
                         ctx.getReportCache().put(uuid, reportRecord);
                     })
                     .exceptionallyAsync(throwable -> {
-                        err.reply(ErrorType.CUSTOM, "The reported could not be created!");
+                        ctx.replyError(ErrorType.CUSTOM, "The reported could not be created!");
                         return null;
                     });
-        }, error -> err.replyUnknown());
+        }, error -> ctx.replyUnknown());
     }
 
     private Long[] toLongArray(List<Member> memberList) {

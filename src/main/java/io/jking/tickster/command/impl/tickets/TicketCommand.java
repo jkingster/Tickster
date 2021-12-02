@@ -3,7 +3,6 @@ package io.jking.tickster.command.impl.tickets;
 import io.jking.tickster.command.Category;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
@@ -32,16 +31,16 @@ public class TicketCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandContext ctx, CommandError err) {
+    public void onCommand(CommandContext ctx) {
         final String subCommand = ctx.getSubCommand();
 
         switch (subCommand.toLowerCase()) {
-            case "view" -> onTicketView(ctx, err);
-            case "purge" -> onTicketPurge(ctx, err);
+            case "view" -> onTicketView(ctx);
+            case "purge" -> onTicketPurge(ctx);
         }
     }
 
-    private void onTicketPurge(CommandContext ctx, CommandError error) {
+    private void onTicketPurge(CommandContext ctx) {
         final boolean option = ctx.getOptionBoolean("purge_global");
         final long creatorId = ctx.getAuthor().getIdLong();
 
@@ -54,7 +53,7 @@ public class TicketCommand extends Command {
                             .queue())
                     .exceptionallyAsync(throwable -> {
                         if (throwable != null) {
-                            error.reply(ErrorType.CUSTOM, "There was an error deleting your tickets. Please consider joining our support server or contacting the bot developers.");
+                            ctx.replyError(ErrorType.CUSTOM, "There was an error deleting your tickets. Please consider joining our support server or contacting the bot developers.");
                         }
                         return null;
                     });
@@ -69,14 +68,14 @@ public class TicketCommand extends Command {
                             .queue())
                     .exceptionallyAsync(throwable -> {
                         if (throwable != null) {
-                            error.reply(ErrorType.CUSTOM, "There was an error deleting your tickets. Please consider joining our support server or contacting the bot developers.");
+                            ctx.replyError(ErrorType.CUSTOM, "There was an error deleting your tickets. Please consider joining our support server or contacting the bot developers.");
                         }
                         return null;
                     });
         }
     }
 
-    private void onTicketView(CommandContext ctx, CommandError err) {
+    private void onTicketView(CommandContext ctx) {
         final long guildId = ctx.getGuild().getIdLong();
         final long authorId = ctx.getAuthor().getIdLong();
 
@@ -87,7 +86,7 @@ public class TicketCommand extends Command {
                 .thenAcceptAsync(results -> {
 
                     if (results.isEmpty()) {
-                        err.reply(ErrorType.CUSTOM, "You have no tickets to view.");
+                        ctx.replyError(ErrorType.CUSTOM, "You have no tickets to view.");
                         return;
                     }
 
@@ -102,7 +101,7 @@ public class TicketCommand extends Command {
 
                 })
                 .exceptionallyAsync(throwable -> {
-                    err.reply(ErrorType.CUSTOM, "Could not retrieve open tickets.");
+                    ctx.replyError(ErrorType.CUSTOM, "Could not retrieve open tickets.");
                     return null;
                 });
     }

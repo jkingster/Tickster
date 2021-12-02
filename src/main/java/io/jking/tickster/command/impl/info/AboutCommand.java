@@ -3,7 +3,6 @@ package io.jking.tickster.command.impl.info;
 import io.jking.tickster.command.Category;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -16,7 +15,7 @@ public class AboutCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandContext ctx, CommandError err) {
+    public void onCommand(CommandContext ctx) {
         final User self = ctx.getSelf();
         final EmbedBuilder embed = EmbedFactory.getDefault()
                 .setAuthor("About me...", null, self.getEffectiveAvatarUrl())

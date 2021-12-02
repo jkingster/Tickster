@@ -3,6 +3,7 @@ package io.jking.tickster.command;
 import io.jking.tickster.cache.Cache;
 import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.cache.impl.ReportCache;
+import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
@@ -122,6 +123,17 @@ public class CommandContext {
 
             channel.sendMessageEmbeds(embed.build()).queue();
         }, null);
+    }
+
+
+    public void replyError(ErrorType errorType, Object... objects) {
+        reply(EmbedFactory.getError(errorType, objects))
+                .setEphemeral(true)
+                .queue();
+    }
+
+    public void replyUnknown() {
+        replyError(ErrorType.UNKNOWN);
     }
 
     public String getSubCommand() {

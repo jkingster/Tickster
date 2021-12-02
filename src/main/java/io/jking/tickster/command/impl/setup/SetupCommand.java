@@ -3,7 +3,6 @@ package io.jking.tickster.command.impl.setup;
 import io.jking.tickster.command.Category;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
 import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.object.CButton;
@@ -43,61 +42,61 @@ public class SetupCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandContext ctx, CommandError err) {
+    public void onCommand(CommandContext ctx) {
         final String subCommand = ctx.getSubCommand();
 
         switch (subCommand.toLowerCase()) {
-            case "ticket_manager" -> setupTicketManager(ctx, err);
-            case "ticket_channel" -> setupTicketChannel(ctx, err);
-            case "log_channel" -> setupLogChannel(ctx, err);
-            case "ticket_category" -> setupTicketCategory(ctx, err);
-            case "report_channel" -> setupReportChannel(ctx, err);
+            case "ticket_manager" -> setupTicketManager(ctx);
+            case "ticket_channel" -> setupTicketChannel(ctx);
+            case "log_channel" -> setupLogChannel(ctx);
+            case "ticket_category" -> setupTicketCategory(ctx);
+            case "report_channel" -> setupReportChannel(ctx);
         }
     }
 
-    private void setupReportChannel(CommandContext ctx, CommandError err) {
+    private void setupReportChannel(CommandContext ctx) {
         final TextChannel channel = ctx.getOptionChannel("report_channel");
-        if (cantAccess(channel, ctx.getSelf(), err))
+        if (cantAccess(ctx, channel, ctx.getSelf()))
             return;
 
         final long guildId = ctx.getGuild().getIdLong();
         ctx.getGuildCache().update(guildId, GUILD_DATA.REPORT_CHANNEL, channel.getIdLong(),
                 (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The report channel", channel.getId()),
-                (error) -> err.reply(ErrorType.CUSTOM, "Could not update report channel."));
+                (error) -> ctx.replyError(ErrorType.CUSTOM, "Could not update report channel."));
     }
 
-    private void setupTicketCategory(CommandContext ctx, CommandError err) {
+    private void setupTicketCategory(CommandContext ctx) {
         final long guildId = ctx.getGuild().getIdLong();
         final String categoryId = ctx.getOptionString("category");
         if (MiscUtil.containsAnyOption(categoryId, "0", "none")) {
             ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CATEGORY, 0L,
                     (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket category", 0),
-                    (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket category.")
+                    (error) -> ctx.replyError(ErrorType.CUSTOM, "Could not update ticket category.")
             );
             return;
         }
 
         if (categoryId == null || !MiscUtil.isSnowflake(categoryId)) {
-            err.reply(ErrorType.INVALID_ID);
+            ctx.replyError(ErrorType.INVALID_ID);
             return;
         }
 
         final net.dv8tion.jda.api.entities.Category category = ctx.getGuild().getCategoryById(categoryId);
         if (category == null) {
-            err.reply(ErrorType.CUSTOM, "The ID you provided was not a category.");
+            ctx.replyError(ErrorType.CUSTOM, "The ID you provided was not a category.");
             return;
         }
 
         ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CATEGORY, category.getIdLong(),
                 (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket category", category.getIdLong()),
-                (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket category.")
+                (error) -> ctx.replyError(ErrorType.CUSTOM, "Could not update ticket category.")
         );
     }
 
-    private void setupTicketManager(CommandContext ctx, CommandError err) {
+    private void setupTicketManager(CommandContext ctx) {
         final Role role = ctx.getOptionRole("ticket_role");
         if (role == null || !ctx.canInteract(role)) {
-            err.reply(ErrorType.CANT_INTERACT, ctx.getSelf().getAsTag(), "the mentioned role.");
+            ctx.replyError(ErrorType.CANT_INTERACT, ctx.getSelf().getAsTag(), "the mentioned role.");
             return;
         }
 
@@ -105,14 +104,14 @@ public class SetupCommand extends Command {
 
         ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_MANAGER, role.getIdLong(),
                 (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket manager role", role.getId()),
-                (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket manager.")
+                (error) -> ctx.replyError(ErrorType.CUSTOM, "Could not update ticket manager.")
         );
     }
 
 
-    private void setupTicketChannel(CommandContext ctx, CommandError err) {
+    private void setupTicketChannel(CommandContext ctx) {
         final TextChannel channel = ctx.getOptionChannel("ticket_channel");
-        if (cantAccess(channel, ctx.getSelf(), err))
+        if (cantAccess(ctx, channel, ctx.getSelf()))
             return;
 
         final long guildId = ctx.getGuild().getIdLong();
@@ -120,24 +119,24 @@ public class SetupCommand extends Command {
                 (unused) -> {
                     ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket channel", channel.getId());
                     createTicketInput(ctx, channel);
-                }, (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket channel."));
+                }, (error) -> ctx.replyError(ErrorType.CUSTOM, "Could not update ticket channel."));
     }
 
-    private void setupLogChannel(CommandContext ctx, CommandError err) {
+    private void setupLogChannel(CommandContext ctx) {
         final TextChannel channel = ctx.getOptionChannel("log_channel");
-        if (cantAccess(channel, ctx.getSelf(), err))
+        if (cantAccess(ctx, channel, ctx.getSelf()))
             return;
 
         final long guildId = ctx.getGuild().getIdLong();
         ctx.getGuildCache().update(guildId, GUILD_DATA.LOG_CHANNEL, channel.getIdLong(),
                 (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The log channel", channel.getId()),
-                (error) -> err.reply(ErrorType.CUSTOM, "Could not update log channel.")
+                (error) -> ctx.replyError(ErrorType.CUSTOM, "Could not update log channel.")
         );
     }
 
-    private boolean cantAccess(TextChannel channel, User user, CommandError error) {
+    private boolean cantAccess(CommandContext ctx, TextChannel channel, User user) {
         if (channel == null || !channel.canTalk()) {
-            error.reply(ErrorType.CANT_ACCESS, user.getAsTag(), "the mentioned channel.");
+            ctx.replyError(ErrorType.CANT_ACCESS, user.getAsTag(), "the mentioned channel.");
             return true;
         }
         return false;

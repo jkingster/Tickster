@@ -3,7 +3,6 @@ package io.jking.tickster.command.impl.utility;
 import io.jking.tickster.command.Category;
 import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
-import io.jking.tickster.command.CommandError;
 
 public class TestCommand extends Command {
 
@@ -12,7 +11,7 @@ public class TestCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandContext ctx, CommandError err) {
+    public void onCommand(CommandContext ctx) {
         ctx.reply("I am working, leave me alone.").setEphemeral(true).queue();
     }
 }
