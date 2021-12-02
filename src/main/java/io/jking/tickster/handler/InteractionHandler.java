@@ -7,6 +7,7 @@ import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.CommandRegistry;
 import io.jking.tickster.command.impl.utility.HelpCommand;
 import io.jking.tickster.command.type.ErrorType;
+import io.jking.tickster.core.Tickster;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.RegistryHandler;
 import io.jking.tickster.interaction.context.ButtonContext;
@@ -34,12 +35,14 @@ public class InteractionHandler implements EventListener {
             Permission.MESSAGE_WRITE, Permission.MANAGE_PERMISSIONS
     };
 
+    private final Tickster tickster;
     private final CommandRegistry commandRegistry;
     private final RegistryHandler handler;
     private final Database database;
     private final Cache cache;
 
-    public InteractionHandler(CommandRegistry registry, Database database, Cache cache) {
+    public InteractionHandler(Tickster tickster, CommandRegistry registry, Database database, Cache cache) {
+        this.tickster = tickster;
         this.commandRegistry = registry;
         this.handler = new RegistryHandler().registerButtons().registerSelections();
         registry.addCommand(new HelpCommand(registry));
@@ -107,7 +110,7 @@ public class InteractionHandler implements EventListener {
             return;
         }
 
-        final CommandContext commandContext = new CommandContext(event, database, cache);
+        final CommandContext commandContext = new CommandContext(event, database, cache, tickster.getData());
         final CommandError errorContext = new CommandError(commandContext);
 
         command.onCommand(commandContext, errorContext);

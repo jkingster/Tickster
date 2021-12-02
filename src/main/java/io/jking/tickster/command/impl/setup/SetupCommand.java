@@ -63,7 +63,7 @@ public class SetupCommand extends Command {
 
         final long guildId = ctx.getGuild().getIdLong();
         ctx.getGuildCache().update(guildId, GUILD_DATA.REPORT_CHANNEL, channel.getIdLong(),
-                (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The report channel", channel.getId()),
+                (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The report channel", channel.getId()),
                 (error) -> err.reply(ErrorType.CUSTOM, "Could not update report channel."));
     }
 
@@ -72,7 +72,7 @@ public class SetupCommand extends Command {
         final String categoryId = ctx.getOptionString("category");
         if (MiscUtil.containsAnyOption(categoryId, "0", "none")) {
             ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CATEGORY, 0L,
-                    (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The ticket category", 0),
+                    (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket category", 0),
                     (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket category.")
             );
             return;
@@ -90,7 +90,7 @@ public class SetupCommand extends Command {
         }
 
         ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CATEGORY, category.getIdLong(),
-                (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The ticket category", category.getIdLong()),
+                (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket category", category.getIdLong()),
                 (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket category.")
         );
     }
@@ -105,7 +105,7 @@ public class SetupCommand extends Command {
         final long guildId = ctx.getGuild().getIdLong();
 
         ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_MANAGER, role.getIdLong(),
-                (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The ticket manager role", role.getId()),
+                (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket manager role", role.getId()),
                 (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket manager.")
         );
     }
@@ -119,7 +119,7 @@ public class SetupCommand extends Command {
         final long guildId = ctx.getGuild().getIdLong();
         ctx.getGuildCache().update(guildId, GUILD_DATA.TICKET_CHANNEL, channel.getIdLong(),
                 (unused) -> {
-                    ctx.replySuccess(SuccessType.UPDATED, true, "The ticket channel", channel.getId());
+                    ctx.sendSuccess(SuccessType.UPDATED, true, "The ticket channel", channel.getId());
                     createTicketInput(ctx, channel);
                 }, (error) -> err.reply(ErrorType.CUSTOM, "Could not update ticket channel."));
     }
@@ -131,7 +131,7 @@ public class SetupCommand extends Command {
 
         final long guildId = ctx.getGuild().getIdLong();
         ctx.getGuildCache().update(guildId, GUILD_DATA.LOG_CHANNEL, channel.getIdLong(),
-                (unused) -> ctx.replySuccess(SuccessType.UPDATED, true, "The log channel", channel.getId()),
+                (unused) -> ctx.sendSuccess(SuccessType.UPDATED, true, "The log channel", channel.getId()),
                 (error) -> err.reply(ErrorType.CUSTOM, "Could not update log channel.")
         );
     }

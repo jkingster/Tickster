@@ -2,7 +2,8 @@ package io.jking.tickster.command.type;
 
 public enum SuccessType {
 
-    UPDATED("%s was successfully \nupdated to %s.");
+    UPDATED("%s was successfully \nupdated to %s."),
+    DELETED("%s");
 
     private final String successType;
 

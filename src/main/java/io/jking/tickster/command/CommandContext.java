@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +32,13 @@ public class CommandContext {
     private final SlashCommandEvent event;
     private final Database database;
     private final Cache cache;
+    private final DataObject data;
 
-    public CommandContext(SlashCommandEvent event, Database database, Cache cache) {
+    public CommandContext(SlashCommandEvent event, Database database, Cache cache, DataObject data) {
         this.event = event;
         this.database = database;
         this.cache = cache;
+        this.data = data;
     }
 
     public SlashCommandEvent getEvent() {
@@ -90,7 +93,7 @@ public class CommandContext {
         return event.reply(content);
     }
 
-    public void replySuccess(SuccessType type, boolean log, Object... objects) {
+    public void sendSuccess(SuccessType type, boolean log, Object... objects) {
         final EmbedBuilder embed = EmbedFactory.getSuccess(type, objects);
 
         reply(embed).delay(15, TimeUnit.SECONDS)
@@ -99,6 +102,10 @@ public class CommandContext {
 
         if (log)
             sendLog(embed);
+    }
+
+    public ReplyAction replySuccess(SuccessType type, Object... objects) {
+        return reply(EmbedFactory.getSuccess(type, objects));
     }
 
     public RestAction<Message> retrieveOriginal() {
@@ -150,6 +157,13 @@ public class CommandContext {
         return mapping.getAsString();
     }
 
+    public boolean getOptionBoolean(String name) {
+        final OptionMapping mapping = getMapping(name);
+        if (mapping == null)
+            return false;
+        return mapping.getAsBoolean();
+    }
+
     public List<OptionMapping> getOptionsByType(OptionType optionType) {
         return getEvent().getOptionsByType(optionType);
     }
@@ -170,6 +184,10 @@ public class CommandContext {
     public void retrieveRecord(Consumer<GuildDataRecord> record, Consumer<Throwable> throwable) {
         final long guildId = getGuild().getIdLong();
         getGuildCache().retrieve(guildId, record, throwable);
+    }
+
+    public DataObject getData() {
+        return data;
     }
 
     public Logger getLogger() {

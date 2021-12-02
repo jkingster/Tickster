@@ -70,7 +70,7 @@ public class Tickster {
 
     private void startTickster() throws LoginException {
         logger.info("Building Tickster...");
-        final String token = data.getObject("bot").getString("token", null);
+        final String token = data.getString("token", null);
         Checks.notNull(token, "Config Token");
 
         this.shardManager = DefaultShardManagerBuilder.createDefault(token)
@@ -80,7 +80,7 @@ public class Tickster {
                 .setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES)
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .addEventListeners(
-                        new InteractionHandler(commandRegistry, database, cache),
+                        new InteractionHandler(this, commandRegistry, database, cache),
                         new StartHandler(this, cache),
                         new GuildHandler(database, cache),
                         new InviteHandler(cache)

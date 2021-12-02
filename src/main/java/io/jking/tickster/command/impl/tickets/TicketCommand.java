@@ -5,10 +5,15 @@ import io.jking.tickster.command.Command;
 import io.jking.tickster.command.CommandContext;
 import io.jking.tickster.command.CommandError;
 import io.jking.tickster.command.type.ErrorType;
+import io.jking.tickster.command.type.SuccessType;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
+import io.jking.tickster.object.CButton;
 import io.jking.tickster.utility.EmbedFactory;
 import io.jking.tickster.utility.MiscUtil;
+import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import org.jooq.Result;
 
@@ -21,7 +26,8 @@ public class TicketCommand extends Command {
 
         addSubcommands(
                 new SubcommandData("view", "View your open tickets."),
-                new SubcommandData("create", "Create a new ticket.")
+                new SubcommandData("purge", "Purge all your tickets.")
+                        .addOption(OptionType.BOOLEAN, "purge_global", "global", true)
         );
     }
 
@@ -31,7 +37,42 @@ public class TicketCommand extends Command {
 
         switch (subCommand.toLowerCase()) {
             case "view" -> onTicketView(ctx, err);
-            case "create" -> onTicketCreate(ctx, err);
+            case "purge" -> onTicketPurge(ctx, err);
+        }
+    }
+
+    private void onTicketPurge(CommandContext ctx, CommandError error) {
+        final boolean option = ctx.getOptionBoolean("purge_global");
+        final long creatorId = ctx.getAuthor().getIdLong();
+
+        if (option) {
+            ctx.getDatabase().getDSL().deleteFrom(GUILD_TICKETS)
+                    .where(GUILD_TICKETS.CREATOR_ID.eq(creatorId))
+                    .executeAsync()
+                    .thenAcceptAsync(action -> ctx.replySuccess(SuccessType.DELETED, "All your tickets were deleted globally.")
+                            .setEphemeral(true)
+                            .queue())
+                    .exceptionallyAsync(throwable -> {
+                        if (throwable != null) {
+                            error.reply(ErrorType.CUSTOM, "There was an error deleting your tickets. Please consider joining our support server or contacting the bot developers.");
+                        }
+                        return null;
+                    });
+        } else {
+            final long guildId = ctx.getGuild().getIdLong();
+            ctx.getDatabase().getDSL().deleteFrom(GUILD_TICKETS)
+                    .where(GUILD_TICKETS.GUILD_ID.eq(guildId))
+                    .and(GUILD_TICKETS.CREATOR_ID.eq(creatorId))
+                    .executeAsync()
+                    .thenAcceptAsync(action -> ctx.replySuccess(SuccessType.DELETED, "All your tickets for this guild were deleted.")
+                            .setEphemeral(true)
+                            .queue())
+                    .exceptionallyAsync(throwable -> {
+                        if (throwable != null) {
+                            error.reply(ErrorType.CUSTOM, "There was an error deleting your tickets. Please consider joining our support server or contacting the bot developers.");
+                        }
+                        return null;
+                    });
         }
     }
 
@@ -52,7 +93,10 @@ public class TicketCommand extends Command {
 
                     final SelectionMenu.Builder menu = getTicketsMenu(results);
                     ctx.reply(EmbedFactory.getSelectionEmbed(ctx.getMember(), "Click any ticket to view it!"))
-                            .addActionRow(menu.build())
+                            .addActionRows(
+                                    ActionRow.of(menu.build()),
+                                    ActionRow.of(CButton.PRIMARY.format("purge_tickets", "Purge Tickets", Emoji.fromUnicode("✂")))
+                            )
                             .setEphemeral(true)
                             .queue();
 
@@ -61,10 +105,6 @@ public class TicketCommand extends Command {
                     err.reply(ErrorType.CUSTOM, "Could not retrieve open tickets.");
                     return null;
                 });
-    }
-
-    private void onTicketCreate(CommandContext ctx, CommandError err) {
-
     }
 
     private SelectionMenu.Builder getTicketsMenu(Result<GuildTicketsRecord> results) {
