@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
 public class InteractionContext<T extends GenericInteractionCreateEvent> {
@@ -80,6 +81,10 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
 
     public ReplyAction replyErrorEphemeral(Error error,  Object... objects) {
         return reply(EmbedUtil.getError(error, objects));
+    }
+
+    public RestAction<Member> retrieveMember(long id) {
+        return getGuild().retrieveMemberById(id);
     }
 
 

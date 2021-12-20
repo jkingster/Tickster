@@ -3,6 +3,8 @@ package io.jking.tickster.utility;
 import io.jking.tickster.interaction.core.Error;
 import io.jking.tickster.interaction.core.Success;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.time.Instant;
@@ -11,6 +13,7 @@ import java.time.Instant;
 public final class EmbedUtil {
     public static Color PRIMARY = Color.decode("#FF7300").brighter();
     public static Color SECONDARY = Color.decode("#008DF5").darker();
+
     private EmbedUtil() {
 
     }
@@ -33,8 +36,32 @@ public final class EmbedUtil {
                 .setAuthor("Success");
     }
 
+    public static EmbedBuilder getUserInfo(User user) {
+        return new EmbedBuilder().setColor(SECONDARY)
+                .setTitle("User Information")
+                .setAuthor(user.getAsTag())
+                .setThumbnail(user.getEffectiveAvatarUrl())
+                .setDescription(String.format(
+                        """
+                        **Creation Date:** `%s`
+                        **Account Age:** `%s` days.
+                        **ID:** `%s`
+                        """,
+                        user.getTimeCreated().toLocalDate(),
+                        MiscUtil.getDays(user.getTimeCreated()),
+                        user.getIdLong())
+                );
+    }
 
-
-
-
+    public static EmbedBuilder getMemberInfo(Member member) {
+        return getUserInfo(member.getUser())
+                .appendDescription(String.format(
+                        """
+                        **Joined** `%s` days ago.
+                        **Join Date:** `%s`
+                        """,
+                        MiscUtil.getDays(member.getTimeJoined()),
+                        member.getTimeJoined().toLocalDate())
+                );
+    }
 }

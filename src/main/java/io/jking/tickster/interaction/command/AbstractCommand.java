@@ -30,4 +30,5 @@ public abstract class AbstractCommand extends CommandData {
     public Permission getPermission() {
         return permission;
     }
+
 }
