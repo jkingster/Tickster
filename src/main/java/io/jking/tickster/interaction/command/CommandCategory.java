@@ -9,7 +9,8 @@ public enum CommandCategory {
     ADMIN               (Permission.ADMINISTRATOR, "Administrative purposed commands."),
     TICKET_MANAGEMENT   (Permission.MESSAGE_SEND, "Ticket management commands."),
     TICKET              (Permission.MESSAGE_SEND, "Ticket processing related commands."),
-    UTILITY             (Permission.MESSAGE_SEND, "Server utility based commands.");
+    UTILITY             (Permission.MESSAGE_SEND, "Server utility based commands."),
+    INFO                (Permission.MESSAGE_SEND, "Informational commands.");
 
     public static CommandCategory[] categories = CommandCategory.values();
     private final String description;

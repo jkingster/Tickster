@@ -11,7 +11,7 @@ import java.time.Instant;
 
 
 public final class EmbedUtil {
-    public static Color PRIMARY = Color.decode("#FF7300").brighter();
+    public static Color PRIMARY = Color.decode("#FF7300");
     public static Color SECONDARY = Color.decode("#008DF5").darker();
 
     private EmbedUtil() {
