@@ -28,4 +28,9 @@ public class SlashContext extends InteractionContext<SlashCommandEvent> {
         final OptionMapping mapping = getMapping(name);
         return mapping == null ? null : mapping.getAsUser();
     }
+
+    public long getLongOption(String name) {
+        final OptionMapping mapping = getMapping(name);
+        return mapping == null ? 0L : mapping.getAsLong();
+    }
 }
