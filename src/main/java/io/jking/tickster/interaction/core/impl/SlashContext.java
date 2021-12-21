@@ -1,13 +1,15 @@
 package io.jking.tickster.interaction.core.impl;
 
+import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.core.InteractionContext;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class SlashContext extends InteractionContext<SlashCommandEvent> {
-    public SlashContext(SlashCommandEvent event) {
-        super(event);
+    public SlashContext(SlashCommandEvent event, Database database, CacheManager cache) {
+        super(event, database, cache);
     }
 
     private OptionMapping getMapping(String name) {

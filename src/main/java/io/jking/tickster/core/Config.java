@@ -25,5 +25,20 @@ public class Config {
         return dataObject.getString(key, null);
     }
 
+    public DataObject getObject(String key) {
+        return dataObject.getObject(key);
+    }
+
+    public String getDBUrl() {
+        return getObject("database").getString("url", null);
+    }
+
+    public String getDBUsername() {
+        return getObject("database").getString("username", null);
+    }
+
+    public String getDBPassword() {
+        return getObject("database").getString("password", null);
+    }
 
 }

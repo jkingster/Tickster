@@ -1,5 +1,7 @@
 package io.jking.tickster.interaction.core;
 
+import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.database.Database;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -14,13 +16,25 @@ import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 public class InteractionContext<T extends GenericInteractionCreateEvent> {
 
     private final T event;
+    private final Database database;
+    private final CacheManager cache;
 
-    public InteractionContext(T event) {
+    public InteractionContext(T event, Database database, CacheManager cache) {
         this.event = event;
+        this.database = database;
+        this.cache = cache;
     }
 
     public T getEvent() {
         return event;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public CacheManager getCache() {
+        return cache;
     }
 
     public JDA getJDA() {

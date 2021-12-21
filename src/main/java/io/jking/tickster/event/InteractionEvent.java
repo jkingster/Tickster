@@ -1,5 +1,7 @@
 package io.jking.tickster.event;
 
+import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
@@ -20,9 +22,13 @@ import org.jetbrains.annotations.NotNull;
 public class InteractionEvent implements EventListener {
 
     private final CommandRegistry commandRegistry;
+    private final Database database;
+    private final CacheManager cache;
 
-    public InteractionEvent(CommandRegistry commandRegistry) {
+    public InteractionEvent(CommandRegistry commandRegistry, Database database, CacheManager cache) {
         this.commandRegistry = commandRegistry;
+        this.database = database;
+        this.cache = cache;
     }
 
     @Override
@@ -91,6 +97,6 @@ public class InteractionEvent implements EventListener {
             return;
         }
 
-        command.onSlashCommand(new SlashContext(event));
+        command.onSlashCommand(new SlashContext(event, database, cache));
     }
 }

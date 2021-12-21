@@ -1,5 +1,7 @@
 package io.jking.tickster.core;
 
+import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.database.Database;
 import io.jking.tickster.event.InteractionEvent;
 import io.jking.tickster.event.MiscEvent;
 import io.jking.tickster.interaction.command.CommandRegistry;
@@ -18,20 +20,24 @@ import java.util.Arrays;
 
 public class Tickster {
 
-    private final CommandRegistry commandRegistry = new CommandRegistry();
-
     private final Config config;
+    private final CommandRegistry commandRegistry;
+    private final Database database;
+    private final CacheManager cacheManager;
     private final ShardManager shardManager;
 
     public Tickster(String configPath) throws FileNotFoundException, LoginException {
         this.config = new Config(configPath);
+        this.commandRegistry = new CommandRegistry();
+        this.database = new Database(config);
+        this.cacheManager = new CacheManager(database);
         this.shardManager = buildShardManager();
     }
 
     private ShardManager buildShardManager() throws LoginException {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
-                .addEventListeners(new InteractionEvent(commandRegistry), new MiscEvent())
+                .addEventListeners(new InteractionEvent(commandRegistry, database, cacheManager), new MiscEvent())
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
@@ -42,8 +48,23 @@ public class Tickster {
                 .build();
     }
 
+    public Config getConfig() {
+        return config;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public CacheManager getCacheManager() {
+        return cacheManager;
+    }
+
     public ShardManager getShardManager() {
         return shardManager;
     }
-
 }
