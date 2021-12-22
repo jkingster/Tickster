@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
@@ -27,6 +29,14 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
 
     public T getEvent() {
         return event;
+    }
+
+    public Interaction getInteraction() {
+        return event.getInteraction();
+    }
+
+    public InteractionHook getHook() {
+        return event.getHook();
     }
 
     public Database getDatabase() {
@@ -97,9 +107,12 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
         return reply(EmbedUtil.getError(error, objects));
     }
 
+    public ReplyAction deferReply() {
+        return event.deferReply();
+    }
+
     public RestAction<Member> retrieveMember(long id) {
         return getGuild().retrieveMemberById(id);
     }
-
 
 }

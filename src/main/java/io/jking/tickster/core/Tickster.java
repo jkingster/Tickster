@@ -4,6 +4,7 @@ import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.event.InteractionEvent;
 import io.jking.tickster.event.MiscEvent;
+import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -22,6 +23,7 @@ public class Tickster {
 
     private final Config config;
     private final CommandRegistry commandRegistry;
+    private final ButtonRegistry buttonRegistry;
     private final Database database;
     private final CacheManager cacheManager;
     private final ShardManager shardManager;
@@ -29,6 +31,7 @@ public class Tickster {
     public Tickster(String configPath) throws FileNotFoundException, LoginException {
         this.config = new Config(configPath);
         this.commandRegistry = new CommandRegistry();
+        this.buttonRegistry = new ButtonRegistry();
         this.database = new Database(config);
         this.cacheManager = new CacheManager(database);
         this.shardManager = buildShardManager();
@@ -38,7 +41,7 @@ public class Tickster {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
                 .addEventListeners(
-                        new InteractionEvent(commandRegistry, database, cacheManager),
+                        new InteractionEvent(commandRegistry, buttonRegistry, database, cacheManager),
                         new MiscEvent(cacheManager.getGuildCache())
                 )
                 .disableCache(Arrays.asList(CacheFlag.values()))

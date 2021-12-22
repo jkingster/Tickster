@@ -2,10 +2,13 @@ package io.jking.tickster.event;
 
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.interaction.button.AbstractButton;
+import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.Error;
+import io.jking.tickster.interaction.core.impl.ButtonContext;
 import io.jking.tickster.interaction.core.impl.SlashContext;
 import io.jking.tickster.utility.EmbedUtil;
 import io.jking.tickster.utility.MiscUtil;
@@ -15,6 +18,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
@@ -22,11 +26,13 @@ import org.jetbrains.annotations.NotNull;
 public class InteractionEvent implements EventListener {
 
     private final CommandRegistry commandRegistry;
+    private final ButtonRegistry buttonRegistry;
     private final Database database;
     private final CacheManager cache;
 
-    public InteractionEvent(CommandRegistry commandRegistry, Database database, CacheManager cache) {
+    public InteractionEvent(CommandRegistry commandRegistry, ButtonRegistry buttonRegistry, Database database, CacheManager cache) {
         this.commandRegistry = commandRegistry;
+        this.buttonRegistry = buttonRegistry;
         this.database = database;
         this.cache = cache;
     }
@@ -35,6 +41,25 @@ public class InteractionEvent implements EventListener {
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof SlashCommandEvent)
             onSlashCommand((SlashCommandEvent) event);
+        else if (event instanceof ButtonClickEvent)
+            onButtonClick((ButtonClickEvent) event);
+    }
+
+    private void onButtonClick(ButtonClickEvent event) {
+        final Guild guild = event.getGuild();
+        if (guild == null)
+            return;
+
+        final Member member = event.getMember();
+        if (member == null)
+            return;
+
+        final String buttonId = event.getComponentId();
+        final AbstractButton button = buttonRegistry.get(buttonId);
+        if (button == null)
+            return;
+
+        button.onButtonPress(new ButtonContext(event, database, cache));
     }
 
     private void onSlashCommand(SlashCommandEvent event) {
