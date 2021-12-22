@@ -3,6 +3,7 @@ package io.jking.tickster.cache;
 import io.jking.tickster.database.Database;
 import net.jodah.expiringmap.ExpiringMap;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
 
 import java.util.Map;
@@ -25,9 +26,24 @@ public abstract class Cache<K, V extends Record> {
         return this.CACHE_MAP.getOrDefault(key, null);
     }
 
+    public <T> void updatePut(K key, Field<T> field, T value) {
+        final V record = get(key);
+        if (record == null)
+            return;
+
+        record.set(field, value);
+        put(key, record);
+    }
+
+    public abstract void insert(V value);
+
     public abstract V fetch(K key);
+
     public abstract V fetchOrGet(K key);
+
     public abstract void delete(K key);
+
+    public abstract <T> int update(K key, Field<T> field, T value);
 
     public Database getDatabase() {
         return database;

@@ -14,4 +14,11 @@ public class CacheManager {
         this.ticketCache = new TicketCache(database);
     }
 
+    public GuildCache getGuildCache() {
+        return guildCache;
+    }
+
+    public TicketCache getTicketCache() {
+        return ticketCache;
+    }
 }

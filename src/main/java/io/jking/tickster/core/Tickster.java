@@ -37,7 +37,10 @@ public class Tickster {
     private ShardManager buildShardManager() throws LoginException {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
-                .addEventListeners(new InteractionEvent(commandRegistry, database, cacheManager), new MiscEvent())
+                .addEventListeners(
+                        new InteractionEvent(commandRegistry, database, cacheManager),
+                        new MiscEvent(cacheManager.getGuildCache())
+                )
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
