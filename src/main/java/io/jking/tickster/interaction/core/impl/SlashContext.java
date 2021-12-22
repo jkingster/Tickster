@@ -16,6 +16,10 @@ public class SlashContext extends InteractionContext<SlashCommandEvent> {
         return getEvent().getOption(name);
     }
 
+    public String getSubCommandName() {
+        return getEvent().getSubcommandName();
+    }
+
     public String getStringOption(String name) {
         final OptionMapping mapping = getMapping(name);
         return mapping == null ? null : mapping.getAsString();

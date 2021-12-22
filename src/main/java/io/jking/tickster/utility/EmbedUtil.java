@@ -64,4 +64,13 @@ public final class EmbedUtil {
                         member.getTimeJoined().toLocalDate())
                 );
     }
+
+    public static EmbedBuilder getTicketSummoner(User self) {
+        return getDefault().setDescription(
+                """
+                To **create** a ticket, click the button below.
+                Please also consider using `/ticket create` for convenience.
+                """
+        ).setFooter("Tickster • Easy ticket management.", self.getEffectiveAvatarUrl());
+    }
 }

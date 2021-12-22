@@ -104,7 +104,7 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
     }
 
     public ReplyAction replyErrorEphemeral(Error error,  Object... objects) {
-        return reply(EmbedUtil.getError(error, objects));
+        return replyEphemeral(EmbedUtil.getError(error, objects));
     }
 
     public ReplyAction deferReply() {
