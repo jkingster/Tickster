@@ -48,7 +48,7 @@ public class GuildCache extends Cache<Long, GuildDataRecord> {
 
     @Override
     public <T> int update(Long key, Field<T> field, T value) {
-        updatePut(key, field, value);
+        putUpdated(key, field, value);
         return getContext().update(GUILD_DATA)
                 .set(field, value)
                 .execute();

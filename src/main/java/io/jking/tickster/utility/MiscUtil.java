@@ -1,5 +1,7 @@
 package io.jking.tickster.utility;
 
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.requests.ErrorResponse;
@@ -19,6 +21,14 @@ public final class MiscUtil {
 
     public static int getDays(OffsetDateTime offsetDateTime) {
         return (int) ChronoUnit.DAYS.between(offsetDateTime, OffsetDateTime.now());
+    }
+
+    public static boolean hasRole(Member member, long roleId) {
+        for (Role role : member.getRoles()) {
+            if (role.getIdLong() == roleId)
+                return true;
+        }
+        return false;
     }
 
 }

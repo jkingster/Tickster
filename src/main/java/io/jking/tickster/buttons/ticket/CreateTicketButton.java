@@ -11,6 +11,6 @@ public class CreateTicketButton extends AbstractButton {
 
     @Override
     public void onButtonPress(ButtonContext context) {
-        context.replyEphemeral("I am creating your ticket now... please wait.").queue();
+
     }
 }

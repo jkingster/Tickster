@@ -48,7 +48,7 @@ public class TicketCache extends Cache<Long, GuildTicketsRecord> {
 
     @Override
     public <T> int update(Long key, Field<T> field, T value) {
-        updatePut(key, field, value);
+        putUpdated(key, field, value);
         return getContext().update(GUILD_TICKETS)
                 .set(field, value)
                 .execute();

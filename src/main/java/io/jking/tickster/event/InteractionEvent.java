@@ -10,13 +10,11 @@ import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.Error;
 import io.jking.tickster.interaction.core.impl.ButtonContext;
 import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -103,7 +101,32 @@ public class InteractionEvent implements EventListener {
         }
 
         if (category == CommandCategory.TICKET_MANAGEMENT) {
-            // TODO: Check if member has ticket manager role, if not early return.
+            final long guildId = event.getGuild().getIdLong();
+            final GuildDataRecord record = cache.getGuildCache().get(guildId);
+
+            if (record == null) {
+                event.replyEmbeds(EmbedUtil.getError(Error.UNKNOWN).build())
+                        .setEphemeral(true)
+                        .queue();
+                return;
+            }
+
+            final long supportId = record.getSupportId();
+            final Role supportRole = event.getGuild().getRoleById(supportId);
+
+            if (supportRole == null) {
+                event.replyEmbeds(EmbedUtil.getError(Error.CUSTOM, "The ticket support role is not configured. You cannot utilize management commands until the role is set.").build())
+                        .setEphemeral(true)
+                        .queue();
+                return;
+            }
+
+            if (!MiscUtil.hasRole(member, supportRole.getIdLong()) && !member.hasPermission(Permission.ADMINISTRATOR)) {
+                event.replyEmbeds(EmbedUtil.getError(Error.CUSTOM, "You lack the Ticket Support role. You cannot utilize these commands.").build())
+                        .setEphemeral(true)
+                        .queue();
+                return;
+            }
         }
 
         final Permission permission = command.getPermission();
@@ -124,4 +147,5 @@ public class InteractionEvent implements EventListener {
 
         command.onSlashCommand(new SlashContext(event, database, cache));
     }
+
 }

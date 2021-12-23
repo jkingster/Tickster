@@ -2,6 +2,7 @@ package io.jking.tickster.interaction.core;
 
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -99,11 +100,11 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
         return replyEphemeral(EmbedUtil.getSuccess(success, objects));
     }
 
-    public ReplyAction replyError(Error error,  Object... objects) {
+    public ReplyAction replyError(Error error, Object... objects) {
         return reply(EmbedUtil.getError(error, objects));
     }
 
-    public ReplyAction replyErrorEphemeral(Error error,  Object... objects) {
+    public ReplyAction replyErrorEphemeral(Error error, Object... objects) {
         return replyEphemeral(EmbedUtil.getError(error, objects));
     }
 
@@ -115,4 +116,7 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
         return getGuild().retrieveMemberById(id);
     }
 
+    public GuildDataRecord getRecord() {
+        return getCache().getGuildCache().get(event.getIdLong());
+    }
 }
