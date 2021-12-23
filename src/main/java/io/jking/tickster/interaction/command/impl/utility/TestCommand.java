@@ -1,4 +1,4 @@
-package io.jking.tickster.commands.utility;
+package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;

@@ -100,7 +100,7 @@ public class InteractionEvent implements EventListener {
             }
         }
 
-        if (category == CommandCategory.TICKET_MANAGEMENT) {
+        if (category == CommandCategory.TICKET_MANAGEMENT && !member.hasPermission(Permission.ADMINISTRATOR)) {
             final long guildId = event.getGuild().getIdLong();
             final GuildDataRecord record = cache.getGuildCache().get(guildId);
 
@@ -121,7 +121,7 @@ public class InteractionEvent implements EventListener {
                 return;
             }
 
-            if (!MiscUtil.hasRole(member, supportRole.getIdLong()) && !member.hasPermission(Permission.ADMINISTRATOR)) {
+            if (!MiscUtil.hasRole(member, supportRole.getIdLong())) {
                 event.replyEmbeds(EmbedUtil.getError(Error.CUSTOM, "You lack the Ticket Support role. You cannot utilize these commands.").build())
                         .setEphemeral(true)
                         .queue();

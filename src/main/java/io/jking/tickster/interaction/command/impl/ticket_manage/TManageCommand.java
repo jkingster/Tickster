@@ -1,4 +1,4 @@
-package io.jking.tickster.commands.ticket_manage;
+package io.jking.tickster.interaction.command.impl.ticket_manage;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;

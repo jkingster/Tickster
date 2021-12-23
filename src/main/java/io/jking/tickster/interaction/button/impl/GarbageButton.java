@@ -1,4 +1,4 @@
-package io.jking.tickster.buttons;
+package io.jking.tickster.interaction.button.impl;
 
 import io.jking.tickster.interaction.button.AbstractButton;
 import io.jking.tickster.interaction.core.impl.ButtonContext;

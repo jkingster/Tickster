@@ -1,4 +1,4 @@
-package io.jking.tickster.commands.bot_owner;
+package io.jking.tickster.interaction.command.impl.bot_owner;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
