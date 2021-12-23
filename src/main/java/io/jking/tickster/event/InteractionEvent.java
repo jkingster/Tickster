@@ -52,7 +52,17 @@ public class InteractionEvent implements EventListener {
         if (member == null)
             return;
 
-        final String buttonId = event.getComponentId();
+        String buttonId = event.getComponentId();
+        if (buttonId.contains("id")) {
+            final String[] splitId = buttonId.split(":");
+            final int length = splitId.length;
+            final long id = Long.parseLong(splitId[length - 1]);
+            if (id != event.getMember().getIdLong())
+                return;
+
+            buttonId = buttonId.replace(String.valueOf(id), "%s");
+        }
+
         final AbstractButton button = buttonRegistry.get(buttonId);
         if (button == null)
             return;
@@ -102,7 +112,7 @@ public class InteractionEvent implements EventListener {
 
         if (category == CommandCategory.TICKET_MANAGEMENT && !member.hasPermission(Permission.ADMINISTRATOR)) {
             final long guildId = event.getGuild().getIdLong();
-            final GuildDataRecord record = cache.getGuildCache().get(guildId);
+            final GuildDataRecord record = cache.getGuildCache().fetchOrGet(guildId);
 
             if (record == null) {
                 event.replyEmbeds(EmbedUtil.getError(Error.UNKNOWN).build())

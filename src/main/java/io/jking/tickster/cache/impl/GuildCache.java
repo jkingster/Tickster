@@ -19,7 +19,7 @@ public class GuildCache extends Cache<Long, GuildDataRecord> {
         getContext().insertInto(GUILD_DATA)
                 .values(value.intoList())
                 .onConflictDoNothing()
-                .execute();
+                .executeAsync();
     }
 
     @Override

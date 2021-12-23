@@ -116,7 +116,7 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
         return getGuild().retrieveMemberById(id);
     }
 
-    public GuildDataRecord getRecord() {
-        return getCache().getGuildCache().get(event.getIdLong());
+    public GuildDataRecord getGuildRecord() {
+        return getCache().getGuildCache().fetchOrGet(getGuild().getIdLong());
     }
 }

@@ -37,13 +37,15 @@ public class MiscEvent implements EventListener {
 
     private void insertGuildIfNotExists(Guild guild) {
         final Long guildId = guild.getIdLong();
-        final Long ownerId = guild.getOwnerIdLong();
+        final GuildDataRecord record = guildCache.fetchOrGet(guildId);
 
-        final GuildDataRecord record = GUILD_DATA.newRecord().setGuildId(guildId)
-                .setOwnerId(ownerId).setLogId(0L).setSupportId(0L)
-                .setInviteId(0L).setCategoryId(0L).setTicketId(0L);
-
-        guildCache.insert(record);
+        if (record == null) {
+            final Long ownerId = guild.getOwnerIdLong();
+            final GuildDataRecord newRecord = GUILD_DATA.newRecord().setGuildId(guildId)
+                    .setOwnerId(ownerId).setLogId(0L).setSupportId(0L)
+                    .setInviteId(0L).setCategoryId(0L).setTicketId(0L);
+            guildCache.insert(newRecord);
+        }
     }
 
 

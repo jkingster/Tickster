@@ -31,4 +31,9 @@ public final class MiscUtil {
         return false;
     }
 
+    // https://stackoverflow.com/questions/2282728/java-replacelast
+    public static String replaceLast(String text, String regex, String replacement) {
+        return text.replaceFirst("(?s)"+regex+"(?!.*?"+regex+")", replacement);
+    }
+
 }

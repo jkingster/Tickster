@@ -3,6 +3,7 @@ package io.jking.tickster.utility;
 import io.jking.tickster.interaction.core.Error;
 import io.jking.tickster.interaction.core.Success;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
@@ -13,6 +14,10 @@ import java.time.Instant;
 public final class EmbedUtil {
     public static Color PRIMARY = Color.decode("#FF7300");
     public static Color SECONDARY = Color.decode("#008DF5").darker();
+
+    public static Emoji LOCK_EMOJI = Emoji.fromUnicode("\uD83D\uDD12");
+    public static Emoji UNLOCK_EMOJI = Emoji.fromUnicode("\uD83D\uDD13");
+
 
     private EmbedUtil() {
 
@@ -72,5 +77,16 @@ public final class EmbedUtil {
                 Please also consider using `/ticket create` for convenience.
                 """
         ).setFooter("Tickster • Easy ticket management.", self.getEffectiveAvatarUrl());
+    }
+
+    public static EmbedBuilder getNewTicket(Member member) {
+        return getDefault().setDescription(
+                """
+                Ticket Support has been notified. Please wait patiently, provide any
+                necessary details/information.
+                """
+        ).setTitle(member.getUser().getAsTag() + " Ticket")
+        .setFooter("Creator ID: " + member.getIdLong(), member.getUser().getEffectiveAvatarUrl())
+        .setTimestamp(Instant.now());
     }
 }

@@ -34,7 +34,7 @@ public class TManageCommand extends AbstractCommand {
     private void onSummonCommand(SlashContext context) {
         context.reply(EmbedUtil.getTicketSummoner(context.getSelfUser()))
                 .addActionRow(Button.secondary(
-                        "button:ticket_create",
+                        "button:create_ticket",
                         "Create Ticket")
                         .withEmoji(Emoji.fromUnicode("\uD83D\uDCE9"))
                 )
