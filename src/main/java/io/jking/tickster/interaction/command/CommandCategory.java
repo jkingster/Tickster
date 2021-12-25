@@ -48,7 +48,7 @@ public enum CommandCategory {
         return name().charAt(0) + name().substring(1).toLowerCase();
     }
 
-    public CommandCategory getCategoryByName(String name) {
+    public static CommandCategory getCategoryByName(String name) {
         for (CommandCategory commandCategory : categories) {
             if (commandCategory.name().equalsIgnoreCase(name))
                 return commandCategory;

@@ -10,7 +10,7 @@ import io.jking.tickster.interaction.core.Registry;
 public class ButtonRegistry extends Registry<AbstractButton> {
 
     public ButtonRegistry() {
-        put("button:garbage", new GarbageButton());
+        put("button:garbage:id:%s", new GarbageButton());
         put("button:create_ticket", new CreateTicketButton());
         put("button:close_ticket:id:%s", new CloseTicketButton());
         put("button:open_ticket:id:%s", new OpenTicketButton());

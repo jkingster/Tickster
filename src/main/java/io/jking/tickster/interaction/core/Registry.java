@@ -1,5 +1,6 @@
 package io.jking.tickster.interaction.core;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,4 +16,7 @@ public class Registry<T> {
         return this.registryMap.getOrDefault(key, null);
     }
 
+    public Map<String, T> getMap() {
+        return Collections.unmodifiableMap(registryMap);
+    }
 }

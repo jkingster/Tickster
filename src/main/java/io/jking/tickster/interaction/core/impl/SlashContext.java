@@ -3,6 +3,8 @@ package io.jking.tickster.interaction.core.impl;
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.core.InteractionContext;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -28,6 +30,16 @@ public class SlashContext extends InteractionContext<SlashCommandEvent> {
     public boolean getBooleanOption(String name) {
         final OptionMapping mapping = getMapping(name);
         return mapping != null && mapping.getAsBoolean();
+    }
+
+    public TextChannel getChannelOption(String name) {
+        final OptionMapping mapping = getMapping(name);
+        return mapping == null ? null : (TextChannel) mapping.getAsMessageChannel();
+    }
+
+    public Role getRoleOption(String name) {
+        final OptionMapping mapping = getMapping(name);
+        return mapping == null ? null : mapping.getAsRole();
     }
 
     public User getUserOption(String name) {
