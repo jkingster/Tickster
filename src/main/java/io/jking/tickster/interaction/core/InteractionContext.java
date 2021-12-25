@@ -1,8 +1,11 @@
 package io.jking.tickster.interaction.core;
 
 import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
+import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -116,7 +119,19 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
         return getGuild().retrieveMemberById(id);
     }
 
+    public GuildCache getGuildCache() {
+        return getCache().getGuildCache();
+    }
+
+    public TicketCache getTicketCache() {
+        return getCache().getTicketCache();
+    }
+
     public GuildDataRecord getGuildRecord() {
         return getCache().getGuildCache().fetchOrGet(getGuild().getIdLong());
+    }
+
+    public GuildTicketsRecord getTicketRecord() {
+        return getCache().getTicketCache().fetchOrGet(getTextChannel().getIdLong());
     }
 }

@@ -26,7 +26,7 @@ public class TicketCache extends Cache<Long, GuildTicketsRecord> {
     public GuildTicketsRecord fetch(Long key) {
         final GuildTicketsRecord record = getContext()
                 .selectFrom(GUILD_TICKETS)
-                .where(GUILD_TICKETS.GUILD_ID.eq(key))
+                .where(GUILD_TICKETS.CHANNEL_ID.eq(key))
                 .fetchOne();
 
         put(key, record);

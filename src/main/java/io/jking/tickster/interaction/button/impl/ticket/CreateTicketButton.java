@@ -46,9 +46,9 @@ public class CreateTicketButton extends AbstractButton {
 
         // Callback Hell (?)
         createTicketChannel(member, category).queue(created -> {
+            insertTicket(context.getCache().getTicketCache(), member, created);
             setupSupportRole(created, record);
             setupMemberPermissions(created, member).queue(success -> {
-                insertTicket(context.getCache().getTicketCache(), member, created);
                 final String buttonId = String.format("button:close_ticket:id:%s", member.getIdLong());
                 created.sendMessageEmbeds(EmbedUtil.getNewTicket(member).build())
                         .content(member.getAsMention())
@@ -56,7 +56,6 @@ public class CreateTicketButton extends AbstractButton {
                         .queue();
 
                 context.replySuccessEphemeral(Success.CREATED, created.getAsMention()).queue();
-
             }, error -> created.delete().flatMap(deleted -> context.replyErrorEphemeral(Error.UNKNOWN)).queue());
         }, error -> context.replyErrorEphemeral(Error.CUSTOM, "Could not create your ticket, sorry!"));
     }
@@ -93,8 +92,8 @@ public class CreateTicketButton extends AbstractButton {
 
         final GuildTicketsRecord record = GUILD_TICKETS.newRecord()
                 .setGuildId(guildId)
-                .setCreatorId(channelId)
-                .setChannelId(creatorId)
+                .setCreatorId(creatorId)
+                .setChannelId(channelId)
                 .setTicketTimestamp(LocalDateTime.now())
                 .setStatus(true);
 

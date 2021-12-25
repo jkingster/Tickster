@@ -21,7 +21,7 @@ public class CloseTicketButton extends AbstractButton {
         context.deferEdit().flatMap(hook -> context.getTextChannel().upsertPermissionOverride(member).setAllow(Permission.MESSAGE_SEND))
                 .queue(success -> context.getHook().retrieveOriginal().
                         flatMap(m -> m.editMessageComponents(
-                                ActionRow.of(Button.success("button:open_ticket", "Open Ticket").withEmoji(EmbedUtil.UNLOCK_EMOJI))
+                                ActionRow.of(Button.success("button:open_ticket:id:%s", "Open Ticket").withEmoji(EmbedUtil.UNLOCK_EMOJI))
                         )).queue(), error -> context.replyErrorEphemeral(Error.CUSTOM, "Could not lock ticket!"));
     }
 }
