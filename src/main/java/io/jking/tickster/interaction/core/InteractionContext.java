@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
 public class InteractionContext<T extends GenericInteractionCreateEvent> {
@@ -77,6 +78,14 @@ public class InteractionContext<T extends GenericInteractionCreateEvent> {
 
     public User getSelfUser() {
         return getSelfMember().getUser();
+    }
+
+    public MessageAction sendMessage(String content) {
+        return getTextChannel().sendMessage(content);
+    }
+
+    public MessageAction sendMessage(EmbedBuilder embed) {
+        return getTextChannel().sendMessageEmbeds(embed.build());
     }
 
     public ReplyAction reply(String content) {

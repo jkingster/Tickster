@@ -80,7 +80,7 @@ public class TManageCommand extends AbstractCommand {
                 .queue();
 
         context.replyEphemeral(EmbedUtil.getDefault().setDescription("Manage this ticket with any of the buttons below."))
-                .addActionRow(Button.secondary("manage:close_ticket", "Close Ticket"), Button.danger("manage:delete_ticket", "Delete Ticket"))
+                .addActionRow(Button.secondary("button:manage:close_ticket", "Close Ticket"), Button.danger("button:manage:delete_ticket", "Delete Ticket"))
                 .queue();
 
     }

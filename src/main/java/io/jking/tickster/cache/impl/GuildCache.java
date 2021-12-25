@@ -47,10 +47,10 @@ public class GuildCache extends Cache<Long, GuildDataRecord> {
     }
 
     @Override
-    public <T> int update(Long key, Field<T> field, T value) {
+    public <T> void update(Long key, Field<T> field, T value) {
         putUpdated(key, field, value);
-        return getContext().update(GUILD_DATA)
+        getContext().update(GUILD_DATA)
                 .set(field, value)
-                .execute();
+                .executeAsync();
     }
 }

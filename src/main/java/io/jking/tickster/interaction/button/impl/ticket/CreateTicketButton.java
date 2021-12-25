@@ -11,8 +11,8 @@ import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
-import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,8 +81,10 @@ public class CreateTicketButton extends AbstractButton {
                 .queue();
     }
 
-    private PermissionOverrideAction setupMemberPermissions(TextChannel channel, Member member) {
-        return channel.putPermissionOverride(member).setAllow(permissionList);
+    private RestAction<Void> setupMemberPermissions(TextChannel channel, Member member) {
+        final Role publicRole = channel.getGuild().getPublicRole();
+        return channel.putPermissionOverride(publicRole).setDeny(Permission.MESSAGE_SEND, Permission.VIEW_CHANNEL)
+                .and(channel.putPermissionOverride(member).setAllow(permissionList));
     }
 
     private void insertTicket(TicketCache ticketCache, Member member, TextChannel created) {

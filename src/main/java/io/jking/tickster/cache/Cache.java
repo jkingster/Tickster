@@ -48,7 +48,7 @@ public abstract class Cache<K, V extends Record> {
 
     public abstract void delete(K key);
 
-    public abstract <T> int update(K key, Field<T> field, T value);
+    public abstract <T> void update(K key, Field<T> field, T value);
 
     public Database getDatabase() {
         return database;

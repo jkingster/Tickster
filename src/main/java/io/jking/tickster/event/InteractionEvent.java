@@ -56,11 +56,11 @@ public class InteractionEvent implements EventListener {
         if (buttonId.contains("id")) {
             final String[] splitId = buttonId.split(":");
             final int length = splitId.length;
-            final long id = Long.parseLong(splitId[length - 1]);
-            if (id != event.getMember().getIdLong())
+            final String id = splitId[length - 1];
+            if (!id.equalsIgnoreCase(member.getId()))
                 return;
 
-            buttonId = buttonId.replace(String.valueOf(id), "%s");
+            buttonId = buttonId.replace(id, "%s");
         }
 
         final AbstractButton button = buttonRegistry.get(buttonId);
