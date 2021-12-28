@@ -1,6 +1,9 @@
 {
   "bot": {
-    "token": YOUR BOT TOKEN,
-    "owner_ids": BOT OWNER IDS
+    "token": ""
+  },
+  "database": {
+    "username": "",
+    "password": ""
   }
 }
