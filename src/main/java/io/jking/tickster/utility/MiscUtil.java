@@ -1,31 +1,43 @@
 package io.jking.tickster.utility;
 
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
+import net.dv8tion.jda.api.requests.ErrorResponse;
+
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+
 public final class MiscUtil {
+
     private MiscUtil() {
     }
 
-    public static boolean containsAnyOption(String option, String... options) {
-        for (String possibleOption : options) {
-            if (possibleOption.equalsIgnoreCase(option))
+    public static void sendPrivateMessage(User user, String content) {
+        user.openPrivateChannel().flatMap(channel -> channel.sendMessage(content))
+                .queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER));
+    }
+
+    public static int getDays(OffsetDateTime offsetDateTime) {
+        return (int) ChronoUnit.DAYS.between(offsetDateTime, OffsetDateTime.now());
+    }
+
+    public static boolean hasRole(Member member, long roleId) {
+        for (Role role : member.getRoles()) {
+            if (role.getIdLong() == roleId)
                 return true;
         }
         return false;
     }
 
-    public static boolean isSnowflake(String id) {
+    public static boolean isSnowflake(String snowflake) {
         try {
-            net.dv8tion.jda.api.utils.MiscUtil.parseSnowflake(id);
+            net.dv8tion.jda.api.utils.MiscUtil.parseSnowflake(snowflake);
             return true;
         } catch (Exception ignored) {
             return false;
         }
     }
 
-    public static String urlMarkdown(String url, String content) {
-        return String.format("[%s](%s)", content, url);
-    }
-
-    public static String getStatus(boolean expression) {
-        return expression ? "Open" : "Closed";
-    }
 }

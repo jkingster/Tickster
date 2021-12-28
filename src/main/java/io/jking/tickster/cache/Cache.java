@@ -1,38 +1,68 @@
 package io.jking.tickster.cache;
 
-import io.jking.tickster.cache.impl.GuildCache;
-import io.jking.tickster.cache.impl.InviteCache;
-import io.jking.tickster.cache.impl.ReportCache;
-import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.database.Database;
+import net.jodah.expiringmap.ExpirationPolicy;
+import net.jodah.expiringmap.ExpiringMap;
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record;
 
-public class Cache {
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-    private final GuildCache guildCache;
-    private final ReportCache reportCache;
-    private final TicketCache ticketCache;
-    private final InviteCache inviteCache;
+public abstract class Cache<K, V extends Record> {
+
+    private final Database database;
+    private final Map<K, V> CACHE_MAP;
 
     public Cache(Database database) {
-        this.guildCache = new GuildCache(database);
-        this.reportCache = new ReportCache(database);
-        this.ticketCache = new TicketCache(database);
-        this.inviteCache = new InviteCache();
+        this.database = database;
+        this.CACHE_MAP = ExpiringMap.builder()
+                .expiration(10, TimeUnit.MINUTES)
+                .expirationPolicy(ExpirationPolicy.ACCESSED)
+                .build();
     }
 
-    public GuildCache getGuildCache() {
-        return guildCache;
+    public void put(K key, V value) {
+        this.CACHE_MAP.put(key, value);
     }
 
-    public ReportCache getReportCache() {
-        return reportCache;
+    public V get(K key) {
+        return this.CACHE_MAP.getOrDefault(key, null);
     }
 
-    public TicketCache getTicketCache() {
-        return ticketCache;
+    public <T> void putUpdated(K key, Field<T> field, T value) {
+        final V record = get(key);
+        if (record == null)
+            return;
+
+        record.set(field, value);
+        put(key, record);
     }
 
-    public InviteCache getInviteCache() {
-        return inviteCache;
+    public abstract void insert(V value);
+
+    public abstract V fetch(K key);
+
+    public abstract V fetchOrGet(K key);
+
+    public abstract void delete(K key);
+
+    public abstract <T> void update(K key, Field<T> field, T value);
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public Map<K, V> getCacheMap() {
+        return CACHE_MAP;
+    }
+
+    public DSLContext getContext() {
+        return getDatabase().getContext();
+    }
+
+    public int size() {
+        return this.CACHE_MAP.size();
     }
 }

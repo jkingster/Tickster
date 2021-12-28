@@ -51,77 +51,77 @@ public class GuildDataRecord extends UpdatableRecordImpl<GuildDataRecord> implem
     }
 
     /**
-     * Setter for <code>public.guild_data.ticket_manager</code>.
+     * Setter for <code>public.guild_data.log_id</code>.
      */
-    public GuildDataRecord setTicketManager(Long value) {
+    public GuildDataRecord setLogId(Long value) {
         set(2, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_data.ticket_manager</code>.
+     * Getter for <code>public.guild_data.log_id</code>.
      */
-    public Long getTicketManager() {
+    public Long getLogId() {
         return (Long) get(2);
     }
 
     /**
-     * Setter for <code>public.guild_data.ticket_channel</code>.
+     * Setter for <code>public.guild_data.support_id</code>.
      */
-    public GuildDataRecord setTicketChannel(Long value) {
+    public GuildDataRecord setSupportId(Long value) {
         set(3, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_data.ticket_channel</code>.
+     * Getter for <code>public.guild_data.support_id</code>.
      */
-    public Long getTicketChannel() {
+    public Long getSupportId() {
         return (Long) get(3);
     }
 
     /**
-     * Setter for <code>public.guild_data.ticket_category</code>.
+     * Setter for <code>public.guild_data.invite_id</code>.
      */
-    public GuildDataRecord setTicketCategory(Long value) {
+    public GuildDataRecord setInviteId(Long value) {
         set(4, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_data.ticket_category</code>.
+     * Getter for <code>public.guild_data.invite_id</code>.
      */
-    public Long getTicketCategory() {
+    public Long getInviteId() {
         return (Long) get(4);
     }
 
     /**
-     * Setter for <code>public.guild_data.log_channel</code>.
+     * Setter for <code>public.guild_data.category_id</code>.
      */
-    public GuildDataRecord setLogChannel(Long value) {
+    public GuildDataRecord setCategoryId(Long value) {
         set(5, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_data.log_channel</code>.
+     * Getter for <code>public.guild_data.category_id</code>.
      */
-    public Long getLogChannel() {
+    public Long getCategoryId() {
         return (Long) get(5);
     }
 
     /**
-     * Setter for <code>public.guild_data.report_channel</code>.
+     * Setter for <code>public.guild_data.ticket_id</code>.
      */
-    public GuildDataRecord setReportChannel(Long value) {
+    public GuildDataRecord setTicketId(Long value) {
         set(6, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_data.report_channel</code>.
+     * Getter for <code>public.guild_data.ticket_id</code>.
      */
-    public Long getReportChannel() {
+    public Long getTicketId() {
         return (Long) get(6);
     }
 
@@ -160,27 +160,27 @@ public class GuildDataRecord extends UpdatableRecordImpl<GuildDataRecord> implem
 
     @Override
     public Field<Long> field3() {
-        return GuildData.GUILD_DATA.TICKET_MANAGER;
+        return GuildData.GUILD_DATA.LOG_ID;
     }
 
     @Override
     public Field<Long> field4() {
-        return GuildData.GUILD_DATA.TICKET_CHANNEL;
+        return GuildData.GUILD_DATA.SUPPORT_ID;
     }
 
     @Override
     public Field<Long> field5() {
-        return GuildData.GUILD_DATA.TICKET_CATEGORY;
+        return GuildData.GUILD_DATA.INVITE_ID;
     }
 
     @Override
     public Field<Long> field6() {
-        return GuildData.GUILD_DATA.LOG_CHANNEL;
+        return GuildData.GUILD_DATA.CATEGORY_ID;
     }
 
     @Override
     public Field<Long> field7() {
-        return GuildData.GUILD_DATA.REPORT_CHANNEL;
+        return GuildData.GUILD_DATA.TICKET_ID;
     }
 
     @Override
@@ -195,27 +195,27 @@ public class GuildDataRecord extends UpdatableRecordImpl<GuildDataRecord> implem
 
     @Override
     public Long component3() {
-        return getTicketManager();
+        return getLogId();
     }
 
     @Override
     public Long component4() {
-        return getTicketChannel();
+        return getSupportId();
     }
 
     @Override
     public Long component5() {
-        return getTicketCategory();
+        return getInviteId();
     }
 
     @Override
     public Long component6() {
-        return getLogChannel();
+        return getCategoryId();
     }
 
     @Override
     public Long component7() {
-        return getReportChannel();
+        return getTicketId();
     }
 
     @Override
@@ -230,27 +230,27 @@ public class GuildDataRecord extends UpdatableRecordImpl<GuildDataRecord> implem
 
     @Override
     public Long value3() {
-        return getTicketManager();
+        return getLogId();
     }
 
     @Override
     public Long value4() {
-        return getTicketChannel();
+        return getSupportId();
     }
 
     @Override
     public Long value5() {
-        return getTicketCategory();
+        return getInviteId();
     }
 
     @Override
     public Long value6() {
-        return getLogChannel();
+        return getCategoryId();
     }
 
     @Override
     public Long value7() {
-        return getReportChannel();
+        return getTicketId();
     }
 
     @Override
@@ -267,31 +267,31 @@ public class GuildDataRecord extends UpdatableRecordImpl<GuildDataRecord> implem
 
     @Override
     public GuildDataRecord value3(Long value) {
-        setTicketManager(value);
+        setLogId(value);
         return this;
     }
 
     @Override
     public GuildDataRecord value4(Long value) {
-        setTicketChannel(value);
+        setSupportId(value);
         return this;
     }
 
     @Override
     public GuildDataRecord value5(Long value) {
-        setTicketCategory(value);
+        setInviteId(value);
         return this;
     }
 
     @Override
     public GuildDataRecord value6(Long value) {
-        setLogChannel(value);
+        setCategoryId(value);
         return this;
     }
 
     @Override
     public GuildDataRecord value7(Long value) {
-        setReportChannel(value);
+        setTicketId(value);
         return this;
     }
 
@@ -321,15 +321,15 @@ public class GuildDataRecord extends UpdatableRecordImpl<GuildDataRecord> implem
     /**
      * Create a detached, initialised GuildDataRecord
      */
-    public GuildDataRecord(Long guildId, Long ownerId, Long ticketManager, Long ticketChannel, Long ticketCategory, Long logChannel, Long reportChannel) {
+    public GuildDataRecord(Long guildId, Long ownerId, Long logId, Long supportId, Long inviteId, Long categoryId, Long ticketId) {
         super(GuildData.GUILD_DATA);
 
         setGuildId(guildId);
         setOwnerId(ownerId);
-        setTicketManager(ticketManager);
-        setTicketChannel(ticketChannel);
-        setTicketCategory(ticketCategory);
-        setLogChannel(logChannel);
-        setReportChannel(reportChannel);
+        setLogId(logId);
+        setSupportId(supportId);
+        setInviteId(inviteId);
+        setCategoryId(categoryId);
+        setTicketId(ticketId);
     }
 }

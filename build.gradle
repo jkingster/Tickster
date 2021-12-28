@@ -20,7 +20,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
@@ -28,7 +27,7 @@ dependencies {
     jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
     implementation group: 'net.jodah', name: 'expiringmap', version: '0.5.10'
 
-    implementation("net.dv8tion:JDA:4.3.0_339") {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.2") {
         exclude group: 'club.minnced', module: 'opus-java'
     }
 
