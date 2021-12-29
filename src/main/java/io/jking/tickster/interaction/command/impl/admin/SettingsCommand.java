@@ -32,7 +32,7 @@ public class SettingsCommand extends AbstractCommand {
         final SubcommandData category = new SubcommandData("category", "Sets the category where tickets are created under.")
                 .addOption(OptionType.STRING, "ticket-category", "Category ID/Name.", true);
 
-        addSubcommands(logChannel, supportRole, inviteChannel, category);
+        addSubCommands(logChannel, supportRole, inviteChannel, category);
     }
 
     @Override

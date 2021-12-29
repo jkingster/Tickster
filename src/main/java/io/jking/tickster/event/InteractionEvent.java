@@ -16,8 +16,9 @@ import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,13 +38,17 @@ public class InteractionEvent implements EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        if (event instanceof SlashCommandEvent)
-            onSlashCommand((SlashCommandEvent) event);
-        else if (event instanceof ButtonClickEvent)
-            onButtonClick((ButtonClickEvent) event);
+        if (event instanceof SlashCommandInteractionEvent)
+            onSlashCommand((SlashCommandInteractionEvent) event);
+        else if (event instanceof ButtonInteractionEvent)
+            onButtonClick((ButtonInteractionEvent) event);
+        else if (event instanceof SelectMenuInteractionEvent)
+            onSelectMenu((SelectMenuInteractionEvent) event);
     }
 
-    private void onButtonClick(ButtonClickEvent event) {
+
+
+    private void onButtonClick(ButtonInteractionEvent event) {
         final Guild guild = event.getGuild();
         if (guild == null)
             return;
@@ -70,7 +75,7 @@ public class InteractionEvent implements EventListener {
         button.onButtonPress(new ButtonSender(event, database, cache));
     }
 
-    private void onSlashCommand(SlashCommandEvent event) {
+    private void onSlashCommand(SlashCommandInteractionEvent event) {
         if (!event.isFromGuild()) {
             final User user = event.getUser();
             MiscUtil.sendPrivateMessage(user, "I do not operate in private messages. I only work in servers!");
@@ -156,6 +161,9 @@ public class InteractionEvent implements EventListener {
         }
 
         command.onSlashCommand(new SlashSender(event, database, cache));
+    }
+
+    private void onSelectMenu(SelectMenuInteractionEvent event) {
     }
 
 }

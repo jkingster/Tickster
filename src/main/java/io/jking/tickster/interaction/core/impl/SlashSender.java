@@ -2,17 +2,15 @@ package io.jking.tickster.interaction.core.impl;
 
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.interaction.core.IReply;
+import io.jking.tickster.interaction.core.reply.ICommandReply;
 import io.jking.tickster.interaction.core.InteractionSender;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 
-public class SlashSender extends InteractionSender<SlashCommandInteractionEvent> implements IReply {
+public class SlashSender extends InteractionSender<SlashCommandInteractionEvent> implements ICommandReply<SlashCommandInteractionEvent> {
     public SlashSender(SlashCommandInteractionEvent event, Database database, CacheManager cache) {
         super(event, database, cache);
     }
@@ -55,13 +53,5 @@ public class SlashSender extends InteractionSender<SlashCommandInteractionEvent>
         return mapping == null ? 0L : mapping.getAsLong();
     }
 
-    @Override
-    public InteractionHook getHook() {
-        return getEvent().getHook();
-    }
-
-    public ReplyCallbackAction deferReply() {
-        return getEvent().deferReply();
-    }
 
 }

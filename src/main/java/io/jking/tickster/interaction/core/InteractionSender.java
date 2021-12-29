@@ -86,8 +86,6 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
         return getTextChannel().sendMessageEmbeds(embed.build());
     }
 
-
-
     public RestAction<Member> retrieveMember(long id) {
         return getGuild().retrieveMemberById(id);
     }
@@ -107,5 +105,6 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
     public GuildTicketsRecord getTicketRecord() {
         return getCache().getTicketCache().fetchOrGet(getTextChannel().getIdLong());
     }
+
 
 }

@@ -5,8 +5,9 @@ import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.concurrent.TimeUnit;
 

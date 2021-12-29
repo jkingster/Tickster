@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +22,7 @@ public class TManageCommand extends AbstractCommand {
         final SubcommandData summonData = new SubcommandData("summon", "Summons the ticket creation message.");
         final SubcommandData deleteData = new SubcommandData("delete", "Deletes the ticket you're currently viewing.");
         final SubcommandData markData = new SubcommandData("mark", "Marks that you are viewing the current ticket.");
-        addSubcommands(summonData, deleteData, markData);
+        addSubCommands(summonData, deleteData, markData);
     }
 
     @Override

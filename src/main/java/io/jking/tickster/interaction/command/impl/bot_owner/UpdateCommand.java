@@ -36,13 +36,13 @@ public class UpdateCommand extends AbstractCommand {
 
         final boolean globalOption = context.getBooleanOption("global");
         if (globalOption) {
-            context.getJDA().upsertCommand(command).queue(success -> {
+            context.getJDA().upsertCommand(command.getData()).queue(success -> {
                 context.replySuccessEphemeral(Success.UPDATE, commandName).queue();
             }, error -> {
                 context.replyErrorEphemeral(Error.UNKNOWN).queue();
             });
         } else {
-            context.getGuild().upsertCommand(command).queue(success -> {
+            context.getGuild().upsertCommand(command.getData()).queue(success -> {
                 context.replySuccessEphemeral(Success.UPDATE, commandName).queue();
             }, error -> {
                 context.replyErrorEphemeral(Error.UNKNOWN).queue();
