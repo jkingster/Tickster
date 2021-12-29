@@ -2,8 +2,8 @@ package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -20,7 +20,7 @@ public class SnowflakeCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashContext context) {
+    public void onSlashCommand(SlashSender context) {
         final String snowflakeString = context.getStringOption("snowflake");
         if (snowflakeString == null) {
             context.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();

@@ -1,9 +1,9 @@
 package io.jking.tickster.interaction.button.impl.ticket.manage;
 
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.Success;
-import io.jking.tickster.interaction.core.impl.ButtonContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -19,7 +19,7 @@ public class CloseTicketManagerButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonContext context) {
+    public void onButtonPress(ButtonSender context) {
         final GuildTicketsRecord record = context.getTicketRecord();
         if (record == null) {
             context.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket or an error occurred.").queue();

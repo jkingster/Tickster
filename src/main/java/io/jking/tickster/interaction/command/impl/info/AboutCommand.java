@@ -2,7 +2,7 @@ package io.jking.tickster.interaction.command.impl.info;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -17,7 +17,7 @@ public class AboutCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashContext context) {
+    public void onSlashCommand(SlashSender context) {
         final EmbedBuilder embedBuilder = EmbedUtil.getDefault()
                 .setThumbnail(context.getSelfUser().getEffectiveAvatarUrl())
                 .setAuthor(context.getSelfUser().getName())

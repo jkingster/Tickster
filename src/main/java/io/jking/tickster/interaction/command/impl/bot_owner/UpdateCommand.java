@@ -3,9 +3,9 @@ package io.jking.tickster.interaction.command.impl.bot_owner;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.Success;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class UpdateCommand extends AbstractCommand {
@@ -20,7 +20,7 @@ public class UpdateCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashContext context) {
+    public void onSlashCommand(SlashSender context) {
         final String commandName = context.getStringOption("command-name");
 
         if (commandName == null) {

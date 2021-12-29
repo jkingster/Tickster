@@ -1,8 +1,8 @@
 package io.jking.tickster.interaction.button.impl.ticket;
 
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.impl.ButtonContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -20,7 +20,7 @@ public class CloseTicketButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonContext context) {
+    public void onButtonPress(ButtonSender context) {
         final Member member = context.getMember();
         final TextChannel channel = context.getTextChannel();
         final String buttonId = String.format("button:open_ticket:id:%s", member.getIdLong());

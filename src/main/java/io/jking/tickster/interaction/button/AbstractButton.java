@@ -1,6 +1,6 @@
 package io.jking.tickster.interaction.button;
 
-import io.jking.tickster.interaction.core.impl.ButtonContext;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
 
 public abstract class AbstractButton {
 
@@ -10,7 +10,7 @@ public abstract class AbstractButton {
         this.buttonId = buttonId;
     }
 
-    public abstract void onButtonPress(ButtonContext context);
+    public abstract void onButtonPress(ButtonSender context);
 
     public String getButtonId() {
         return buttonId;

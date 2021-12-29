@@ -2,9 +2,9 @@ package io.jking.tickster.interaction.command.impl.admin;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.Success;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Role;
@@ -36,7 +36,7 @@ public class SettingsCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashContext context) {
+    public void onSlashCommand(SlashSender context) {
         final String subCommandName = context.getSubCommandName();
         final long guildId = context.getGuild().getIdLong();
         switch (subCommandName.toLowerCase()) {
@@ -47,7 +47,7 @@ public class SettingsCommand extends AbstractCommand {
         }
     }
 
-    private void setLogChannel(SlashContext context, long guildId) {
+    private void setLogChannel(SlashSender context, long guildId) {
         final TextChannel channel = context.getChannelOption("log-channel");
         if (channel == null) {
             context.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
@@ -63,7 +63,7 @@ public class SettingsCommand extends AbstractCommand {
         context.replySuccessEphemeral(Success.UPDATE, "Log Channel").queue();
     }
 
-    private void setSupportRole(SlashContext context, long guildId) {
+    private void setSupportRole(SlashSender context, long guildId) {
         final Role role = context.getRoleOption("support-role");
         if (role == null) {
             context.replyErrorEphemeral(Error.ARGUMENTS, this.getName());
@@ -79,7 +79,7 @@ public class SettingsCommand extends AbstractCommand {
         context.replySuccessEphemeral(Success.UPDATE, "Ticket Support Role").queue();
     }
 
-    private void setInviteChannel(SlashContext context, long guildId) {
+    private void setInviteChannel(SlashSender context, long guildId) {
         final TextChannel channel = context.getChannelOption("invite-channel");
         if (channel == null) {
             context.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
@@ -95,7 +95,7 @@ public class SettingsCommand extends AbstractCommand {
         context.replySuccessEphemeral(Success.UPDATE, "Invite Channel").queue();
     }
 
-    private void setTicketCategory(SlashContext context, long guildId) {
+    private void setTicketCategory(SlashSender context, long guildId) {
         final String categoryString = context.getStringOption("ticket-category").toLowerCase();
 
         if (MiscUtil.isSnowflake(categoryString)) {
@@ -118,7 +118,7 @@ public class SettingsCommand extends AbstractCommand {
         updateCategory(context, guildId, category.getIdLong());
     }
 
-    private void updateCategory(SlashContext context, long guildId, long categoryId) {
+    private void updateCategory(SlashSender context, long guildId, long categoryId) {
         context.getGuildCache().update(guildId, GUILD_DATA.CATEGORY_ID, categoryId);
         context.replySuccessEphemeral(Success.UPDATE, "Ticket Category").queue();
     }

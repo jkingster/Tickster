@@ -2,9 +2,9 @@ package io.jking.tickster.interaction.button.impl.ticket;
 
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.Success;
-import io.jking.tickster.interaction.core.impl.ButtonContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
@@ -28,7 +28,7 @@ public class CreateTicketButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonContext context) {
+    public void onButtonPress(ButtonSender context) {
         final Member self = context.getSelfMember();
         if (!self.hasPermission(Permission.MANAGE_CHANNEL)) {
             context.replyErrorEphemeral(

@@ -2,7 +2,7 @@ package io.jking.tickster.interaction.command.impl.info;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -15,7 +15,7 @@ public class InfoCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashContext context) {
+    public void onSlashCommand(SlashSender context) {
         final User user = context.getUserOption("user");
         if (user == null) {
             context.replyEphemeral(EmbedUtil.getMemberInfo(context.getMember())).queue();

@@ -2,8 +2,8 @@ package io.jking.tickster.interaction.command.impl.ticket_manage;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,7 +26,7 @@ public class TManageCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashContext context) {
+    public void onSlashCommand(SlashSender context) {
         final String subCommandName = context.getSubCommandName();
         if (subCommandName == null || subCommandName.isEmpty()) {
             context.replyErrorEphemeral(Error.UNKNOWN);
@@ -41,7 +41,7 @@ public class TManageCommand extends AbstractCommand {
 
     }
 
-    private void onSummonCommand(SlashContext context) {
+    private void onSummonCommand(SlashSender context) {
         context.reply(EmbedUtil.getTicketSummoner(context.getSelfUser()))
                 .addActionRow(Button.secondary(
                         "button:create_ticket",
@@ -51,7 +51,7 @@ public class TManageCommand extends AbstractCommand {
                 .queue();
     }
 
-    private void onDeleteCommand(SlashContext context) {
+    private void onDeleteCommand(SlashSender context) {
         final GuildTicketsRecord record = context.getTicketRecord();
         if (record == null) {
             context.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket to delete!").queue();
@@ -64,7 +64,7 @@ public class TManageCommand extends AbstractCommand {
                 .queue(success -> context.getTicketCache().delete(channelId));
     }
 
-    private void onMarkCommand(SlashContext context) {
+    private void onMarkCommand(SlashSender context) {
         final GuildTicketsRecord record = context.getTicketRecord();
         if (record == null) {
             context.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket to mark!").queue();

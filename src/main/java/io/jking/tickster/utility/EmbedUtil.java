@@ -1,7 +1,7 @@
 package io.jking.tickster.utility;
 
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.Success;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;

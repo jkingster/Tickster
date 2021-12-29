@@ -1,4 +1,4 @@
-package io.jking.tickster.interaction.core;
+package io.jking.tickster.interaction.core.responses;
 
 public enum Error {
 

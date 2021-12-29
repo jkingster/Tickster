@@ -7,9 +7,9 @@ import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.impl.ButtonContext;
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import io.jking.tickster.utility.MiscUtil;
@@ -67,7 +67,7 @@ public class InteractionEvent implements EventListener {
         if (button == null)
             return;
 
-        button.onButtonPress(new ButtonContext(event, database, cache));
+        button.onButtonPress(new ButtonSender(event, database, cache));
     }
 
     private void onSlashCommand(SlashCommandEvent event) {
@@ -155,7 +155,7 @@ public class InteractionEvent implements EventListener {
             return;
         }
 
-        command.onSlashCommand(new SlashContext(event, database, cache));
+        command.onSlashCommand(new SlashSender(event, database, cache));
     }
 
 }

@@ -1,6 +1,6 @@
 package io.jking.tickster.interaction.command;
 
-import io.jking.tickster.interaction.core.impl.SlashContext;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public abstract class AbstractCommand extends CommandData {
         this.permission = permission;
     }
 
-    public abstract void onSlashCommand(SlashContext context);
+    public abstract void onSlashCommand(SlashSender context);
 
     public CommandCategory getCategory() {
         return category;
