@@ -3,9 +3,9 @@ package io.jking.tickster.interaction.command.impl.bot_owner;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
-import io.jking.tickster.interaction.core.impl.SlashSender;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class UpdateCommand extends AbstractCommand {
@@ -20,32 +20,32 @@ public class UpdateCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashSender context) {
-        final String commandName = context.getStringOption("command-name");
+    public void onSlashCommand(SlashSender sender) {
+        final String commandName = sender.getStringOption("command-name");
 
         if (commandName == null) {
-            context.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
+            sender.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
             return;
         }
 
         final AbstractCommand command = registry.get(commandName);
         if (command == null) {
-            context.replyErrorEphemeral(Error.CUSTOM, "Could not find that command!").queue();
+            sender.replyErrorEphemeral(Error.CUSTOM, "Could not find that command!").queue();
             return;
         }
 
-        final boolean globalOption = context.getBooleanOption("global");
+        final boolean globalOption = sender.getBooleanOption("global");
         if (globalOption) {
-            context.getJDA().upsertCommand(command.getData()).queue(success -> {
-                context.replySuccessEphemeral(Success.UPDATE, commandName).queue();
+            sender.getJDA().upsertCommand(command.getData()).queue(success -> {
+                sender.replySuccessEphemeral(Success.UPDATE, commandName).queue();
             }, error -> {
-                context.replyErrorEphemeral(Error.UNKNOWN).queue();
+                sender.replyErrorEphemeral(Error.UNKNOWN).queue();
             });
         } else {
-            context.getGuild().upsertCommand(command.getData()).queue(success -> {
-                context.replySuccessEphemeral(Success.UPDATE, commandName).queue();
+            sender.getGuild().upsertCommand(command.getData()).queue(success -> {
+                sender.replySuccessEphemeral(Success.UPDATE, commandName).queue();
             }, error -> {
-                context.replyErrorEphemeral(Error.UNKNOWN).queue();
+                sender.replyErrorEphemeral(Error.UNKNOWN).queue();
             });
         }
     }

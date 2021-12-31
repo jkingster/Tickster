@@ -2,9 +2,9 @@ package io.jking.tickster.interaction.button.impl.ticket;
 
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.interaction.button.AbstractButton;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
-import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
@@ -28,10 +28,10 @@ public class CreateTicketButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonSender context) {
-        final Member self = context.getSelfMember();
+    public void onButtonPress(ButtonSender sender) {
+        final Member self = sender.getSelfMember();
         if (!self.hasPermission(Permission.MANAGE_CHANNEL)) {
-            context.replyErrorEphemeral(
+            sender.replyErrorEphemeral(
                     Error.PERMISSION,
                     self.getUser().getAsTag(),
                     Permission.MANAGE_CHANNEL
@@ -39,14 +39,19 @@ public class CreateTicketButton extends AbstractButton {
             return;
         }
 
-        final GuildDataRecord record = context.getGuildRecord();
+        if (checkIfTicketOpen(sender)) {
+            sender.replyErrorEphemeral(Error.CUSTOM, "You already have a ticket open!").queue();
+            return;
+        }
+
+        final GuildDataRecord record = sender.getGuildRecord();
         final long categoryId = record.getCategoryId();
-        final Category category = context.getGuild().getCategoryById(categoryId);
-        final Member member = context.getMember();
+        final Category category = sender.getGuild().getCategoryById(categoryId);
+        final Member member = sender.getMember();
 
         // Callback Hell (?)
         createTicketChannel(member, category).queue(created -> {
-            insertTicket(context.getCache().getTicketCache(), member, created);
+            insertTicket(sender.getCache().getTicketCache(), member, created);
             setupSupportRole(created, record);
             setupMemberPermissions(created, member).queue(success -> {
                 final String buttonId = String.format("button:close_ticket:id:%s", member.getIdLong());
@@ -55,9 +60,24 @@ public class CreateTicketButton extends AbstractButton {
                         .setActionRow(Button.danger(buttonId, "Close Ticket").withEmoji(EmbedUtil.LOCK_EMOJI))
                         .queue();
 
-                context.replySuccessEphemeral(Success.CREATED, created.getAsMention()).queue();
-            }, error -> created.delete().flatMap(deleted -> context.replyErrorEphemeral(Error.UNKNOWN)).queue());
-        }, error -> context.replyErrorEphemeral(Error.CUSTOM, "Could not create your ticket, sorry!"));
+                sender.replySuccessEphemeral(Success.CREATED, created.getAsMention()).queue();
+            }, error -> created.delete().flatMap(deleted -> sender.replyErrorEphemeral(Error.UNKNOWN)).queue());
+        }, error -> sender.replyErrorEphemeral(Error.CUSTOM, "Could not create your ticket, sorry!"));
+    }
+
+    private boolean checkIfTicketOpen(ButtonSender sender) {
+        final String channelName = String.format("ticket-%s", sender.getUser().getName());
+        final List<TextChannel> channelList = sender.getGuild().getTextChannelsByName(channelName, true);
+        if (channelList.isEmpty())
+            return false;
+
+        final TextChannel channel = channelList.get(0);
+        System.out.println(channel.getName());
+        final GuildTicketsRecord record = sender.getTicketCache()
+                .get(channel.getIdLong());
+
+        // TODO
+        return false;
     }
 
     private ChannelAction<TextChannel> createTicketChannel(Member member, Category category) {

@@ -21,10 +21,10 @@ public class TranscriptButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonSender context) {
-        final Member self = context.getSelfMember();
+    public void onButtonPress(ButtonSender sender) {
+        final Member self = sender.getSelfMember();
         if (!self.hasPermission(Permission.MESSAGE_HISTORY)) {
-            context.replyErrorEphemeral(
+            sender.replyErrorEphemeral(
                     Error.PERMISSION,
                     self.getUser().getAsTag(),
                     Permission.MESSAGE_HISTORY
@@ -32,11 +32,11 @@ public class TranscriptButton extends AbstractButton {
             return;
         }
 
-        context.replyEphemeral("Generating your transcript now.").queue(ignored -> {
-            context.getTextChannel().getIterableHistory().takeAsync(500)
+        sender.replyEphemeral("Generating your transcript now.").queue(ignored -> {
+            sender.getTextChannel().getIterableHistory().takeAsync(500)
                     .whenCompleteAsync((list, throwable) -> {
                         if (throwable != null) {
-                            context.replyErrorEphemeral(Error.UNKNOWN).queue();
+                            sender.replyErrorEphemeral(Error.UNKNOWN).queue();
                             return;
                         }
 
@@ -45,16 +45,16 @@ public class TranscriptButton extends AbstractButton {
                                 .collect(Collectors.toUnmodifiableList());
 
                         if (filteredList.isEmpty()) {
-                            context.replyErrorEphemeral(Error.CUSTOM, "No messages to build into a transcript.").queue();
+                            sender.replyErrorEphemeral(Error.CUSTOM, "No messages to build into a transcript.").queue();
                             return;
                         }
 
                         final String prettifiedContent = getPrettyTranscript(filteredList);
 
-                        context.getUser().openPrivateChannel().queue(channel -> {
+                        sender.getUser().openPrivateChannel().queue(channel -> {
                             final EmbedBuilder embed = EmbedUtil.getDefault()
                                     .setTimestamp(Instant.now())
-                                    .setAuthor(context.getUser().getAsTag() + ", here is your ticket transcript.")
+                                    .setAuthor(sender.getUser().getAsTag() + ", here is your ticket transcript.")
                                     .setDescription(String.format(
                                             """
                                             **Server:** %s
@@ -62,14 +62,14 @@ public class TranscriptButton extends AbstractButton {
                                                                                         
                                             Bot messages are omitted from this transcript.
                                             """,
-                                            context.getGuild().getName(), context.getTextChannel().getName()))
+                                            sender.getGuild().getName(), sender.getTextChannel().getName()))
                                     .setFooter("This transcript is not stored anywhere and cannot be accessed.");
 
 
                             channel.sendMessageEmbeds(embed.build())
                                     .addFile(prettifiedContent.getBytes(StandardCharsets.UTF_8), "transcript.txt")
                                     .queue();
-                        }, error -> context.replyErrorEphemeral(
+                        }, error -> sender.replyErrorEphemeral(
                                 Error.CUSTOM,
                                 "I cannot send you the transcript unless you have DM(s) opened!")
                                 .queue());

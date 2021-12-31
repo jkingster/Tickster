@@ -12,14 +12,14 @@ public class DeleteTicketManagerButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonSender context) {
-        final long ticketId = context.getTextChannel().getIdLong();
+    public void onButtonPress(ButtonSender sender) {
+        final long ticketId = sender.getTextChannel().getIdLong();
 
-        context.reply("Deleting this ticket now.")
+        sender.reply("Deleting this ticket now.")
                 .delay(5, TimeUnit.SECONDS)
-                .flatMap(hook -> context.getTextChannel().delete())
+                .flatMap(hook -> sender.getTextChannel().delete())
                 .queue();
 
-        context.getTicketCache().delete(ticketId);
+        sender.getTicketCache().delete(ticketId);
     }
 }

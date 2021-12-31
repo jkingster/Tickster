@@ -10,7 +10,7 @@ public abstract class AbstractButton {
         this.buttonId = buttonId;
     }
 
-    public abstract void onButtonPress(ButtonSender context);
+    public abstract void onButtonPress(ButtonSender sender);
 
     public String getButtonId() {
         return buttonId;

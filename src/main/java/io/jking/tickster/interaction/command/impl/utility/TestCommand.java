@@ -15,9 +15,9 @@ public class TestCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashSender context) {
-        final String buttonId = String.format("button:garbage:id:%s", context.getMember().getIdLong());
-        context.reply(EmbedUtil.getDefault().setDescription("I'm working.. I think? " + TimeFormat.DATE_SHORT.now()))
+    public void onSlashCommand(SlashSender sender) {
+        final String buttonId = String.format("button:garbage:id:%s", sender.getMember().getIdLong());
+        sender.reply(EmbedUtil.getDefault().setDescription("I'm working.. I think? " + TimeFormat.DATE_SHORT.now()))
                 .addActionRow(Button.secondary(buttonId, Emoji.fromUnicode("\uD83D\uDDD1")))
                 .queue();
     }

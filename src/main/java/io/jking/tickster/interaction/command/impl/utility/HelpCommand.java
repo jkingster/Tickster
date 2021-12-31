@@ -3,8 +3,8 @@ package io.jking.tickster.interaction.command.impl.utility;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
-import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.impl.SlashSender;
+import io.jking.tickster.interaction.core.responses.Error;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
@@ -19,22 +19,22 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashSender context) {
-        final String input = context.getStringOption("input");
+    public void onSlashCommand(SlashSender sender) {
+        final String input = sender.getStringOption("input");
         if (input == null) {
-            sendCategoriesMenu(CommandCategory.categories, context.getMember());
+            sendCategoriesMenu(CommandCategory.categories, sender.getMember());
             return;
         }
 
         final CommandCategory category = CommandCategory.getCategoryByName(input);
         if (category != null) {
-            sendCategoryMenu(category, context.getMember());
+            sendCategoryMenu(category, sender.getMember());
             return;
         }
 
         final AbstractCommand command = registry.get(input);
         if (command == null) {
-            context.replyErrorEphemeral(Error.CUSTOM, "You provided an invalid command name.").queue();
+            sender.replyErrorEphemeral(Error.CUSTOM, "You provided an invalid command name.").queue();
             return;
         }
 

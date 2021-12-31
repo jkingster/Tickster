@@ -20,18 +20,18 @@ public class OpenTicketButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonSender context) {
-        final Member member = context.getMember();
-        final TextChannel channel = context.getTextChannel();
+    public void onButtonPress(ButtonSender sender) {
+        final Member member = sender.getMember();
+        final TextChannel channel = sender.getTextChannel();
         final String buttonId = String.format("button:close_ticket:id:%s", member.getIdLong());
         final ActionRow actionRow = ActionRow.of(
                 Button.danger(buttonId, "Close Ticket").withEmoji(EmbedUtil.LOCK_EMOJI)
         );
 
-        context.deferEdit().flatMap(hook -> setPermissions(channel, member))
-                .flatMap(ignored -> context.getHook().retrieveOriginal())
+        sender.deferEdit().flatMap(hook -> setPermissions(channel, member))
+                .flatMap(ignored -> sender.getHook().retrieveOriginal())
                 .flatMap(message -> editComponents(message, actionRow))
-                .queue(null, error -> context.replyErrorEphemeral(Error.CUSTOM, "Could not lock ticket!"));
+                .queue(null, error -> sender.replyErrorEphemeral(Error.CUSTOM, "Could not lock ticket!"));
     }
 
     private PermissionOverrideAction setPermissions(TextChannel channel, Member member) {

@@ -12,8 +12,8 @@ public class DeleteTicketButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonSender context) {
-        context.replyEphemeral("Are you sure you want to delete this ticket?")
+    public void onButtonPress(ButtonSender sender) {
+        sender.replyEphemeral("Are you sure you want to delete this ticket?")
                 .addActionRow(
                         Button.danger("button:yes_delete", "Delete Ticket")
                 ).queue();
@@ -26,14 +26,14 @@ public class DeleteTicketButton extends AbstractButton {
         }
 
         @Override
-        public void onButtonPress(ButtonSender context) {
-            final long channelId = context.getTextChannel().getIdLong();
+        public void onButtonPress(ButtonSender sender) {
+            final long channelId = sender.getTextChannel().getIdLong();
 
-            context.replyEphemeral("Deleting this ticket now...")
+            sender.replyEphemeral("Deleting this ticket now...")
                     .delay(5, TimeUnit.SECONDS)
-                    .flatMap(ignored -> context.getTextChannel().delete())
+                    .flatMap(ignored -> sender.getTextChannel().delete())
                     .queue();
-            context.getTicketCache().delete(channelId);
+            sender.getTicketCache().delete(channelId);
         }
     }
 }

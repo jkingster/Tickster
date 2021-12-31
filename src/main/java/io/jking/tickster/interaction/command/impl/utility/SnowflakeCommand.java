@@ -2,8 +2,8 @@ package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
-import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.impl.SlashSender;
+import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -20,10 +20,10 @@ public class SnowflakeCommand extends AbstractCommand {
     }
 
     @Override
-    public void onSlashCommand(SlashSender context) {
-        final String snowflakeString = context.getStringOption("snowflake");
+    public void onSlashCommand(SlashSender sender) {
+        final String snowflakeString = sender.getStringOption("snowflake");
         if (snowflakeString == null) {
-            context.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
+            sender.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
             return;
         }
 
@@ -38,9 +38,9 @@ public class SnowflakeCommand extends AbstractCommand {
                     .addField("Snowflake", String.format("**ID:** `%s`", parsedSnowflake), true)
                     .addField("Time Created", String.format("`%s`", timestamp), true);
 
-            context.replyEphemeral(embedBuilder).queue();
+            sender.replyEphemeral(embedBuilder).queue();
         } catch (Exception e) {
-            context.replyErrorEphemeral(Error.CUSTOM, "Could not parse that snowflake, provide a valid one!").queue();
+            sender.replyErrorEphemeral(Error.CUSTOM, "Could not parse that snowflake, provide a valid one!").queue();
         }
     }
 }

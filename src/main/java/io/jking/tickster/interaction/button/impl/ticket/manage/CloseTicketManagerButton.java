@@ -21,30 +21,30 @@ public class CloseTicketManagerButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonSender context) {
-        final GuildTicketsRecord record = context.getTicketRecord();
+    public void onButtonPress(ButtonSender sender) {
+        final GuildTicketsRecord record = sender.getTicketRecord();
         if (record == null) {
-            context.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket or an error occurred.").queue();
+            sender.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket or an error occurred.").queue();
             return;
         }
 
         if (!record.getStatus()) {
-            context.replyErrorEphemeral(Error.CUSTOM, "This ticket is already closed...").queue();
+            sender.replyErrorEphemeral(Error.CUSTOM, "This ticket is already closed...").queue();
             return;
         }
 
-        final TextChannel channel = context.getTextChannel();
-        final long memberId = context.getTicketRecord().getCreatorId();
+        final TextChannel channel = sender.getTextChannel();
+        final long memberId = sender.getTicketRecord().getCreatorId();
 
-        context.deferReply().flatMap(__ -> context.retrieveMember(memberId))
+        sender.deferReply().flatMap(__ -> sender.retrieveMember(memberId))
                 .flatMap(member -> denyPermissions(channel, member))
                 .queue(success -> {
                     final long channelId = channel.getIdLong();
-                    context.getTicketCache().update(channelId, GUILD_TICKETS.STATUS, false);
+                    sender.getTicketCache().update(channelId, GUILD_TICKETS.STATUS, false);
 
-                    context.getHook().editOriginalEmbeds(EmbedUtil.getDefault()
+                    sender.getHook().editOriginalEmbeds(EmbedUtil.getDefault()
                             .setColor(EmbedUtil.SECONDARY)
-                            .setDescription(String.format("**%s** closed this ticket. It cannot be reopened.", context.getUser().getAsTag()))
+                            .setDescription(String.format("**%s** closed this ticket. It cannot be reopened.", sender.getUser().getAsTag()))
                             .setTimestamp(Instant.now())
                             .build()
                     ).queue();

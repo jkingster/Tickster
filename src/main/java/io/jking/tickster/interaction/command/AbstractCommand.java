@@ -32,7 +32,7 @@ public abstract class AbstractCommand  {
         this.data = Commands.slash(name, description);
     }
 
-    public abstract void onSlashCommand(SlashSender context);
+    public abstract void onSlashCommand(SlashSender sender);
 
     public String getName() {
         return name;
