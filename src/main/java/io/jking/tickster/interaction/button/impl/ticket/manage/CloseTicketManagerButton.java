@@ -1,12 +1,14 @@
 package io.jking.tickster.interaction.button.impl.ticket.manage;
 
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.responses.Error;
-import io.jking.tickster.interaction.core.responses.Success;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
+import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 
 import java.time.Instant;
 
@@ -32,18 +34,26 @@ public class CloseTicketManagerButton extends AbstractButton {
         }
 
         final TextChannel channel = context.getTextChannel();
-        final long channelId = channel.getIdLong();
+        final long memberId = context.getTicketRecord().getCreatorId();
 
+        context.deferReply().flatMap(__ -> context.retrieveMember(memberId))
+                .flatMap(member -> denyPermissions(channel, member))
+                .queue(success -> {
+                    final long channelId = channel.getIdLong();
+                    context.getTicketCache().update(channelId, GUILD_TICKETS.STATUS, false);
 
+                    context.getHook().editOriginalEmbeds(EmbedUtil.getDefault()
+                            .setColor(EmbedUtil.SECONDARY)
+                            .setDescription(String.format("**%s** closed this ticket. It cannot be reopened.", context.getUser().getAsTag()))
+                            .setTimestamp(Instant.now())
+                            .build()
+                    ).queue();
+                });
+    }
 
-        context.getTicketCache().update(channelId, GUILD_TICKETS.STATUS, false);
-        context.replySuccessEphemeral(Success.UPDATE, "Ticket Status").queue();
-
-        context.sendMessage(EmbedUtil.getDefault()
-                .setColor(EmbedUtil.SECONDARY)
-                .setDescription(context.getUser().getAsTag() + " closed this ticket!")
-                .setTimestamp(Instant.now())
-        ).queue();
-
+    private PermissionOverrideAction denyPermissions(TextChannel channel, Member member) {
+        return channel.putPermissionOverride(member)
+                .setAllow(Permission.VIEW_CHANNEL)
+                .deny(Permission.MESSAGE_SEND);
     }
 }

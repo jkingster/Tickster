@@ -29,7 +29,7 @@ public class DeleteTicketButton extends AbstractButton {
         public void onButtonPress(ButtonSender context) {
             final long channelId = context.getTextChannel().getIdLong();
 
-            context.replyEphemeral("Deleting your ticket now...")
+            context.replyEphemeral("Deleting this ticket now...")
                     .delay(5, TimeUnit.SECONDS)
                     .flatMap(ignored -> context.getTextChannel().delete())
                     .queue();
