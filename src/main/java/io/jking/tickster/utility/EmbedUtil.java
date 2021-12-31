@@ -17,6 +17,8 @@ public final class EmbedUtil {
 
     public static Emoji LOCK_EMOJI = Emoji.fromUnicode("\uD83D\uDD12");
     public static Emoji UNLOCK_EMOJI = Emoji.fromUnicode("\uD83D\uDD13");
+    public static Emoji TRANSCRIPT = Emoji.fromUnicode("\uD83D\uDCC3");
+    public static Emoji WARNING = Emoji.fromUnicode("\uD83D\uDED1");
 
 
     private EmbedUtil() {

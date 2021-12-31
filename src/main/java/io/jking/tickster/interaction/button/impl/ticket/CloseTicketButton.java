@@ -1,8 +1,8 @@
 package io.jking.tickster.interaction.button.impl.ticket;
 
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
+import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -23,9 +23,13 @@ public class CloseTicketButton extends AbstractButton {
     public void onButtonPress(ButtonSender context) {
         final Member member = context.getMember();
         final TextChannel channel = context.getTextChannel();
-        final String buttonId = String.format("button:open_ticket:id:%s", member.getIdLong());
+        final String openId = String.format("button:open_ticket:id:%s", member.getIdLong());
+        final String transcriptId = String.format("button:transcript:id:%s", member.getIdLong());
+        final String deleteId = String.format("button:delete_ticket:id:%s", member.getIdLong());
         final ActionRow actionRow = ActionRow.of(
-                Button.success(buttonId, "Open Ticket").withEmoji(EmbedUtil.UNLOCK_EMOJI)
+                Button.success(openId, "Open Ticket").withEmoji(EmbedUtil.UNLOCK_EMOJI),
+                Button.secondary(transcriptId, "Transcript").withEmoji(EmbedUtil.TRANSCRIPT),
+                Button.secondary(deleteId, "Delete Ticket").withEmoji(EmbedUtil.WARNING)
         );
 
         context.deferEdit().flatMap(hook -> setPermissions(channel, member))
@@ -35,7 +39,9 @@ public class CloseTicketButton extends AbstractButton {
     }
 
     private PermissionOverrideAction setPermissions(TextChannel channel, Member member) {
-        return channel.upsertPermissionOverride(member).setDeny(Permission.MESSAGE_SEND);
+        return channel.putPermissionOverride(member)
+                .setAllow(Permission.VIEW_CHANNEL)
+                .deny(Permission.MESSAGE_SEND);
     }
 
     private MessageAction editComponents(Message message, ActionRow actionRow) {

@@ -1,8 +1,8 @@
 package io.jking.tickster.interaction.button.impl.ticket;
 
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
+import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -35,7 +35,8 @@ public class OpenTicketButton extends AbstractButton {
     }
 
     private PermissionOverrideAction setPermissions(TextChannel channel, Member member) {
-        return channel.upsertPermissionOverride(member).setAllow(Permission.MESSAGE_SEND);
+        return channel.upsertPermissionOverride(member).resetDeny()
+                .setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND);
     }
 
     private MessageAction editComponents(Message message, ActionRow actionRow) {
