@@ -4,6 +4,7 @@ import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.event.GuildEvent;
 import io.jking.tickster.event.InteractionEvent;
+import io.jking.tickster.event.InviteEvent;
 import io.jking.tickster.event.JDAEvent;
 import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.CommandRegistry;
@@ -63,11 +64,18 @@ public class Tickster {
                                 cacheManager.getTicketCache(),
                                 cacheManager.getBlacklistCache()
                         ),
-                        new JDAEvent()
+                        new JDAEvent(),
+                        new InviteEvent(
+                                cacheManager.getGuildCache(),
+                                cacheManager.getInviteCache()
+                        )
                 )
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)
-                .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(
+                        GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES,
+                        GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_INVITES
+                )
                 .setMemberCachePolicy(MemberCachePolicy.OWNER)
                 .setChunkingFilter(ChunkingFilter.NONE)
                 .setActivity(Activity.watching(" for new tickets."))

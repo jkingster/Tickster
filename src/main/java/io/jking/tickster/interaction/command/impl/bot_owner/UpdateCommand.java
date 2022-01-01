@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 
 public class UpdateCommand extends AbstractCommand {
 
-    // TODO: This entire class needs a rework honestly.
-
     private final CommandRegistry registry;
 
     public UpdateCommand(CommandRegistry registry) {
