@@ -7,6 +7,9 @@ import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
+
+import java.util.List;
 
 public class UpdateCommand extends AbstractCommand {
 
@@ -17,6 +20,8 @@ public class UpdateCommand extends AbstractCommand {
         addOption(OptionType.STRING, "command-name", "Specific command to update.", true);
         addOption(OptionType.BOOLEAN, "global", "Globally or guild update.", true);
         this.registry = registry;
+        setSupportOnly(true);
+        getData().setDefaultEnabled(false);
     }
 
     @Override
@@ -36,17 +41,31 @@ public class UpdateCommand extends AbstractCommand {
 
         final boolean globalOption = sender.getBooleanOption("global");
         if (globalOption) {
+            if (command.isSupportOnly())
+                return;
+
             sender.getJDA().upsertCommand(command.getData()).queue(success -> {
                 sender.replySuccessEphemeral(Success.UPDATE, commandName).queue();
-            }, error -> {
-                sender.replyErrorEphemeral(Error.UNKNOWN).queue();
-            });
+            }, error -> sender.replyErrorEphemeral(Error.UNKNOWN).queue());
         } else {
+            if (command.isSupportOnly()) {
+                final long guildId = sender.getGuild().getIdLong();
+                if (guildId != 926623552227135528L)
+                    return;
+
+                final List<CommandPrivilege> privileges = List.of(
+                        CommandPrivilege.enableUser(769456676016226314L)
+                );
+
+                sender.getGuild().upsertCommand(command.getData())
+                        .flatMap(data -> data.updatePrivileges(sender.getGuild(), privileges))
+                        .queue(success -> sender.replySuccessEphemeral(Success.UPDATE, commandName).queue());
+                return;
+            }
+
             sender.getGuild().upsertCommand(command.getData()).queue(success -> {
                 sender.replySuccessEphemeral(Success.UPDATE, commandName).queue();
-            }, error -> {
-                sender.replyErrorEphemeral(Error.UNKNOWN).queue();
-            });
+            }, error -> sender.replyErrorEphemeral(Error.UNKNOWN).queue());
         }
     }
 }

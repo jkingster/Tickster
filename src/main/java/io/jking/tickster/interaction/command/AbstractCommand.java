@@ -9,13 +9,14 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractCommand  {
+public abstract class AbstractCommand {
 
     private final String name;
     private final String description;
     private final CommandCategory category;
     private final SlashCommandData data;
     private Permission permission = Permission.MESSAGE_SEND;
+    private boolean isSupportOnly = false;
 
     public AbstractCommand(@NotNull String name, @NotNull String description, CommandCategory category) {
         this.name = name;
@@ -68,5 +69,13 @@ public abstract class AbstractCommand  {
 
     public void addOption(OptionType optionType, String nane, String desc) {
         addOption(optionType, name, desc, false);
+    }
+
+    public boolean isSupportOnly() {
+        return isSupportOnly;
+    }
+
+    public void setSupportOnly(boolean supportOnly) {
+        isSupportOnly = supportOnly;
     }
 }
