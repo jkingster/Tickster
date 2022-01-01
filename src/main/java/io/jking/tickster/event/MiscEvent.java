@@ -4,6 +4,7 @@ import io.jking.tickster.cache.impl.BlacklistCache;
 import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.core.Tickster;
+import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -20,11 +21,13 @@ import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
 public class MiscEvent implements EventListener {
 
+    private final CommandRegistry registry;
     private final GuildCache guildCache;
     private final TicketCache ticketCache;
     private final BlacklistCache blacklistCache;
 
-    public MiscEvent(GuildCache guildCache, TicketCache ticketCache, BlacklistCache blacklistCache) {
+    public MiscEvent(CommandRegistry registry, GuildCache guildCache, TicketCache ticketCache, BlacklistCache blacklistCache) {
+        this.registry = registry;
         this.guildCache = guildCache;
         this.ticketCache = ticketCache;
         this.blacklistCache = blacklistCache;
@@ -47,6 +50,10 @@ public class MiscEvent implements EventListener {
         if (blacklistCache.isBlacklisted(guild.getIdLong())) {
             leaveGuild(guild);
             return;
+        }
+
+        if (guild.getIdLong() == 926623552227135528L) {
+            registry.getSlashCommands().forEach(command -> guild.upsertCommand(command).queue());
         }
 
         insertGuildIfNotExists(guild);

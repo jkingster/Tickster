@@ -7,14 +7,21 @@ import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
+import net.dv8tion.jda.api.requests.RestAction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UpdateCommand extends AbstractCommand {
+
+    // TODO: This entire class needs a rework honestly.
 
     private final CommandRegistry registry;
 
@@ -23,7 +30,8 @@ public class UpdateCommand extends AbstractCommand {
 
         addSubCommands(
                 new SubcommandData("delete", "Delete all global commands."),
-                new SubcommandData("update", "Update commands").addOptions(
+                new SubcommandData("all", "Update all commands globally."),
+                new SubcommandData("command", "Update commands").addOptions(
                         new OptionData(OptionType.STRING, "command-name", "Specific command to update.", true),
                         new OptionData(OptionType.BOOLEAN, "global", "Globally or guild update.", true)
                 )
@@ -39,13 +47,40 @@ public class UpdateCommand extends AbstractCommand {
         final String subCommand = sender.getSubCommandName();
         switch (subCommand.toLowerCase()) {
             case "delete" -> onDeleteAllCommand(sender);
-            case "update" -> onUpdateCommand(sender);
+            case "command" -> onUpdateCommand(sender);
+            case "all" -> onAllCommand(sender);
         }
+    }
+
+    private void onAllCommand(SlashSender sender) {
+        final List<SlashCommandData> commandList = registry.getCommands()
+                .stream()
+                .filter(abstractCommand -> !abstractCommand.isSupportOnly())
+                .map(AbstractCommand::getData)
+                .collect(Collectors.toUnmodifiableList());
+
+        if (commandList.isEmpty()) {
+            sender.replyErrorEphemeral(Error.UNKNOWN).queue();
+            return;
+        }
+
+        final List<RestAction<Command>> restList = new ArrayList<>();
+        for (SlashCommandData data : commandList) {
+            restList.add(sender.getJDA().upsertCommand(data));
+        }
+
+        RestAction.allOf(restList).queue(
+                success -> sender.replySuccessEphemeral(Success.ACTION).queue(),
+                error -> sender.replyErrorEphemeral(Error.UNKNOWN).queue()
+        );
     }
 
     private void onDeleteAllCommand(SlashSender sender) {
         sender.getJDA().updateCommands().queue(
-                success -> Tickster.getLogger().info("Deleted all global commands.")
+                success -> {
+                    sender.replySuccessEphemeral(Success.ACTION).queue();
+                    Tickster.getLogger().warn("Deleted all global commands.");
+                }
         );
     }
 
@@ -77,13 +112,11 @@ public class UpdateCommand extends AbstractCommand {
                 if (guildId != 926623552227135528L)
                     return;
 
-                final List<CommandPrivilege> privileges = List.of(
-                        CommandPrivilege.enableUser(769456676016226314L)
-                );
+                final List<CommandPrivilege> privileges = List.of(CommandPrivilege.enableUser(769456676016226314L));
 
-                sender.getGuild().upsertCommand(command.getData())
+                sender.deferReply(true).queue(deferred -> sender.getGuild().upsertCommand(command.getData())
                         .flatMap(data -> data.updatePrivileges(sender.getGuild(), privileges))
-                        .queue(success -> sender.replySuccessEphemeral(Success.UPDATE, commandName).queue());
+                        .queue(success -> sender.replySuccess(Success.UPDATE, getData().getName())));
                 return;
             }
 

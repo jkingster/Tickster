@@ -49,8 +49,19 @@ public class Tickster {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
                 .addEventListeners(
-                        new InteractionEvent(this, commandRegistry, buttonRegistry, database, cacheManager),
-                        new MiscEvent(cacheManager.getGuildCache(), cacheManager.getTicketCache(), cacheManager.getBlacklistCache())
+                        new InteractionEvent(
+                                this,
+                                commandRegistry,
+                                buttonRegistry,
+                                database,
+                                cacheManager
+                        ),
+                        new MiscEvent(
+                                commandRegistry,
+                                cacheManager.getGuildCache(),
+                                cacheManager.getTicketCache(),
+                                cacheManager.getBlacklistCache()
+                        )
                 )
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)

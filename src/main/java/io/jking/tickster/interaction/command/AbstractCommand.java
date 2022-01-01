@@ -78,4 +78,16 @@ public abstract class AbstractCommand {
     public void setSupportOnly(boolean supportOnly) {
         isSupportOnly = supportOnly;
     }
+
+    @Override
+    public String toString() {
+        return "AbstractCommand{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", category=" + category +
+                ", data=" + data +
+                ", permission=" + permission +
+                ", isSupportOnly=" + isSupportOnly +
+                '}';
+    }
 }
