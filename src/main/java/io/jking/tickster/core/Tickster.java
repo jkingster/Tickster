@@ -41,12 +41,16 @@ public class Tickster {
         this.shardManager = buildShardManager();
     }
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
     private ShardManager buildShardManager() throws LoginException {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
                 .addEventListeners(
                         new InteractionEvent(this, commandRegistry, buttonRegistry, database, cacheManager),
-                        new MiscEvent(database, cacheManager.getGuildCache(), cacheManager.getTicketCache())
+                        new MiscEvent(cacheManager.getGuildCache(), cacheManager.getTicketCache(), cacheManager.getBlacklistCache())
                 )
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)
@@ -76,9 +80,5 @@ public class Tickster {
 
     public ShardManager getShardManager() {
         return shardManager;
-    }
-
-    public static Logger getLogger() {
-        return logger;
     }
 }

@@ -1,10 +1,9 @@
 package io.jking.tickster.event;
 
+import io.jking.tickster.cache.impl.BlacklistCache;
 import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.core.Tickster;
-import io.jking.tickster.database.Database;
-import io.jking.tickster.jooq.tables.records.BlacklistDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,19 +16,18 @@ import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.TableField;
 
-import static io.jking.tickster.jooq.tables.BlacklistData.BLACKLIST_DATA;
 import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
 public class MiscEvent implements EventListener {
 
-    private final Database database;
     private final GuildCache guildCache;
     private final TicketCache ticketCache;
+    private final BlacklistCache blacklistCache;
 
-    public MiscEvent(Database database, GuildCache guildCache, TicketCache ticketCache) {
-        this.database = database;
+    public MiscEvent(GuildCache guildCache, TicketCache ticketCache, BlacklistCache blacklistCache) {
         this.guildCache = guildCache;
         this.ticketCache = ticketCache;
+        this.blacklistCache = blacklistCache;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class MiscEvent implements EventListener {
 
     private void onGuildReady(GuildReadyEvent event) {
         final Guild guild = event.getGuild();
-        if (isBlacklistedGuild(guild)) {
+        if (blacklistCache.isBlacklisted(guild.getIdLong())) {
             leaveGuild(guild);
             return;
         }
@@ -56,7 +54,7 @@ public class MiscEvent implements EventListener {
 
     private void onGuildJoin(GuildJoinEvent event) {
         final Guild guild = event.getGuild();
-        if (isBlacklistedGuild(guild)) {
+        if (blacklistCache.isBlacklisted(guild.getIdLong())) {
             leaveGuild(guild);
             return;
         }
@@ -85,16 +83,6 @@ public class MiscEvent implements EventListener {
 
         ticketCache.delete(channelId);
         checkIfDataChannel(channelId, guildId);
-    }
-
-    private boolean isBlacklistedGuild(Guild guild) {
-        final long guildId = guild.getIdLong();
-        final BlacklistDataRecord record = database.getContext()
-                .selectFrom(BLACKLIST_DATA)
-                .where(BLACKLIST_DATA.GUILD_ID.eq(guildId))
-                .fetchOne();
-
-        return record != null;
     }
 
     private void checkIfDataChannel(long guildId, long channelId) {
