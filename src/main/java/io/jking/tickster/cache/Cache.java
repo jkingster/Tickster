@@ -31,8 +31,8 @@ public abstract class Cache<K, V extends Record> {
         return this.CACHE_MAP.getOrDefault(key, null);
     }
 
-    public V remove(K key) {
-        return this.CACHE_MAP.remove(key);
+    public void remove(K key) {
+        this.CACHE_MAP.remove(key);
     }
 
     public <T> void putUpdated(K key, Field<T> field, T value) {
