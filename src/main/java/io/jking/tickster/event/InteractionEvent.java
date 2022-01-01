@@ -54,6 +54,10 @@ public class InteractionEvent implements EventListener {
         if (guild == null)
             return;
 
+        final long guildId = guild.getIdLong();
+        if (cache.getBlacklistCache().isBlacklisted(guildId))
+            return;
+
         final Member member = event.getMember();
         if (member == null)
             return;
@@ -87,6 +91,10 @@ public class InteractionEvent implements EventListener {
         if (guild == null)
             return;
 
+        final long guildId = guild.getIdLong();
+        if (cache.getBlacklistCache().isBlacklisted(guildId))
+            return;
+
         final Member member = event.getMember();
         if (member == null)
             return;
@@ -117,7 +125,6 @@ public class InteractionEvent implements EventListener {
         }
 
         if (category == CommandCategory.TICKET_MANAGEMENT && !member.hasPermission(Permission.ADMINISTRATOR)) {
-            final long guildId = event.getGuild().getIdLong();
             final GuildDataRecord record = cache.getGuildCache().fetchOrGet(guildId);
 
             if (record == null) {
