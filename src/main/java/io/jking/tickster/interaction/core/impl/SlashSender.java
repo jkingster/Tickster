@@ -31,7 +31,10 @@ public class SlashSender extends InteractionSender<SlashCommandInteractionEvent>
 
     public boolean getBooleanOption(String name) {
         final OptionMapping mapping = getMapping(name);
-        return mapping != null && mapping.getAsBoolean();
+        if (mapping == null)
+            return false;
+
+        return mapping.getAsBoolean();
     }
 
     public TextChannel getChannelOption(String name) {

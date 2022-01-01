@@ -4,9 +4,10 @@ import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.requests.restaction.interactions.MessageEditCallbackAction;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageUpdateAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 
 public interface ICommandReply<T extends GenericCommandInteractionEvent> {
@@ -55,6 +56,18 @@ public interface ICommandReply<T extends GenericCommandInteractionEvent> {
 
     default ReplyCallbackAction replyErrorEphemeral(Error error, Object... objects) {
         return replyEphemeral(EmbedUtil.getError(error, objects));
+    }
+
+    default WebhookMessageUpdateAction<Message> editOriginal(EmbedBuilder embed) {
+        return getHook().editOriginalEmbeds(embed.build());
+    }
+
+    default WebhookMessageUpdateAction<Message> editOriginalError(Error error, Object... objects) {
+        return editOriginal(EmbedUtil.getError(error, objects));
+    }
+
+    default WebhookMessageUpdateAction<Message> editOriginalSuccess(Success success, Object... objects) {
+        return editOriginal(EmbedUtil.getSuccess(success, objects));
     }
 
 }

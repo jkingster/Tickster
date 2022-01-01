@@ -112,12 +112,13 @@ public class InteractionEvent implements EventListener {
         if (command == null)
             return;
 
-        if (command.isSupportOnly() && guildId != 926623552227135528L)
-            return;
+        if (command.isSupportOnly()) {
+            if (guildId != 926623552227135528L && guildId != 819689270893346846L)
+                return;
+        }
 
         final CommandCategory category = command.getCategory();
         if (category == CommandCategory.BOT_OWNER) {
-
             final long ownerId = category.getUserId();
             if (ownerId != member.getIdLong()) {
                 event.replyEmbeds(EmbedUtil.getError(Error.ACCESS).build())

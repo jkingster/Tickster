@@ -2,6 +2,7 @@ package io.jking.tickster.interaction.command;
 
 import io.jking.tickster.interaction.command.impl.admin.SettingsCommand;
 import io.jking.tickster.interaction.command.impl.bot_owner.BlacklistCommand;
+import io.jking.tickster.interaction.command.impl.bot_owner.StatsCommand;
 import io.jking.tickster.interaction.command.impl.bot_owner.UpdateCommand;
 import io.jking.tickster.interaction.command.impl.info.AboutCommand;
 import io.jking.tickster.interaction.command.impl.info.InfoCommand;
@@ -28,6 +29,7 @@ public class CommandRegistry extends Registry<AbstractCommand> {
         put("settings", new SettingsCommand());
         put("server", new ServerCommand());
         put("blacklist", new BlacklistCommand());
+        put("stats", new StatsCommand());
     }
 
     public List<AbstractCommand> getCommandsByCategory(CommandCategory category) {

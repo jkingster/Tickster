@@ -2,8 +2,9 @@ package io.jking.tickster.core;
 
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.event.GuildEvent;
 import io.jking.tickster.event.InteractionEvent;
-import io.jking.tickster.event.MiscEvent;
+import io.jking.tickster.event.JDAEvent;
 import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -56,12 +57,13 @@ public class Tickster {
                                 database,
                                 cacheManager
                         ),
-                        new MiscEvent(
+                        new GuildEvent(
                                 commandRegistry,
                                 cacheManager.getGuildCache(),
                                 cacheManager.getTicketCache(),
                                 cacheManager.getBlacklistCache()
-                        )
+                        ),
+                        new JDAEvent()
                 )
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)

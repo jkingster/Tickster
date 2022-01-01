@@ -19,14 +19,14 @@ import org.jooq.TableField;
 
 import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
-public class MiscEvent implements EventListener {
+public class GuildEvent implements EventListener {
 
     private final CommandRegistry registry;
     private final GuildCache guildCache;
     private final TicketCache ticketCache;
     private final BlacklistCache blacklistCache;
 
-    public MiscEvent(CommandRegistry registry, GuildCache guildCache, TicketCache ticketCache, BlacklistCache blacklistCache) {
+    public GuildEvent(CommandRegistry registry, GuildCache guildCache, TicketCache ticketCache, BlacklistCache blacklistCache) {
         this.registry = registry;
         this.guildCache = guildCache;
         this.ticketCache = ticketCache;
@@ -50,10 +50,6 @@ public class MiscEvent implements EventListener {
         if (blacklistCache.isBlacklisted(guild.getIdLong())) {
             leaveGuild(guild);
             return;
-        }
-
-        if (guild.getIdLong() == 926623552227135528L) {
-            registry.getSlashCommands().forEach(command -> guild.upsertCommand(command).queue());
         }
 
         insertGuildIfNotExists(guild);
