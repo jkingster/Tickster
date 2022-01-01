@@ -4,6 +4,7 @@ import io.jking.tickster.cache.Cache;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import org.jooq.Field;
+import org.jooq.SelectConditionStep;
 
 import static io.jking.tickster.jooq.tables.GuildData.GUILD_DATA;
 
@@ -41,9 +42,15 @@ public class GuildCache extends Cache<Long, GuildDataRecord> {
 
     @Override
     public void delete(Long key) {
+        final SelectConditionStep<GuildDataRecord> selectWhereStep = getContext()
+                .selectFrom(GUILD_DATA)
+                .where(GUILD_DATA.GUILD_ID.eq(key));
+
         getContext().deleteFrom(GUILD_DATA)
-                .where(GUILD_DATA.GUILD_ID.eq(key))
+                .whereExists(selectWhereStep)
                 .executeAsync();
+
+        remove(key);
     }
 
     @Override
