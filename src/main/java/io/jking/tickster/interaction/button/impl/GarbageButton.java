@@ -11,6 +11,6 @@ public class GarbageButton extends AbstractButton {
 
     @Override
     public void onButtonPress(ButtonSender sender) {
-        sender.deferReply().flatMap(InteractionHook::deleteOriginal).queue();
+        sender.deferEdit().flatMap(InteractionHook::deleteOriginal).queue();
     }
 }
