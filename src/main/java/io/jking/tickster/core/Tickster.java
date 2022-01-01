@@ -14,12 +14,16 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 public class Tickster {
+
+    private static final Logger logger = LoggerFactory.getLogger(Tickster.class);
 
     private final Config config;
     private final CommandRegistry commandRegistry;
@@ -41,13 +45,13 @@ public class Tickster {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
                 .addEventListeners(
-                        new InteractionEvent(commandRegistry, buttonRegistry, database, cacheManager),
-                        new MiscEvent(cacheManager.getGuildCache())
+                        new InteractionEvent(this, commandRegistry, buttonRegistry, database, cacheManager),
+                        new MiscEvent(database, cacheManager.getGuildCache(), cacheManager.getTicketCache())
                 )
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .setShardsTotal(-1)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
-                .setMemberCachePolicy(MemberCachePolicy.NONE)
+                .setMemberCachePolicy(MemberCachePolicy.OWNER)
                 .setChunkingFilter(ChunkingFilter.NONE)
                 .setActivity(Activity.watching(" for new tickets."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
@@ -72,5 +76,9 @@ public class Tickster {
 
     public ShardManager getShardManager() {
         return shardManager;
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }

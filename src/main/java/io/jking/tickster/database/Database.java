@@ -17,7 +17,11 @@ import java.util.List;
 public class Database {
     private static final Logger logger = LoggerFactory.getLogger(Database.class);
 
-    private final List<String> TABLE_PATHS = List.of("sql/guild_data.sql", "sql/guild_tickets.sql");
+    private final List<String> TABLE_PATHS = List.of(
+            "sql/guild_data.sql",
+            "sql/guild_tickets.sql",
+            "sql/blacklist_data.sql"
+    );
 
     private final Hikari hikari;
     private final DSLContext context;

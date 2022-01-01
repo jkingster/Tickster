@@ -4,6 +4,7 @@
 package io.jking.tickster.jooq;
 
 
+import io.jking.tickster.jooq.tables.BlacklistData;
 import io.jking.tickster.jooq.tables.GuildData;
 import io.jking.tickster.jooq.tables.GuildTickets;
 import org.jooq.Catalog;
@@ -26,6 +27,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.blacklist_data</code>.
+     */
+    public final BlacklistData BLACKLIST_DATA = BlacklistData.BLACKLIST_DATA;
 
     /**
      * The table <code>public.guild_data</code>.
@@ -53,6 +59,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            BlacklistData.BLACKLIST_DATA,
             GuildData.GUILD_DATA,
             GuildTickets.GUILD_TICKETS
         );

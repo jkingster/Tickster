@@ -4,6 +4,7 @@
 package io.jking.tickster.jooq;
 
 
+import io.jking.tickster.jooq.tables.BlacklistData;
 import io.jking.tickster.jooq.tables.GuildData;
 import io.jking.tickster.jooq.tables.GuildTickets;
 
@@ -13,6 +14,11 @@ import io.jking.tickster.jooq.tables.GuildTickets;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.blacklist_data</code>.
+     */
+    public static final BlacklistData BLACKLIST_DATA = BlacklistData.BLACKLIST_DATA;
 
     /**
      * The table <code>public.guild_data</code>.
