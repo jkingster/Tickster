@@ -1,9 +1,10 @@
 package io.jking.tickster.interaction.core.impl;
 
 import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.core.Tickster;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.interaction.core.reply.ICommandReply;
 import io.jking.tickster.interaction.core.InteractionSender;
+import io.jking.tickster.interaction.core.reply.ICommandReply;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -11,8 +12,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class SlashSender extends InteractionSender<SlashCommandInteractionEvent> implements ICommandReply<SlashCommandInteractionEvent> {
-    public SlashSender(SlashCommandInteractionEvent event, Database database, CacheManager cache) {
-        super(event, database, cache);
+    public SlashSender(Tickster tickster, SlashCommandInteractionEvent event, Database database, CacheManager cache) {
+        super(tickster, event, database, cache);
     }
 
     private OptionMapping getMapping(String name) {

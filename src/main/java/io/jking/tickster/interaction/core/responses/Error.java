@@ -7,6 +7,7 @@ public enum Error {
     INTERACT    ("There was an interaction error, check permissions and hierarchy."),
     PERMISSION  ("**%s** is missing the required permission(s): `%s`."),
     ACCESS      ("**You are not permitted to access that command, do not try again.**"),
+    SNOWFLAKE   ("**You provided an invalid ID: `%s`."),
     CUSTOM      ("%s");
 
     private final String description;

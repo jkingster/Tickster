@@ -3,12 +3,10 @@ package io.jking.tickster.interaction.core;
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.cache.impl.TicketCache;
+import io.jking.tickster.core.Tickster;
 import io.jking.tickster.database.Database;
-import io.jking.tickster.interaction.core.responses.Error;
-import io.jking.tickster.interaction.core.responses.Success;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
-import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,18 +15,20 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 
 public class InteractionSender<T extends GenericInteractionCreateEvent> {
 
+    private final Tickster tickster;
     private final T event;
     private final Database database;
     private final CacheManager cache;
 
-    public InteractionSender(T event, Database database, CacheManager cache) {
+    public InteractionSender(Tickster tickster, T event, Database database, CacheManager cache) {
+        this.tickster = tickster;
         this.event = event;
         this.database = database;
         this.cache = cache;
@@ -106,5 +106,8 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
         return getCache().getTicketCache().fetchOrGet(getTextChannel().getIdLong());
     }
 
+    public ShardManager getShardManager() {
+        return tickster.getShardManager();
+    }
 
 }

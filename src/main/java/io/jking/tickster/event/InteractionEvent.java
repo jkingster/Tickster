@@ -1,15 +1,16 @@
 package io.jking.tickster.event;
 
 import io.jking.tickster.cache.CacheManager;
+import io.jking.tickster.core.Tickster;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.button.AbstractButton;
 import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
-import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.interaction.core.impl.SlashSender;
+import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import io.jking.tickster.utility.MiscUtil;
@@ -24,12 +25,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class InteractionEvent implements EventListener {
 
+    private final Tickster tickster;
     private final CommandRegistry commandRegistry;
     private final ButtonRegistry buttonRegistry;
     private final Database database;
     private final CacheManager cache;
 
-    public InteractionEvent(CommandRegistry commandRegistry, ButtonRegistry buttonRegistry, Database database, CacheManager cache) {
+    public InteractionEvent(Tickster tickster, CommandRegistry commandRegistry, ButtonRegistry buttonRegistry, Database database, CacheManager cache) {
+        this.tickster = tickster;
         this.commandRegistry = commandRegistry;
         this.buttonRegistry = buttonRegistry;
         this.database = database;
@@ -45,8 +48,6 @@ public class InteractionEvent implements EventListener {
         else if (event instanceof SelectMenuInteractionEvent)
             onSelectMenu((SelectMenuInteractionEvent) event);
     }
-
-
 
     private void onButtonClick(ButtonInteractionEvent event) {
         final Guild guild = event.getGuild();
@@ -72,7 +73,7 @@ public class InteractionEvent implements EventListener {
         if (button == null)
             return;
 
-        button.onButtonPress(new ButtonSender(event, database, cache));
+        button.onButtonPress(new ButtonSender(tickster, event, database, cache));
     }
 
     private void onSlashCommand(SlashCommandInteractionEvent event) {
@@ -160,7 +161,7 @@ public class InteractionEvent implements EventListener {
             return;
         }
 
-        command.onSlashCommand(new SlashSender(event, database, cache));
+        command.onSlashCommand(new SlashSender(tickster, event, database, cache));
     }
 
     private void onSelectMenu(SelectMenuInteractionEvent event) {
