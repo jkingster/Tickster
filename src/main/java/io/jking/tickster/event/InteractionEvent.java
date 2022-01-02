@@ -87,7 +87,8 @@ public class InteractionEvent implements EventListener {
         if (button == null)
             return;
 
-        button.onButtonPress(new ButtonSender(tickster, event, database, cache));
+        button.onButtonPress(new ButtonSender(tickster, event));
+        buttonRegistry.incrementUses();
     }
 
     private void onSlashCommand(SlashCommandInteractionEvent event) {
@@ -182,7 +183,8 @@ public class InteractionEvent implements EventListener {
             return;
         }
 
-        command.onSlashCommand(new SlashSender(tickster, event, database, cache));
+        command.onSlashCommand(new SlashSender(tickster, event));
+        commandRegistry.incrementUses();
     }
 
     private void onSelectMenu(SelectMenuInteractionEvent event) {
@@ -195,7 +197,8 @@ public class InteractionEvent implements EventListener {
         if (abstractSelect == null)
             return;
 
-        abstractSelect.onSelectPress(new SelectSender(tickster, event, database, cache));
+        abstractSelect.onSelectPress(new SelectSender(tickster, event));
+        selectRegistry.incrementUses();
     }
 
 }

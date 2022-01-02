@@ -5,9 +5,11 @@ import io.jking.tickster.cache.impl.GuildCache;
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.core.Tickster;
 import io.jking.tickster.database.Database;
+import io.jking.tickster.interaction.button.ButtonRegistry;
+import io.jking.tickster.interaction.command.CommandRegistry;
+import io.jking.tickster.interaction.select.SelectRegistry;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -16,7 +18,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 
@@ -24,14 +25,22 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
 
     private final Tickster tickster;
     private final T event;
+    private final ShardManager shardManager;
+    private final CommandRegistry commandRegistry;
+    private final SelectRegistry selectRegistry;
+    private final ButtonRegistry buttonRegistry;
     private final Database database;
     private final CacheManager cache;
 
-    public InteractionSender(Tickster tickster, T event, Database database, CacheManager cache) {
+    public InteractionSender(Tickster tickster, T event) {
         this.tickster = tickster;
         this.event = event;
-        this.database = database;
-        this.cache = cache;
+        this.shardManager = tickster.getShardManager();
+        this.commandRegistry = tickster.getCommandRegistry();
+        this.selectRegistry = tickster.getSelectRegistry();
+        this.buttonRegistry = tickster.getButtonRegistry();
+        this.database = tickster.getDatabase();
+        this.cache = tickster.getCacheManager();
     }
 
     public T getEvent() {
@@ -40,14 +49,6 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
 
     public Interaction getInteraction() {
         return event.getInteraction();
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    public CacheManager getCache() {
-        return cache;
     }
 
     public JDA getJDA() {
@@ -78,14 +79,6 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
         return getSelfMember().getUser();
     }
 
-    public MessageAction sendMessage(String content) {
-        return getTextChannel().sendMessage(content);
-    }
-
-    public MessageAction sendMessage(EmbedBuilder embed) {
-        return getTextChannel().sendMessageEmbeds(embed.build());
-    }
-
     public RestAction<Member> retrieveMember(long id) {
         return getGuild().retrieveMemberById(id);
     }
@@ -106,8 +99,31 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
         return getCache().getTicketCache().fetchOrGet(getTextChannel().getIdLong());
     }
 
-    public ShardManager getShardManager() {
-        return tickster.getShardManager();
+    public Tickster getTickster() {
+        return tickster;
     }
 
+    public ShardManager getShardManager() {
+        return shardManager;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    public SelectRegistry getSelectRegistry() {
+        return selectRegistry;
+    }
+
+    public ButtonRegistry getButtonRegistry() {
+        return buttonRegistry;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public CacheManager getCache() {
+        return cache;
+    }
 }

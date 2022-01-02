@@ -96,6 +96,14 @@ public class Tickster {
         return commandRegistry;
     }
 
+    public ButtonRegistry getButtonRegistry() {
+        return buttonRegistry;
+    }
+
+    public SelectRegistry getSelectRegistry() {
+        return selectRegistry;
+    }
+
     public Database getDatabase() {
         return database;
     }

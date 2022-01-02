@@ -2,15 +2,11 @@ package io.jking.tickster.interaction.command;
 
 import io.jking.tickster.interaction.command.impl.admin.SettingsCommand;
 import io.jking.tickster.interaction.command.impl.bot_owner.BlacklistCommand;
-import io.jking.tickster.interaction.command.impl.bot_owner.StatsCommand;
 import io.jking.tickster.interaction.command.impl.bot_owner.UpdateCommand;
 import io.jking.tickster.interaction.command.impl.info.AboutCommand;
 import io.jking.tickster.interaction.command.impl.info.InfoCommand;
 import io.jking.tickster.interaction.command.impl.ticket_manage.TManageCommand;
-import io.jking.tickster.interaction.command.impl.utility.HelpCommand;
-import io.jking.tickster.interaction.command.impl.utility.ServerCommand;
-import io.jking.tickster.interaction.command.impl.utility.SnowflakeCommand;
-import io.jking.tickster.interaction.command.impl.utility.TestCommand;
+import io.jking.tickster.interaction.command.impl.utility.*;
 import io.jking.tickster.interaction.core.Registry;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
