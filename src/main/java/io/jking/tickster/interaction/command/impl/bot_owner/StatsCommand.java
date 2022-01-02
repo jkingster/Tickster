@@ -24,7 +24,9 @@ public class StatsCommand extends AbstractCommand {
         final long minutes = TimeUnit.MILLISECONDS.toMinutes(upTime);
         final long seconds = TimeUnit.MILLISECONDS.toSeconds(upTime);
 
-        sender.replyEphemeral(String.format("**Uptime:** `%s days (%02d:%02d:%02d)`",
-                days, hours, minutes, seconds)).queue();
+        sender.replyEphemeralFormat(
+                "**Uptime:** `%s days (%02d:%02d:%02d)`",
+                days, hours, minutes, seconds
+        ).queue();
     }
 }

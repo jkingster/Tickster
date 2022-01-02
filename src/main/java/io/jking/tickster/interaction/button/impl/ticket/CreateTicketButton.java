@@ -8,6 +8,7 @@ import io.jking.tickster.interaction.core.responses.Success;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
+import io.jking.tickster.utility.EmojiUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -57,7 +58,7 @@ public class CreateTicketButton extends AbstractButton {
                 final String buttonId = String.format("button:close_ticket:id:%s", member.getIdLong());
                 created.sendMessageEmbeds(EmbedUtil.getNewTicket(member).build())
                         .content(member.getAsMention())
-                        .setActionRow(Button.danger(buttonId, "Close Ticket").withEmoji(EmbedUtil.LOCK_EMOJI))
+                        .setActionRow(Button.danger(buttonId, "Close Ticket").withEmoji(EmojiUtil.LOCK_EMOJI))
                         .queue();
 
                 sender.replySuccessEphemeral(Success.CREATED, created.getAsMention()).queue();

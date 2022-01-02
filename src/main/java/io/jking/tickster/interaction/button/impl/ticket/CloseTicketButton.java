@@ -3,7 +3,7 @@ package io.jking.tickster.interaction.button.impl.ticket;
 import io.jking.tickster.interaction.button.AbstractButton;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.interaction.core.responses.Error;
-import io.jking.tickster.utility.EmbedUtil;
+import io.jking.tickster.utility.EmojiUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -27,9 +27,9 @@ public class CloseTicketButton extends AbstractButton {
         final String transcriptId = String.format("button:transcript:id:%s", member.getIdLong());
         final String deleteId = String.format("button:delete_ticket:id:%s", member.getIdLong());
         final ActionRow actionRow = ActionRow.of(
-                Button.success(openId, "Open Ticket").withEmoji(EmbedUtil.UNLOCK_EMOJI),
-                Button.secondary(transcriptId, "Transcript").withEmoji(EmbedUtil.TRANSCRIPT),
-                Button.secondary(deleteId, "Delete Ticket").withEmoji(EmbedUtil.WARNING)
+                Button.success(openId, "Open Ticket").withEmoji(EmojiUtil.UNLOCK_EMOJI),
+                Button.secondary(transcriptId, "Transcript").withEmoji(EmojiUtil.TRANSCRIPT),
+                Button.secondary(deleteId, "Delete Ticket").withEmoji(EmojiUtil.WARNING)
         );
 
         sender.deferEdit().flatMap(hook -> setPermissions(channel, member))

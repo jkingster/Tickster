@@ -1,6 +1,8 @@
 package io.jking.tickster.interaction.command;
 
 import io.jking.tickster.interaction.core.impl.SlashSender;
+import io.jking.tickster.utility.EmbedUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -15,6 +17,7 @@ public abstract class AbstractCommand {
     private final String description;
     private final CommandCategory category;
     private final SlashCommandData data;
+
     private Permission permission = Permission.MESSAGE_SEND;
     private boolean isSupportOnly = false;
 
@@ -77,6 +80,25 @@ public abstract class AbstractCommand {
 
     public void setSupportOnly(boolean supportOnly) {
         isSupportOnly = supportOnly;
+    }
+
+    public EmbedBuilder getAsEmbed() {
+        return EmbedUtil.getDefault()
+                .setTitle("Command Information")
+                .setAuthor(this.getName())
+                .setFooter("Required Permission(s): " + getPermission())
+                .setDescription(String.format(
+                        """
+                        **Description:** `%s`
+                        **Category:**  %s `%s`
+                        **Usage:** ```%s```
+                     
+                        """,
+                        getDescription(),
+                        getCategory().getEmoji(),
+                        getCategory().getPrettifiedName(),
+                        "No provided usage.")
+                );
     }
 
     @Override

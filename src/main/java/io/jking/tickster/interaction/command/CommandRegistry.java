@@ -7,6 +7,7 @@ import io.jking.tickster.interaction.command.impl.bot_owner.UpdateCommand;
 import io.jking.tickster.interaction.command.impl.info.AboutCommand;
 import io.jking.tickster.interaction.command.impl.info.InfoCommand;
 import io.jking.tickster.interaction.command.impl.ticket_manage.TManageCommand;
+import io.jking.tickster.interaction.command.impl.utility.HelpCommand;
 import io.jking.tickster.interaction.command.impl.utility.ServerCommand;
 import io.jking.tickster.interaction.command.impl.utility.SnowflakeCommand;
 import io.jking.tickster.interaction.command.impl.utility.TestCommand;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class CommandRegistry extends Registry<AbstractCommand> {
 
     public CommandRegistry() {
+        put("help", new HelpCommand(this));
         put("update", new UpdateCommand(this));
         put("info", new InfoCommand());
         put("about", new AboutCommand());
@@ -37,14 +39,17 @@ public class CommandRegistry extends Registry<AbstractCommand> {
                 .values()
                 .stream()
                 .filter(abstractCommand -> abstractCommand.getCategory() == category)
+                .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<AbstractCommand> getCommands(Member member) {
+    public List<AbstractCommand> getCommands(Member member, CommandCategory category) {
         return getMap()
                 .values()
                 .stream()
+                .filter(abstractCommand -> abstractCommand.getCategory() == category)
                 .filter(abstractCommand -> member.hasPermission(abstractCommand.getPermission()))
+                .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -53,6 +58,7 @@ public class CommandRegistry extends Registry<AbstractCommand> {
                 .values()
                 .stream()
                 .map(AbstractCommand::getData)
+                .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -60,6 +66,8 @@ public class CommandRegistry extends Registry<AbstractCommand> {
         return getMap()
                 .values()
                 .stream()
+                .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
+
 }

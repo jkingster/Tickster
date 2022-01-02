@@ -3,7 +3,7 @@ package io.jking.tickster.interaction.button.impl.ticket;
 import io.jking.tickster.interaction.button.AbstractButton;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.interaction.core.responses.Error;
-import io.jking.tickster.utility.EmbedUtil;
+import io.jking.tickster.utility.EmojiUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -25,7 +25,7 @@ public class OpenTicketButton extends AbstractButton {
         final TextChannel channel = sender.getTextChannel();
         final String buttonId = String.format("button:close_ticket:id:%s", member.getIdLong());
         final ActionRow actionRow = ActionRow.of(
-                Button.danger(buttonId, "Close Ticket").withEmoji(EmbedUtil.LOCK_EMOJI)
+                Button.danger(buttonId, "Close Ticket").withEmoji(EmojiUtil.LOCK_EMOJI)
         );
 
         sender.deferEdit().flatMap(hook -> setPermissions(channel, member))

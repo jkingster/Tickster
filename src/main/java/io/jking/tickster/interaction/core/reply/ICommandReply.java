@@ -42,6 +42,10 @@ public interface ICommandReply<T extends GenericCommandInteractionEvent> {
         return getEvent().replyEmbeds(embed.build()).setEphemeral(true);
     }
 
+    default ReplyCallbackAction replyEphemeralFormat(String pattern, Object... objects) {
+        return replyEphemeral(String.format(pattern, objects));
+    }
+
     default ReplyCallbackAction replySuccess(Success success, Object... objects) {
         return reply(EmbedUtil.getSuccess(success, objects));
     }

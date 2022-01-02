@@ -3,7 +3,6 @@ package io.jking.tickster.utility;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
@@ -14,12 +13,6 @@ import java.time.Instant;
 public final class EmbedUtil {
     public static Color PRIMARY = Color.decode("#FF7300");
     public static Color SECONDARY = Color.decode("#008DF5").darker();
-
-    public static Emoji LOCK_EMOJI = Emoji.fromUnicode("\uD83D\uDD12");
-    public static Emoji UNLOCK_EMOJI = Emoji.fromUnicode("\uD83D\uDD13");
-    public static Emoji TRANSCRIPT = Emoji.fromUnicode("\uD83D\uDCC3");
-    public static Emoji WARNING = Emoji.fromUnicode("\uD83D\uDED1");
-
 
     private EmbedUtil() {
 

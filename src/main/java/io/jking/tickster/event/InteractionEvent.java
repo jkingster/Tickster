@@ -9,8 +9,11 @@ import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
+import io.jking.tickster.interaction.core.impl.SelectSender;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.select.AbstractSelect;
+import io.jking.tickster.interaction.select.SelectRegistry;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import io.jking.tickster.utility.MiscUtil;
@@ -28,13 +31,20 @@ public class InteractionEvent implements EventListener {
     private final Tickster tickster;
     private final CommandRegistry commandRegistry;
     private final ButtonRegistry buttonRegistry;
+    private final SelectRegistry selectRegistry;
     private final Database database;
     private final CacheManager cache;
 
-    public InteractionEvent(Tickster tickster, CommandRegistry commandRegistry, ButtonRegistry buttonRegistry, Database database, CacheManager cache) {
+    public InteractionEvent(Tickster tickster,
+                            CommandRegistry commandRegistry,
+                            ButtonRegistry buttonRegistry,
+                            SelectRegistry selectRegistry,
+                            Database database,
+                            CacheManager cache) {
         this.tickster = tickster;
         this.commandRegistry = commandRegistry;
         this.buttonRegistry = buttonRegistry;
+        this.selectRegistry = selectRegistry;
         this.database = database;
         this.cache = cache;
     }
@@ -176,6 +186,16 @@ public class InteractionEvent implements EventListener {
     }
 
     private void onSelectMenu(SelectMenuInteractionEvent event) {
+        final Guild guild = event.getGuild();
+        if (guild == null)
+            return;
+
+        final String componentId = event.getComponentId();
+        final AbstractSelect abstractSelect = selectRegistry.get(componentId);
+        if (abstractSelect == null)
+            return;
+
+        abstractSelect.onSelectPress(new SelectSender(tickster, event, database, cache));
     }
 
 }

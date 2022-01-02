@@ -8,6 +8,7 @@ import io.jking.tickster.event.InviteEvent;
 import io.jking.tickster.event.JDAEvent;
 import io.jking.tickster.interaction.button.ButtonRegistry;
 import io.jking.tickster.interaction.command.CommandRegistry;
+import io.jking.tickster.interaction.select.SelectRegistry;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -30,6 +31,7 @@ public class Tickster {
     private final Config config;
     private final CommandRegistry commandRegistry;
     private final ButtonRegistry buttonRegistry;
+    private final SelectRegistry selectRegistry;
     private final Database database;
     private final CacheManager cacheManager;
     private final ShardManager shardManager;
@@ -38,6 +40,7 @@ public class Tickster {
         this.config = new Config(configPath);
         this.commandRegistry = new CommandRegistry();
         this.buttonRegistry = new ButtonRegistry();
+        this.selectRegistry = new SelectRegistry(commandRegistry);
         this.database = new Database(config);
         this.cacheManager = new CacheManager(database);
         this.shardManager = buildShardManager();
@@ -51,10 +54,12 @@ public class Tickster {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
                 .addEventListeners(
+                        new JDAEvent(commandRegistry),
                         new InteractionEvent(
                                 this,
                                 commandRegistry,
                                 buttonRegistry,
+                                selectRegistry,
                                 database,
                                 cacheManager
                         ),
@@ -64,7 +69,6 @@ public class Tickster {
                                 cacheManager.getTicketCache(),
                                 cacheManager.getBlacklistCache()
                         ),
-                        new JDAEvent(),
                         new InviteEvent(
                                 cacheManager.getGuildCache(),
                                 cacheManager.getInviteCache()

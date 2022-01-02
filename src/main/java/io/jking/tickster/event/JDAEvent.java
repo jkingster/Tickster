@@ -1,11 +1,19 @@
 package io.jking.tickster.event;
 
 import io.jking.tickster.core.Tickster;
+import io.jking.tickster.interaction.command.CommandRegistry;
 import net.dv8tion.jda.api.events.*;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 
 public class JDAEvent implements EventListener {
+
+    private final CommandRegistry registry;
+
+    public JDAEvent(CommandRegistry registry) {
+        this.registry = registry;
+    }
+
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof ReadyEvent)
@@ -32,5 +40,8 @@ public class JDAEvent implements EventListener {
 
     private void onReady(ReadyEvent event) {
         Tickster.getLogger().info("Tickster Ready");
+        event.getJDA().updateCommands()
+                .addCommands(registry.getSlashCommands())
+                .queue(success -> Tickster.getLogger().info("Registered Commands Globally."));
     }
 }
