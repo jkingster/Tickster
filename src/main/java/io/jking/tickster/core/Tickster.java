@@ -54,7 +54,7 @@ public class Tickster {
         final String token = config.getString("token");
         return DefaultShardManagerBuilder.createDefault(token)
                 .addEventListeners(
-                        new JDAEvent(commandRegistry),
+                        new JDAEvent(this),
                         new InteractionEvent(
                                 this,
                                 commandRegistry,
@@ -67,7 +67,8 @@ public class Tickster {
                                 commandRegistry,
                                 cacheManager.getGuildCache(),
                                 cacheManager.getTicketCache(),
-                                cacheManager.getBlacklistCache()
+                                cacheManager.getBlacklistCache(),
+                                cacheManager.getInviteCache()
                         ),
                         new InviteEvent(
                                 cacheManager.getGuildCache(),
@@ -78,7 +79,7 @@ public class Tickster {
                 .setShardsTotal(-1)
                 .enableIntents(
                         GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES,
-                        GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_INVITES
+                        GatewayIntent.GUILD_MEMBERS
                 )
                 .setMemberCachePolicy(MemberCachePolicy.OWNER)
                 .setChunkingFilter(ChunkingFilter.NONE)

@@ -40,7 +40,9 @@ public class CreateTicketButton extends AbstractButton {
             return;
         }
 
-        if (checkIfTicketOpen(sender)) {
+        final Member member = sender.getMember();
+
+        if (hasOpenTicket(sender, member)) {
             sender.replyErrorEphemeral(Error.CUSTOM, "You already have a ticket open!").queue();
             return;
         }
@@ -48,9 +50,8 @@ public class CreateTicketButton extends AbstractButton {
         final GuildDataRecord record = sender.getGuildRecord();
         final long categoryId = record.getCategoryId();
         final Category category = sender.getGuild().getCategoryById(categoryId);
-        final Member member = sender.getMember();
 
-        // Callback Hell (?)
+        // Callback Hell (!!!!)
         createTicketChannel(member, category).queue(created -> {
             insertTicket(sender.getCache().getTicketCache(), member, created);
             setupSupportRole(created, record);
@@ -66,19 +67,15 @@ public class CreateTicketButton extends AbstractButton {
         }, error -> sender.replyErrorEphemeral(Error.CUSTOM, "Could not create your ticket, sorry!"));
     }
 
-    private boolean checkIfTicketOpen(ButtonSender sender) {
-        final String channelName = String.format("ticket-%s", sender.getUser().getName());
-        final List<TextChannel> channelList = sender.getGuild().getTextChannelsByName(channelName, true);
-        if (channelList.isEmpty())
-            return false;
-
-        final TextChannel channel = channelList.get(0);
-        System.out.println(channel.getName());
-        final GuildTicketsRecord record = sender.getTicketCache()
-                .get(channel.getIdLong());
-
-        // TODO
-        return false;
+    private boolean hasOpenTicket(ButtonSender sender, Member member) {
+        final long memberId = member.getIdLong();
+        return sender.getDatabase().
+                getContext().
+                fetchExists(
+                        GUILD_TICKETS,
+                        GUILD_TICKETS.CREATOR_ID.eq(memberId)
+                        .and(GUILD_TICKETS.STATUS.eq(true))
+                );
     }
 
     private ChannelAction<TextChannel> createTicketChannel(Member member, Category category) {

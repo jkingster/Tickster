@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -31,28 +30,12 @@ public class InviteEvent implements EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        if (event instanceof GuildReadyEvent)
-            insertInvites(((GuildReadyEvent) event).getGuild());
-        else if (event instanceof GuildInviteCreateEvent)
+        if (event instanceof GuildInviteCreateEvent)
             createInvite((GuildInviteCreateEvent) event);
         else if (event instanceof GuildInviteDeleteEvent)
             deleteInvite((GuildInviteDeleteEvent) event);
         else if (event instanceof GuildMemberJoinEvent)
             onMemberJoin((GuildMemberJoinEvent) event);
-    }
-
-    private void insertInvites(Guild guild) {
-        if (!checkPermissions(guild.getSelfMember()))
-            return;
-
-        if (getInviteChannel(guild) == null)
-            return;
-
-        guild.retrieveInvites().queue(invites -> {
-            for (Invite invite : invites) {
-                inviteCache.put(invite);
-            }
-        });
     }
 
     private void createInvite(GuildInviteCreateEvent event) {

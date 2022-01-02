@@ -2,12 +2,13 @@ package io.jking.tickster.event;
 
 import io.jking.tickster.cache.impl.BlacklistCache;
 import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.InviteCache;
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.core.Tickster;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -25,12 +26,18 @@ public class GuildEvent implements EventListener {
     private final GuildCache guildCache;
     private final TicketCache ticketCache;
     private final BlacklistCache blacklistCache;
+    private final InviteCache inviteCache;
 
-    public GuildEvent(CommandRegistry registry, GuildCache guildCache, TicketCache ticketCache, BlacklistCache blacklistCache) {
+    public GuildEvent(CommandRegistry registry,
+                      GuildCache guildCache,
+                      TicketCache ticketCache,
+                      BlacklistCache blacklistCache,
+                      InviteCache inviteCache) {
         this.registry = registry;
         this.guildCache = guildCache;
         this.ticketCache = ticketCache;
         this.blacklistCache = blacklistCache;
+        this.inviteCache = inviteCache;
     }
 
     @Override
@@ -52,9 +59,9 @@ public class GuildEvent implements EventListener {
             return;
         }
 
+        insertInviteCache(guild);
         insertGuildIfNotExists(guild);
     }
-
     private void onGuildJoin(GuildJoinEvent event) {
         final Guild guild = event.getGuild();
         if (blacklistCache.isBlacklisted(guild.getIdLong())) {
@@ -86,6 +93,28 @@ public class GuildEvent implements EventListener {
 
         ticketCache.delete(channelId);
         checkIfDataChannel(channelId, guildId);
+    }
+
+
+    private void insertInviteCache(Guild guild) {
+        final Member self = guild.getSelfMember();
+        if (!self.hasPermission(Permission.MANAGE_SERVER))
+            return;
+
+        final GuildDataRecord record = guildCache.fetchOrGet(guild.getIdLong());
+        if (record == null)
+            return;
+
+        final long inviteId = record.getInviteId();
+        final TextChannel channel = guild.getTextChannelById(inviteId);
+        if (channel == null)
+            return;
+
+        guild.retrieveInvites().queue(invites -> {
+            for (Invite invite : invites) {
+                inviteCache.put(invite);
+            }
+        });
     }
 
     private void checkIfDataChannel(long guildId, long channelId) {
