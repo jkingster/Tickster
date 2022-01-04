@@ -41,6 +41,9 @@ public class SettingsCommand extends AbstractCommand {
         final SubcommandData category = new SubcommandData("category", "Sets the category where tickets are created under.")
                 .addOption(OptionType.STRING, "ticket-category", "Category ID/Name.", true);
 
+        final SubcommandData ticket = new SubcommandData("ticket", "Sets the ticket creation channel.")
+                .addOption(OptionType.CHANNEL, "ticket-channel", "Specific channel.", true);
+
         addSubcommands(logChannel, supportRole, inviteChannel, category);
     }
 
@@ -53,6 +56,7 @@ public class SettingsCommand extends AbstractCommand {
             case "support" -> setSupportRole(sender, guildId);
             case "invite" -> setInviteChannel(sender, guildId);
             case "category" -> setTicketCategory(sender, guildId);
+            case "ticket" ->  setTicketChannel(sender, guildId);
         }
     }
 
@@ -125,6 +129,22 @@ public class SettingsCommand extends AbstractCommand {
 
         final Category category = categoryList.get(0);
         updateCategory(sender, guildId, category.getIdLong());
+    }
+
+    private void setTicketChannel(SlashSender sender, long guildId) {
+        final TextChannel channel = sender.getChannelOption("ticket-channel");
+        if (channel == null) {
+            sender.reply(Error.ARGUMENTS, this.getName()).queue();
+            return;
+        }
+
+        if (!channel.canTalk()) {
+            sender.reply(Error.CUSTOM, "I cannot talk in that channel, give me permissions and try again!").queue();
+            return;
+        }
+
+        sender.getGuildCache().update(guildId, GUILD_DATA.TICKET_ID, channel.getIdLong());
+        sender.reply(Success.UPDATE, "Ticket Channel").queue();
     }
 
     private void updateCategory(SlashSender sender, long guildId, long categoryId) {

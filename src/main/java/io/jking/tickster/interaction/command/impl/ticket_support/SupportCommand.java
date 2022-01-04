@@ -10,6 +10,7 @@ import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -52,6 +53,17 @@ public class SupportCommand extends AbstractCommand {
     }
 
     private void onSummonCommand(SlashSender sender) {
+        final long ticketChannelId = sender.getGuildRecord().getTicketId();
+        final TextChannel channel = sender.getGuild().getTextChannelById(ticketChannelId);
+        if (channel != null) {
+            sender.reply(
+                    Error.CUSTOM,
+                    String.format("The ticket channel is already configured for this server." +
+                            "\nSee %s. To reset it, use /settings.", channel.getAsMention())
+            ).queue();
+            return;
+        }
+
         sender.reply(EmbedUtil.getTicketSummoner(sender.getSelfUser()))
                 .addActionRow(Button.secondary(
                         "button:create_ticket",
