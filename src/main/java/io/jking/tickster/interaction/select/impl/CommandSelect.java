@@ -1,12 +1,11 @@
 package io.jking.tickster.interaction.select.impl;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
-import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.SelectSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.select.AbstractSelect;
-import net.dv8tion.jda.api.Permission;
+import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 
@@ -51,25 +50,22 @@ public class CommandSelect extends AbstractSelect {
         }
 
         final Member member = sender.getMember();
-        if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-            if (!CommandCategory.TICKET_MANAGEMENT.isSupport(sender.getGuildRecord(), member)) {
-                sender.replyErrorEphemeral(
-                        Error.CUSTOM,
-                        "You lack the ticket support role to view these commands."
-                ).queue();
+        if (command.isSupportCommand()) {
+            if (!MiscUtil.isSupport(sender.getGuildRecord(), member)) {
+                sender.replyErrorEphemeral(Error.CUSTOM, "You do not have the support role, you cannot view that command!").queue();
                 return;
             }
-
-            if (!member.hasPermission(command.getPermission())) {
-                sender.replyErrorEphemeral(
-                        Error.PERMISSION,
-                        member.getUser().getAsTag(),
-                        command.getPermission()
-                ).queue();
-                return;
-            }
-
         }
+
+        if (!member.hasPermission(command.getPermission())) {
+            sender.replyErrorEphemeral(
+                    Error.PERMISSION,
+                    member.getUser().getAsTag(),
+                    command.getPermission()
+            ).queue();
+            return;
+        }
+
 
         sender.deferEdit().queue(deferred -> sender.getHook().editOriginalEmbeds(command.getAsEmbed().build())
                 .setActionRows(Collections.emptyList())

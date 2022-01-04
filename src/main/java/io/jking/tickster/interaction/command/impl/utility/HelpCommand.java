@@ -2,12 +2,16 @@ package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.jooq.tables.records.GuildDataRecord;
+import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 
@@ -18,16 +22,23 @@ public class HelpCommand extends AbstractCommand {
     private final CommandRegistry registry;
 
     public HelpCommand(CommandRegistry registry) {
-        super("help", "Displays permitted commands.", CommandCategory.UTILITY);
-        addOption(OptionType.STRING, "input", "Command name/category.", false);
+        super(
+                "help",
+                "Displays a list of categories/commands.",
+                Permission.MESSAGE_SEND,
+                CommandCategory.UTILITY,
+                CommandFlag.ofEphemeral()
+        );
         this.registry = registry;
+
+        addOption(OptionType.STRING, "input", "Command name/category.", false);
     }
 
     @Override
     public void onSlashCommand(SlashSender sender) {
         final String input = sender.getStringOption("input");
         if (input == null) {
-            sendCategoriesMenu(sender, CommandCategory.getCategories(sender.getGuildRecord(), sender.getMember()));
+            sendCategoriesMenu(sender, CommandCategory.getCategories());
             return;
         }
 
@@ -39,7 +50,7 @@ public class HelpCommand extends AbstractCommand {
 
         final AbstractCommand command = registry.get(input);
         if (command == null) {
-            sender.replyErrorEphemeral(
+            sender.reply(
                     Error.CUSTOM,
                     "You provided an invalid command name."
             ).queue();
@@ -51,25 +62,30 @@ public class HelpCommand extends AbstractCommand {
 
     private void sendCategoriesMenu(SlashSender sender, CommandCategory[] categories) {
         if (categories.length == 0) {
-            sender.replyErrorEphemeral(
+            sender.reply(
                     Error.CUSTOM,
                     "You are not permitted to view any command categories."
             ).queue();
             return;
         }
 
-        final SelectMenu.Builder menu = getCategoriesMenu(categories);
-        sender.replyEphemeral("Select any category to get started.")
+        final SelectMenu.Builder menu = getCategoriesMenu(sender.getMember().getIdLong(), categories);
+        sender.reply("Select any category to get started.")
                 .addActionRow(menu.build())
                 .queue();
     }
 
-    private SelectMenu.Builder getCategoriesMenu(CommandCategory[] categories) {
+    private SelectMenu.Builder getCategoriesMenu(long memberId, CommandCategory[] categories) {
         final SelectMenu.Builder builder = SelectMenu.create("menu:help_categories");
         builder.setPlaceholder("Pick a command category to get started!");
         for (CommandCategory category : categories) {
             if (category == null)
                 continue;
+
+            if (category == CommandCategory.DEVELOPER || category == CommandCategory.DISABLED) {
+                if (!MiscUtil.isDeveloper(memberId))
+                    continue;
+            }
 
             builder.addOption(
                     category.getPrettifiedName(),
@@ -82,17 +98,9 @@ public class HelpCommand extends AbstractCommand {
     }
 
     private void sendCategoryMenu(SlashSender sender, Member member, CommandCategory category) {
-        if (!category.isPermitted(member)) {
-            sender.replyErrorEphemeral(
-                    Error.CUSTOM,
-                    "You are not permitted to view that category."
-            ).queue();
-            return;
-        }
-
-        final List<AbstractCommand> commandList = registry.getCommands(member, category);
+        final List<AbstractCommand> commandList = registry.getCommandsByCategory(category, member);
         if (commandList.isEmpty()) {
-            sender.replyErrorEphemeral(
+            sender.reply(
                     Error.CUSTOM,
                     "The returning command list was empty, are you missing permissions?"
             ).queue();
@@ -100,7 +108,7 @@ public class HelpCommand extends AbstractCommand {
         }
 
         final SelectMenu.Builder menu = getCategoryMenu(commandList);
-        sender.replyEphemeralFormat(
+        sender.replyFormat(
                 "%s %s - Click any command to view its information.",
                 category.getEmoji(),
                 category.getPrettifiedName()
@@ -121,27 +129,29 @@ public class HelpCommand extends AbstractCommand {
 
     private void sendCommandInfo(SlashSender sender, AbstractCommand command) {
         final Member member = sender.getMember();
-        if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-            if (!command.getCategory().isSupport(sender.getGuildRecord(), sender.getMember())) {
-                sender.replyError(
-                        Error.CUSTOM,
-                        "You do not have the support role to manage tickets."
-                ).queue();
+        if (command.isSupportCommand()) {
+            final GuildDataRecord record = sender.getGuildRecord();
+            final long supportId = record.getSupportId();
+            final Role role = sender.getGuild().getRoleById(supportId);
+            if (role == null) {
+                sender.reply(Error.CUSTOM, "Support role is not configured.").queue();
                 return;
             }
 
-            if (!member.hasPermission(command.getPermission())) {
-                sender.replyErrorEphemeral(
-                        Error.PERMISSION,
-                        member.getUser().getAsTag(),
-                        command.getPermission()
-                ).queue();
+            if (!MiscUtil.hasRole(sender.getMember(), supportId)) {
+                sender.reply(Error.PERMISSION, member.getUser().getAsTag(), "Support Role").queue();
                 return;
             }
         }
 
+        if (!member.hasPermission(command.getPermission())) {
+            sender.reply(Error.PERMISSION, member.getUser().getAsTag(), command.getPermission()).queue();
+            return;
+        }
+
+
         final EmbedBuilder commandEmbed = command.getAsEmbed();
-        sender.replyEphemeral(commandEmbed).queue();
+        sender.reply(commandEmbed).queue();
     }
 
 }

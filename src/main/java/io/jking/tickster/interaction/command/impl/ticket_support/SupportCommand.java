@@ -1,12 +1,14 @@
-package io.jking.tickster.interaction.command.impl.ticket_manage;
+package io.jking.tickster.interaction.command.impl.ticket_support;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -15,21 +17,29 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import java.util.concurrent.TimeUnit;
 
 
-public class TManageCommand extends AbstractCommand {
+public class SupportCommand extends AbstractCommand {
 
-    public TManageCommand() {
-        super("tmanage", "Ticket managing command.", CommandCategory.TICKET_MANAGEMENT);
+    public SupportCommand() {
+        super(
+                "support",
+                "Ticket support commands.",
+                Permission.MESSAGE_SEND,
+                CommandCategory.TICKET_SUPPORT,
+                CommandFlag.of(CommandFlag.EPHEMERAL | CommandFlag.TICKET)
+        );
+        requiresSupportRole();
+
         final SubcommandData summonData = new SubcommandData("summon", "Summons the ticket creation message.");
         final SubcommandData deleteData = new SubcommandData("delete", "Deletes the ticket you're currently viewing.");
         final SubcommandData markData = new SubcommandData("mark", "Marks that you are viewing the current ticket.");
-        addSubCommands(summonData, deleteData, markData);
+        addSubcommands(summonData, deleteData, markData);
     }
 
     @Override
     public void onSlashCommand(SlashSender sender) {
         final String subCommandName = sender.getSubCommandName();
         if (subCommandName == null || subCommandName.isEmpty()) {
-            sender.replyErrorEphemeral(Error.UNKNOWN);
+            sender.reply(Error.UNKNOWN).queue();
             return;
         }
 
@@ -54,7 +64,7 @@ public class TManageCommand extends AbstractCommand {
     private void onDeleteCommand(SlashSender sender) {
         final GuildTicketsRecord record = sender.getTicketRecord();
         if (record == null) {
-            sender.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket to delete!").queue();
+            sender.reply(Error.CUSTOM, "This is not a valid ticket to delete!").queue();
             return;
         }
 
@@ -67,7 +77,7 @@ public class TManageCommand extends AbstractCommand {
     private void onMarkCommand(SlashSender sender) {
         final GuildTicketsRecord record = sender.getTicketRecord();
         if (record == null) {
-            sender.replyErrorEphemeral(Error.CUSTOM, "This is not a valid ticket to mark!").queue();
+            sender.reply(Error.CUSTOM, "This is not a valid ticket to mark!").queue();
             return;
         }
 
@@ -79,7 +89,7 @@ public class TManageCommand extends AbstractCommand {
                 .build())
                 .queue();
 
-        sender.replyEphemeral(EmbedUtil.getDefault().setDescription("Manage this ticket with any of the buttons below."))
+        sender.reply(EmbedUtil.getDefault().setDescription("Manage this ticket with any of the buttons below."))
                 .addActionRow(Button.secondary("button:manage:close_ticket", "Close Ticket"), Button.danger("button:manage:delete_ticket", "Delete Ticket"))
                 .queue();
 

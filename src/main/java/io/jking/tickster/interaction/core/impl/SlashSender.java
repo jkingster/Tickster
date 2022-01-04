@@ -2,16 +2,44 @@ package io.jking.tickster.interaction.core.impl;
 
 import io.jking.tickster.core.Tickster;
 import io.jking.tickster.interaction.core.InteractionSender;
-import io.jking.tickster.interaction.core.reply.ICommandReply;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
+import io.jking.tickster.utility.EmbedUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 
-public class SlashSender extends InteractionSender<SlashCommandInteractionEvent> implements ICommandReply<SlashCommandInteractionEvent> {
-    public SlashSender(Tickster tickster, SlashCommandInteractionEvent event) {
+public class SlashSender extends InteractionSender<SlashCommandInteractionEvent> {
+
+    private final boolean ephemeral;
+
+    public SlashSender(Tickster tickster, SlashCommandInteractionEvent event, boolean ephemeral) {
         super(tickster, event);
+        this.ephemeral = ephemeral;
+    }
+
+    public ReplyCallbackAction reply(String content) {
+        return getEvent().reply(content).setEphemeral(ephemeral);
+    }
+
+    public ReplyCallbackAction replyFormat(String pattern, Object... objects) {
+        return reply(String.format(pattern, objects));
+    }
+
+    public ReplyCallbackAction reply(EmbedBuilder embed) {
+        return getEvent().replyEmbeds(embed.build()).setEphemeral(ephemeral);
+    }
+
+    public ReplyCallbackAction reply(Error error, Object... objects) {
+        return reply(EmbedUtil.getError(error, objects));
+    }
+
+    public ReplyCallbackAction reply(Success success, Object... objects) {
+        return reply(EmbedUtil.getSuccess(success, objects));
     }
 
     private OptionMapping getMapping(String name) {
@@ -27,12 +55,9 @@ public class SlashSender extends InteractionSender<SlashCommandInteractionEvent>
         return mapping == null ? null : mapping.getAsString();
     }
 
-    public boolean getBooleanOption(String name) {
+    public Boolean getBooleanOption(String name) {
         final OptionMapping mapping = getMapping(name);
-        if (mapping == null)
-            return false;
-
-        return mapping.getAsBoolean();
+        return mapping == null ? null : mapping.getAsBoolean();
     }
 
     public TextChannel getChannelOption(String name) {

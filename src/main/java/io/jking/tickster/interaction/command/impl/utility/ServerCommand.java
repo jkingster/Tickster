@@ -2,6 +2,7 @@ package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.utility.EmbedUtil;
@@ -14,7 +15,12 @@ import java.time.format.DateTimeFormatter;
 public class ServerCommand extends AbstractCommand {
 
     public ServerCommand() {
-        super("server", "Shows information about the server.", CommandCategory.INFO);
+        super(
+                "server",
+                "Shows information about the server.",
+                CommandCategory.INFO,
+                CommandFlag.ofEphemeral()
+        );
     }
 
     @Override
@@ -47,7 +53,7 @@ public class ServerCommand extends AbstractCommand {
                             memberCount, totalBoosts, boostName, creationTime)
                     );
 
-            sender.replyEphemeral(embed).queue();
-        }, error -> sender.replyErrorEphemeral(Error.UNKNOWN).queue());
+            sender.reply(embed).queue();
+        }, error -> sender.reply(Error.UNKNOWN).queue());
     }
 }

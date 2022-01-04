@@ -4,82 +4,76 @@ import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractCommand {
+import java.util.Collections;
+import java.util.List;
 
-    private final String name;
-    private final String description;
-    private final CommandCategory category;
-    private final SlashCommandData data;
+public abstract class AbstractCommand extends CommandDataImpl {
 
     private Permission permission = Permission.MESSAGE_SEND;
-    private boolean isSupportOnly = false;
+    private CommandCategory category = CommandCategory.UNKNOWN;
+    private CommandFlag flags = CommandFlag.of(CommandFlag.NONE);
+    private List<String> usages = Collections.singletonList("No provided usage.");
+    private boolean requiresSupportRole = false;
 
-    public AbstractCommand(@NotNull String name, @NotNull String description, CommandCategory category) {
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.data = Commands.slash(name, description);
+    public AbstractCommand(@NotNull String name, @NotNull String description) {
+        super(name, description);
     }
 
-    public AbstractCommand(@NotNull String name, @NotNull String description, CommandCategory category, Permission permission) {
-        this.name = name;
-        this.description = description;
-        this.category = category;
+    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category) {
+        super(name, description);
         this.permission = permission;
-        this.data = Commands.slash(name, description);
+        this.category = category;
     }
+
+    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, CommandFlag flags)  {
+        super(name, description);
+        this.permission = permission;
+        this.category = category;
+        this.flags = flags;
+    }
+
+    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, List<String> usages, CommandFlag flags) {
+        super(name, description);
+        this.permission = permission;
+        this.category = category;
+        this.flags = flags;
+        this.usages = usages;
+    }
+
+    public AbstractCommand(String name, String description, CommandCategory category, CommandFlag flags) {
+        super(name, description);
+        this.category = category;
+        this.flags = flags;
+    }
+
 
     public abstract void onSlashCommand(SlashSender sender);
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
+    public Permission getPermission() {
+        return permission;
     }
 
     public CommandCategory getCategory() {
         return category;
     }
 
-    public Permission getPermission() {
-        return permission;
+    public CommandFlag getFlags() {
+        return flags;
     }
 
-    public SlashCommandData getData() {
-        return data;
+    public List<String> getUsages() {
+        return usages;
     }
 
-    public void addOptions(OptionData... options) {
-        this.data.addOptions(options);
+    public boolean isSupportCommand() {
+        return requiresSupportRole;
     }
 
-    public void addSubCommands(SubcommandData... subCommands) {
-        this.data.addSubcommands(subCommands);
-    }
-
-    public void addOption(OptionType optionType, String name, String desc, boolean required) {
-        this.data.addOption(optionType, name, desc, required);
-    }
-
-    public void addOption(OptionType optionType, String nane, String desc) {
-        addOption(optionType, name, desc, false);
-    }
-
-    public boolean isSupportOnly() {
-        return isSupportOnly;
-    }
-
-    public void setSupportOnly(boolean supportOnly) {
-        isSupportOnly = supportOnly;
+    public void requiresSupportRole() {
+        this.requiresSupportRole = true;
     }
 
     public EmbedBuilder getAsEmbed() {
@@ -104,12 +98,14 @@ public abstract class AbstractCommand {
     @Override
     public String toString() {
         return "AbstractCommand{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                "permission=" + permission +
                 ", category=" + category +
-                ", data=" + data +
-                ", permission=" + permission +
-                ", isSupportOnly=" + isSupportOnly +
+                ", flags=" + flags +
+                ", usages=" + usages +
+                ", requiresSupportRole=" + requiresSupportRole +
+                ", options=" + options +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }
