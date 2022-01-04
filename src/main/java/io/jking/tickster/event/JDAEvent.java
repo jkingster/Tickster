@@ -64,7 +64,7 @@ public class JDAEvent implements EventListener {
         deleteExpiredTickets(shardManager);
 
         event.getJDA().updateCommands()
-                .addCommands(registry.getSlashCommands())
+                .addCommands(registry.getCommands())
                 .queue(success -> Tickster.getLogger().info("Registered Commands Globally."));
     }
 

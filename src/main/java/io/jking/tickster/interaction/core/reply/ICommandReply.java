@@ -1,5 +1,6 @@
 package io.jking.tickster.interaction.core.reply;
 
+
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
 import io.jking.tickster.utility.EmbedUtil;

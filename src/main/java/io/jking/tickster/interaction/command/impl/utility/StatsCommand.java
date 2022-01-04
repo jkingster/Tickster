@@ -2,6 +2,7 @@ package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -15,7 +16,13 @@ import java.util.concurrent.TimeUnit;
 public class StatsCommand extends AbstractCommand {
 
     public StatsCommand() {
-        super("stats", "Shows stats about me.", CommandCategory.UTILITY);
+
+        super(
+                "stats",
+                "Shows stats about me.",
+                CommandCategory.UTILITY,
+                CommandFlag.EPHEMERAL
+        );
     }
 
     @Override
@@ -65,6 +72,6 @@ public class StatsCommand extends AbstractCommand {
                 )
         );
 
-        sender.replyEphemeral(embed).queue();
+        sender.reply(embed).queue();
     }
 }

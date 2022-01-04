@@ -13,9 +13,11 @@ public final class EmojiUtil {
 
     // CommandCategory
     public static Emoji BOT_OWNER         = Emoji.fromUnicode("\uD83D\uDEE1️");
-    public static Emoji ADMIN             = Emoji.fromUnicode("\uD83D\uDEE0️");
+    public static Emoji ADMINISTRATOR     = Emoji.fromUnicode("\uD83D\uDEE0️");
+    public static Emoji MODERATOR         = Emoji.fromUnicode("⚔️");
     public static Emoji TICKET            = Emoji.fromUnicode("\uD83C\uDFAB");
-    public static Emoji TICKET_MANAGEMENT = Emoji.fromUnicode("\uD83D\uDC51");
+    public static Emoji TICKET_SUPPORT    = Emoji.fromUnicode("\uD83D\uDC51");
     public static Emoji UTILITY           = Emoji.fromUnicode("⚙️");
     public static Emoji INFO              = Emoji.fromUnicode("ℹ️");
+    public static Emoji UNKNOWN           = Emoji.fromUnicode("❓");
 }

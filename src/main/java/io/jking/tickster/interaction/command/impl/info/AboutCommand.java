@@ -2,6 +2,7 @@ package io.jking.tickster.interaction.command.impl.info;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,7 +14,12 @@ import java.util.concurrent.TimeUnit;
 public class AboutCommand extends AbstractCommand {
 
     public AboutCommand() {
-        super("about", "Read about me!", CommandCategory.INFO);
+        super(
+                "about",
+                "Read about me!",
+                CommandCategory.INFO,
+                CommandFlag.EPHEMERAL
+        );
     }
 
     @Override

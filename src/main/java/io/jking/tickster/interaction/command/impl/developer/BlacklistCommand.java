@@ -1,7 +1,8 @@
-package io.jking.tickster.interaction.command.impl.bot_owner;
+package io.jking.tickster.interaction.command.impl.developer;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
@@ -16,14 +17,21 @@ import static io.jking.tickster.jooq.tables.BlacklistData.BLACKLIST_DATA;
 public class BlacklistCommand extends AbstractCommand {
 
     public BlacklistCommand() {
-        super("blacklist", "Blacklists a guild from using Tickster.", CommandCategory.BOT_OWNER, Permission.ADMINISTRATOR);
+        super(
+                "blacklist",
+                "Blacklists a guild from using Tickster.",
+                Permission.ADMINISTRATOR,
+                CommandCategory.DEVELOPER,
+                CommandFlag.DEVELOPER
+        );
+
         addOptions(
                 new OptionData(OptionType.STRING, "guild-id", "targeted guild id", true),
                 new OptionData(OptionType.STRING, "reason", "reason for blacklist", true)
         );
 
-        setSupportOnly(true);
-        getData().setDefaultEnabled(false);
+        setDefaultEnabled(false);
+
     }
 
     @Override
@@ -31,18 +39,18 @@ public class BlacklistCommand extends AbstractCommand {
         final String guildId = sender.getStringOption("guild-id");
         final String reason = sender.getStringOption("reason");
         if (guildId == null || reason == null) {
-            sender.replyErrorEphemeral(Error.ARGUMENTS, this.getName()).queue();
+            sender.reply(Error.ARGUMENTS, this.getName()).queue();
             return;
         }
 
         if (!MiscUtil.isSnowflake(guildId)) {
-            sender.replyErrorEphemeral(Error.SNOWFLAKE, guildId).queue();
+            sender.reply(Error.SNOWFLAKE, guildId).queue();
             return;
         }
 
         final Guild guild = sender.getShardManager().getGuildById(guildId);
         if (guild == null) {
-            sender.replyErrorEphemeral(Error.CUSTOM, "Could not find that guild!").queue();
+            sender.reply(Error.CUSTOM, "Could not find that guild!").queue();
             return;
         }
 
@@ -50,7 +58,7 @@ public class BlacklistCommand extends AbstractCommand {
                 .values(guildId, reason)
                 .onConflictDoNothing()
                 .executeAsync()
-                .thenAcceptAsync(action -> sender.replySuccess(Success.ACTION).queue())
+                .thenAcceptAsync(action -> sender.reply(Success.ACTION).queue())
                 .exceptionallyAsync(null);
     }
 }

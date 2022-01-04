@@ -31,7 +31,6 @@ public class CategoriesSelect extends AbstractSelect {
         }
 
         final String value = selectOption.getValue();
-        System.out.println(value);
         final String categoryName = value.split(":")[2];
         if (categoryName == null || categoryName.isEmpty()) {
             sender.replyErrorEphemeral(
@@ -40,7 +39,6 @@ public class CategoriesSelect extends AbstractSelect {
             return;
         }
 
-        System.out.println(categoryName);
         final CommandCategory category = CommandCategory.getCategoryByName(categoryName);
         if (category == null) {
             sender.replyErrorEphemeral(
@@ -54,15 +52,7 @@ public class CategoriesSelect extends AbstractSelect {
     }
 
     private void sendCategoryMenu(SelectSender sender, Member member, CommandCategory category) {
-        if (!category.isPermitted(member)) {
-            sender.replyErrorEphemeral(
-                    Error.CUSTOM,
-                    "You are not permitted to view that category."
-            ).queue();
-            return;
-        }
-
-        final List<AbstractCommand> commandList = registry.getCommands(member, category);
+        final List<AbstractCommand> commandList = registry.getCommandsByCategory(category, member);
         if (commandList.isEmpty()) {
             sender.replyErrorEphemeral(
                     Error.CUSTOM,
@@ -71,15 +61,14 @@ public class CategoriesSelect extends AbstractSelect {
             return;
         }
 
-        final SelectMenu.Builder menu = getCategoryMenu(category, commandList);
-        sender.replyEphemeralFormat(
-                "%s %s - Click any command to view its information.",
-                category.getEmoji(),
-                category.getPrettifiedName()
-        ).addActionRow(menu.build()).queue();
+        final SelectMenu.Builder menu = getCategoryMenu(commandList);
+        sender.deferEdit().flatMap(
+                hook -> hook.editOriginalFormat("%s %s - Click any command to view its information.",
+                        category.getEmoji(), category.getPrettifiedName()).setActionRow(menu.build())
+        ).queue();
     }
 
-    private SelectMenu.Builder getCategoryMenu(CommandCategory category, List<AbstractCommand> commandList) {
+    private SelectMenu.Builder getCategoryMenu(List<AbstractCommand> commandList) {
         final SelectMenu.Builder menu = SelectMenu.create("menu:help_category");
         for (AbstractCommand command : commandList) {
             menu.addOption(

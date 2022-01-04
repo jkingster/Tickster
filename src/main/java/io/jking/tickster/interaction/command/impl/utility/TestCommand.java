@@ -2,6 +2,7 @@ package io.jking.tickster.interaction.command.impl.utility;
 
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.utility.EmbedUtil;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -11,7 +12,12 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 public class TestCommand extends AbstractCommand {
 
     public TestCommand() {
-        super("test", "Checks to see if I'm working... of course...", CommandCategory.UTILITY);
+        super(
+                "test",
+                "Checks to see if I'm working... of course...",
+                CommandCategory.UTILITY,
+                CommandFlag.NONE
+        );
     }
 
     @Override
