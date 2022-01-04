@@ -27,7 +27,7 @@ public class HelpCommand extends AbstractCommand {
                 "Displays a list of categories/commands.",
                 Permission.MESSAGE_SEND,
                 CommandCategory.UTILITY,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
         this.registry = registry;
 
@@ -69,18 +69,23 @@ public class HelpCommand extends AbstractCommand {
             return;
         }
 
-        final SelectMenu.Builder menu = getCategoriesMenu(categories);
+        final SelectMenu.Builder menu = getCategoriesMenu(sender.getMember().getIdLong(), categories);
         sender.reply("Select any category to get started.")
                 .addActionRow(menu.build())
                 .queue();
     }
 
-    private SelectMenu.Builder getCategoriesMenu(CommandCategory[] categories) {
+    private SelectMenu.Builder getCategoriesMenu(long memberId, CommandCategory[] categories) {
         final SelectMenu.Builder builder = SelectMenu.create("menu:help_categories");
         builder.setPlaceholder("Pick a command category to get started!");
         for (CommandCategory category : categories) {
             if (category == null)
                 continue;
+
+            if (category == CommandCategory.DEVELOPER || category == CommandCategory.DISABLED) {
+                if (!MiscUtil.isDeveloper(memberId))
+                    continue;
+            }
 
             builder.addOption(
                     category.getPrettifiedName(),

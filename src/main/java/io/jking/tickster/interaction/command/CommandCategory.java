@@ -46,7 +46,6 @@ public enum CommandCategory {
     }
 
     public String getPrettifiedName() {
-        final String name = this.name();
         if (this == TICKET_SUPPORT)
             return "Ticket Support";
 

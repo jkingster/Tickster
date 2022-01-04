@@ -1,5 +1,6 @@
 package io.jking.tickster.utility;
 
+import io.jking.tickster.core.TicksterInfo;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -48,5 +49,13 @@ public final class MiscUtil {
             return false;
 
         return hasRole(member, supportId);
+    }
+
+    public static boolean isDeveloper(long memberId) {
+        for (long id : TicksterInfo.DEVELOPER_IDS) {
+            if (memberId == id)
+                return true;
+        }
+        return false;
     }
 }

@@ -15,7 +15,7 @@ public class InfoCommand extends AbstractCommand {
                 "info",
                 "Grab info about a specific user/yourself.",
                 CommandCategory.INFO,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
         addOption(OptionType.USER, "user", "The user you want to see information about.", false);
     }

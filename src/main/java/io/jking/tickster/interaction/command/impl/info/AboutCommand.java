@@ -18,7 +18,7 @@ public class AboutCommand extends AbstractCommand {
                 "about",
                 "Read about me!",
                 CommandCategory.INFO,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
     }
 

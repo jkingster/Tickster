@@ -16,7 +16,7 @@ public class TestCommand extends AbstractCommand {
                 "test",
                 "Checks to see if I'm working... of course...",
                 CommandCategory.UTILITY,
-                CommandFlag.NONE
+                CommandFlag.none()
         );
     }
 

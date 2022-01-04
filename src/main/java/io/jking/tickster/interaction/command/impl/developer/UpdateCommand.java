@@ -18,7 +18,7 @@ public class UpdateCommand extends AbstractCommand {
                 "Updates a specific command. Globally or guild.",
                 Permission.ADMINISTRATOR,
                 CommandCategory.DISABLED,
-                CommandFlag.DISABLED
+                CommandFlag.of(CommandFlag.DISABLED | CommandFlag.DEVELOPER)
         );
 
         this.registry = registry;

@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public abstract class AbstractCommand extends CommandDataImpl {
 
     private Permission permission = Permission.MESSAGE_SEND;
     private CommandCategory category = CommandCategory.UNKNOWN;
-    private CommandFlag[] flags = new CommandFlag[]{};
+    private CommandFlag flags = CommandFlag.of(CommandFlag.NONE);
     private List<String> usages = Collections.singletonList("No provided usage.");
     private boolean requiresSupportRole = false;
 
@@ -29,14 +28,14 @@ public abstract class AbstractCommand extends CommandDataImpl {
         this.category = category;
     }
 
-    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, CommandFlag... flags) {
+    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, CommandFlag flags)  {
         super(name, description);
         this.permission = permission;
         this.category = category;
         this.flags = flags;
     }
 
-    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, List<String> usages, CommandFlag... flags) {
+    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, List<String> usages, CommandFlag flags) {
         super(name, description);
         this.permission = permission;
         this.category = category;
@@ -44,7 +43,7 @@ public abstract class AbstractCommand extends CommandDataImpl {
         this.usages = usages;
     }
 
-    public AbstractCommand(String name, String description, CommandCategory category, CommandFlag... flags) {
+    public AbstractCommand(String name, String description, CommandCategory category, CommandFlag flags) {
         super(name, description);
         this.category = category;
         this.flags = flags;
@@ -61,7 +60,7 @@ public abstract class AbstractCommand extends CommandDataImpl {
         return category;
     }
 
-    public CommandFlag[] getFlags() {
+    public CommandFlag getFlags() {
         return flags;
     }
 
@@ -101,7 +100,7 @@ public abstract class AbstractCommand extends CommandDataImpl {
         return "AbstractCommand{" +
                 "permission=" + permission +
                 ", category=" + category +
-                ", flags=" + Arrays.toString(flags) +
+                ", flags=" + flags +
                 ", usages=" + usages +
                 ", requiresSupportRole=" + requiresSupportRole +
                 ", options=" + options +

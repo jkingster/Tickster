@@ -50,9 +50,11 @@ public class CommandSelect extends AbstractSelect {
         }
 
         final Member member = sender.getMember();
-        if (!MiscUtil.isSupport(sender.getGuildRecord(), member)) {
-            sender.replyErrorEphemeral(Error.CUSTOM, "You do not have the support role, you cannot view that command!").queue();
-            return;
+        if (command.isSupportCommand()) {
+            if (!MiscUtil.isSupport(sender.getGuildRecord(), member)) {
+                sender.replyErrorEphemeral(Error.CUSTOM, "You do not have the support role, you cannot view that command!").queue();
+                return;
+            }
         }
 
         if (!member.hasPermission(command.getPermission())) {

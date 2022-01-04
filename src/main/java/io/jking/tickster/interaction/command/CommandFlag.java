@@ -1,27 +1,61 @@
 package io.jking.tickster.interaction.command;
 
-public enum CommandFlag {
+public class CommandFlag {
 
-    DEVELOPER(1),
-    TICKET(2),
-    EPHEMERAL(3),
-    DISABLED(4),
-    NONE(-1);
+    public static final long DEVELOPER      = 1;
+    public static final long EPHEMERAL      = 1 << 1;
+    public static final long TICKET         = 1 << 2;
+    public static final long NONE           = 1 << 3;
+    public static final long DISABLED       = 1 << 4;
 
-    private final int id;
+    private final long flags;
 
-    CommandFlag(int id) {
-        this.id = id;
+    private CommandFlag(long flags) {
+        this.flags = flags;
     }
 
-    public CommandFlag getFlagById(int id) {
-        for (CommandFlag flag : values())
-            if (flag.getId() == id)
-                return flag;
-        return NONE;
+    public static CommandFlag of(long flags) {
+        return new CommandFlag(flags);
     }
 
-    public int getId() {
-        return id;
+    public static CommandFlag ofDeveloper() {
+        return of(DEVELOPER);
     }
+
+    public static CommandFlag ofEphemeral() {
+        return of(EPHEMERAL);
+    }
+
+    public static CommandFlag ofTicket() {
+        return of(TICKET);
+    }
+
+    public static CommandFlag none() {
+        return of(NONE);
+    }
+
+    public boolean hasFlag(long flag) {
+        return (flags & flag) == flag;
+    }
+
+    public boolean isDeveloper() {
+        return hasFlag(CommandFlag.DEVELOPER);
+    }
+
+    public boolean isEphemeral() {
+        return hasFlag(CommandFlag.EPHEMERAL);
+    }
+
+    public boolean isTicket() {
+        return hasFlag(CommandFlag.TICKET);
+    }
+
+    public boolean isNone() {
+        return hasFlag(CommandFlag.NONE);
+    }
+
+    public boolean isDisabled() {
+        return hasFlag(CommandFlag.DISABLED);
+    };
+
 }

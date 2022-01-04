@@ -20,7 +20,7 @@ public class SnowflakeCommand extends AbstractCommand {
                 "snowflake",
                 "Get information about a snowflake.",
                 CommandCategory.UTILITY,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
         addOption(OptionType.STRING, "snowflake", "The snowflake id.", true);
     }

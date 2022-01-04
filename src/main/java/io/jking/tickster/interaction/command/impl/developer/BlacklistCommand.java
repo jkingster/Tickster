@@ -22,7 +22,7 @@ public class BlacklistCommand extends AbstractCommand {
                 "Blacklists a guild from using Tickster.",
                 Permission.ADMINISTRATOR,
                 CommandCategory.DEVELOPER,
-                CommandFlag.DEVELOPER
+                CommandFlag.ofDeveloper()
         );
 
         addOptions(

@@ -21,7 +21,7 @@ public class StatsCommand extends AbstractCommand {
                 "stats",
                 "Shows stats about me.",
                 CommandCategory.UTILITY,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
     }
 

@@ -19,7 +19,7 @@ public class ServerCommand extends AbstractCommand {
                 "server",
                 "Shows information about the server.",
                 CommandCategory.INFO,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
     }
 

@@ -10,10 +10,13 @@ import io.jking.tickster.interaction.command.CommandFlag;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.ButtonSender;
 import io.jking.tickster.interaction.core.impl.SelectSender;
+import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.select.AbstractSelect;
 import io.jking.tickster.interaction.select.SelectRegistry;
+import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
+import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -110,8 +113,29 @@ public class InteractionEvent implements EventListener {
         if (command == null)
             return;
 
-        final CommandFlag[] flags = command.getFlags();
-        // TODO
+        final CommandFlag flag = command.getFlags();
+        if (!flag.isNone()) {
+            if (flag.isDisabled())
+                return;
+
+            if (flag.isDeveloper()) {
+                final long memberId = member.getIdLong();
+                if (!MiscUtil.isDeveloper(memberId))
+                    return;
+            }
+
+            if (flag.isTicket()) {
+                final long channelId = event.getChannel().getIdLong();
+                final GuildTicketsRecord record = cache.getTicketCache().get(channelId);
+                if (record == null) {
+                    event.replyEmbeds(EmbedUtil.getError(
+                            Error.CUSTOM,
+                            "This is not a ticket, that command cannot be used here!"
+                    ).build()).setEphemeral(true).queue();
+                }
+                return;
+            }
+        }
 
         final Permission requiredPermission = command.getPermission();
         final Member self = guild.getSelfMember();
@@ -133,7 +157,7 @@ public class InteractionEvent implements EventListener {
             return;
         }
 
-//        command.onSlashCommand(new SlashSender(tickster, event, flag == CommandFlag.EPHEMERAL));
+        command.onSlashCommand(new SlashSender(tickster, event, flag.isEphemeral()));
     }
 
     private void onSelectMenu(SelectMenuInteractionEvent event) {
@@ -150,12 +174,5 @@ public class InteractionEvent implements EventListener {
         selectRegistry.incrementUses();
     }
 
-    private boolean isDeveloper(long memberId, long... developerIds) {
-        for (long id : developerIds) {
-            if (id == memberId)
-                return true;
-        }
-        return false;
-    }
 
 }

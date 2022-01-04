@@ -25,7 +25,7 @@ public class SupportCommand extends AbstractCommand {
                 "Ticket support commands.",
                 Permission.MESSAGE_SEND,
                 CommandCategory.TICKET_SUPPORT,
-                CommandFlag.ofFlags(CommandFlag.EPHEMERAL, CommandFlag.TICKET)
+                CommandFlag.of(CommandFlag.EPHEMERAL | CommandFlag.TICKET)
         );
         requiresSupportRole();
 

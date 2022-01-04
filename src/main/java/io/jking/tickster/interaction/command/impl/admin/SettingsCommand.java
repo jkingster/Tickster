@@ -26,7 +26,7 @@ public class SettingsCommand extends AbstractCommand {
                 "Server configuration commands.",
                 Permission.ADMINISTRATOR,
                 CommandCategory.ADMINISTRATOR,
-                CommandFlag.EPHEMERAL
+                CommandFlag.ofEphemeral()
         );
 
         final SubcommandData logChannel = new SubcommandData("logs", "Sets the log channel.")
