@@ -1,10 +1,11 @@
 package io.jking.tickster.interaction.core;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Registry<T> {
+
+    private int uses = 0;
 
     private final Map<String, T> registryMap = new HashMap<>();
 
@@ -17,6 +18,14 @@ public class Registry<T> {
     }
 
     public Map<String, T> getMap() {
-        return Collections.unmodifiableMap(registryMap);
+        return registryMap;
+    }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void incrementUses() {
+        this.uses++;
     }
 }

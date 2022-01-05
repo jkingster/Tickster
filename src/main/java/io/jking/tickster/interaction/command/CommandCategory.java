@@ -1,63 +1,58 @@
 package io.jking.tickster.interaction.command;
 
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
+import io.jking.tickster.utility.EmojiUtil;
+import net.dv8tion.jda.api.entities.Emoji;
 
 public enum CommandCategory {
 
-    BOT_OWNER           (769456676016226314L, "Commands available to the bot owner."),
-    ADMIN               (Permission.ADMINISTRATOR, "Administrative purposed commands."),
-    TICKET_MANAGEMENT   (Permission.MESSAGE_SEND, "Ticket management commands."),
-    TICKET              (Permission.MESSAGE_SEND, "Ticket processing related commands."),
-    UTILITY             (Permission.MESSAGE_SEND, "Server utility based commands."),
-    INFO                (Permission.MESSAGE_SEND, "Informational commands.");
+    DISABLED("Disabled commands that are non-functional.", EmojiUtil.LOCK_EMOJI),
+    DEVELOPER("Developer commands that aren't usable.", EmojiUtil.LOCK_EMOJI),
+    ADMINISTRATOR("Administrative purposed commands.", EmojiUtil.ADMINISTRATOR),
+    MODERATOR("Moderation based commands.", EmojiUtil.MODERATOR),
+    TICKET_SUPPORT("Ticket management commands.", EmojiUtil.TICKET_SUPPORT),
+    TICKET("Ticket processing related commands.", EmojiUtil.TICKET),
+    UTILITY("Server utility based commands.", EmojiUtil.UTILITY),
+    INFO("Informational commands.", EmojiUtil.INFO),
+    UNKNOWN("Unknown category.", EmojiUtil.UNKNOWN);
 
-    public static CommandCategory[] categories = CommandCategory.values();
+    private static final CommandCategory[] VALUES = values();
+
     private final String description;
-    private long userId;
-    private Permission permission;
+    private final Emoji emoji;
 
-    CommandCategory(long userId, String description) {
-        this.userId = userId;
+    CommandCategory(String description, Emoji emoji) {
         this.description = description;
+        this.emoji = emoji;
     }
 
-    CommandCategory(Permission permission, String description) {
-        this.permission = permission;
-        this.description = description;
+    public static CommandCategory getCategoryByName(String categoryName) {
+        for (CommandCategory category : VALUES) {
+            if (category.getPrettifiedName().equalsIgnoreCase(categoryName))
+                return category;
+        }
+        return UNKNOWN;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public long getUserId() {
-        return userId;
+    public Emoji getEmoji() {
+        return emoji;
     }
 
-    public Permission getPermission() {
-        return permission;
+    public static CommandCategory[] getCategories() {
+        return VALUES;
     }
 
     public String getPrettifiedName() {
-        if (name().contains("_")) {
-            final String name = name().replaceAll("_", " ");
-            return name.charAt(0) + name().substring(1).toLowerCase();
-        }
+        if (this == TICKET_SUPPORT)
+            return "Ticket Support";
 
         return name().charAt(0) + name().substring(1).toLowerCase();
     }
 
-    public static CommandCategory getCategoryByName(String name) {
-        for (CommandCategory commandCategory : categories) {
-            if (commandCategory.name().equalsIgnoreCase(name))
-                return commandCategory;
-        }
-        return null;
-    }
 
-    public boolean isPermitted(Member member) {
-        return member.hasPermission(this.getPermission());
-    }
+
 
 }

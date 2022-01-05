@@ -1,9 +1,11 @@
 {
-  "bot": {
-    "token": ""
-  },
+  "dev_server": 0,
+  "support_id": 0,
+  "support_server": "https://discord.gg/",
+  "token": "Discord Token",
   "database": {
-    "username": "",
-    "password": ""
+    "url": "jdbc:postgresql://localhost:5432/postgres",
+    "username": "postgres",
+    "password": "password"
   }
 }

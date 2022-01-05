@@ -4,6 +4,7 @@ import io.jking.tickster.cache.Cache;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import org.jooq.Field;
+import org.jooq.SelectConditionStep;
 
 import static io.jking.tickster.jooq.tables.GuildTickets.GUILD_TICKETS;
 
@@ -41,9 +42,15 @@ public class TicketCache extends Cache<Long, GuildTicketsRecord> {
 
     @Override
     public void delete(Long key) {
+        final SelectConditionStep<GuildTicketsRecord> selectWhereStep = getContext()
+                .selectFrom(GUILD_TICKETS)
+                .where(GUILD_TICKETS.CHANNEL_ID.eq(key));
+
         getContext().deleteFrom(GUILD_TICKETS)
-                .where(GUILD_TICKETS.CHANNEL_ID.eq(key))
+                .whereExists(selectWhereStep)
                 .executeAsync();
+
+        remove(key);
     }
 
     @Override

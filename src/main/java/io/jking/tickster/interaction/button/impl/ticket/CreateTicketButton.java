@@ -2,15 +2,16 @@ package io.jking.tickster.interaction.button.impl.ticket;
 
 import io.jking.tickster.cache.impl.TicketCache;
 import io.jking.tickster.interaction.button.AbstractButton;
-import io.jking.tickster.interaction.core.Error;
-import io.jking.tickster.interaction.core.Success;
-import io.jking.tickster.interaction.core.impl.ButtonContext;
+import io.jking.tickster.interaction.core.impl.ButtonSender;
+import io.jking.tickster.interaction.core.responses.Error;
+import io.jking.tickster.interaction.core.responses.Success;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import io.jking.tickster.utility.EmbedUtil;
+import io.jking.tickster.utility.EmojiUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
@@ -28,10 +29,10 @@ public class CreateTicketButton extends AbstractButton {
     }
 
     @Override
-    public void onButtonPress(ButtonContext context) {
-        final Member self = context.getSelfMember();
+    public void onButtonPress(ButtonSender sender) {
+        final Member self = sender.getSelfMember();
         if (!self.hasPermission(Permission.MANAGE_CHANNEL)) {
-            context.replyErrorEphemeral(
+            sender.replyErrorEphemeral(
                     Error.PERMISSION,
                     self.getUser().getAsTag(),
                     Permission.MANAGE_CHANNEL
@@ -39,25 +40,42 @@ public class CreateTicketButton extends AbstractButton {
             return;
         }
 
-        final GuildDataRecord record = context.getGuildRecord();
-        final long categoryId = record.getCategoryId();
-        final Category category = context.getGuild().getCategoryById(categoryId);
-        final Member member = context.getMember();
+        final Member member = sender.getMember();
 
-        // Callback Hell (?)
+        if (hasOpenTicket(sender, member)) {
+            sender.replyErrorEphemeral(Error.CUSTOM, "You already have a ticket open!").queue();
+            return;
+        }
+
+        final GuildDataRecord record = sender.getGuildRecord();
+        final long categoryId = record.getCategoryId();
+        final Category category = sender.getGuild().getCategoryById(categoryId);
+
+        // Callback Hell (!!!!)
         createTicketChannel(member, category).queue(created -> {
-            insertTicket(context.getCache().getTicketCache(), member, created);
+            insertTicket(sender.getCache().getTicketCache(), member, created);
             setupSupportRole(created, record);
             setupMemberPermissions(created, member).queue(success -> {
                 final String buttonId = String.format("button:close_ticket:id:%s", member.getIdLong());
                 created.sendMessageEmbeds(EmbedUtil.getNewTicket(member).build())
                         .content(member.getAsMention())
-                        .setActionRow(Button.danger(buttonId, "Close Ticket").withEmoji(EmbedUtil.LOCK_EMOJI))
+                        .setActionRow(Button.danger(buttonId, "Close Ticket").withEmoji(EmojiUtil.LOCK_EMOJI))
                         .queue();
 
-                context.replySuccessEphemeral(Success.CREATED, created.getAsMention()).queue();
-            }, error -> created.delete().flatMap(deleted -> context.replyErrorEphemeral(Error.UNKNOWN)).queue());
-        }, error -> context.replyErrorEphemeral(Error.CUSTOM, "Could not create your ticket, sorry!"));
+                sender.replySuccessEphemeral(Success.CREATED, created.getAsMention()).queue();
+            }, error -> created.delete().flatMap(deleted -> sender.replyErrorEphemeral(Error.UNKNOWN)).queue());
+        }, error -> sender.replyErrorEphemeral(Error.CUSTOM, "Could not create your ticket, sorry!"));
+    }
+
+    private boolean hasOpenTicket(ButtonSender sender, Member member) {
+        final long memberId = member.getIdLong();
+        return sender.getDatabase().
+                getContext().
+                fetchExists(
+                        GUILD_TICKETS,
+                        GUILD_TICKETS.CREATOR_ID.eq(memberId)
+                        .and(GUILD_TICKETS.STATUS.eq(true))
+                );
     }
 
     private ChannelAction<TextChannel> createTicketChannel(Member member, Category category) {

@@ -4,8 +4,10 @@
 package io.jking.tickster.jooq;
 
 
+import io.jking.tickster.jooq.tables.BlacklistData;
 import io.jking.tickster.jooq.tables.GuildData;
 import io.jking.tickster.jooq.tables.GuildTickets;
+import io.jking.tickster.jooq.tables.records.BlacklistDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
 import org.jooq.TableField;
@@ -25,6 +27,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<BlacklistDataRecord> BLACKLIST_DATA_PKEY = Internal.createUniqueKey(BlacklistData.BLACKLIST_DATA, DSL.name("blacklist_data_pkey"), new TableField[] { BlacklistData.BLACKLIST_DATA.GUILD_ID }, true);
     public static final UniqueKey<GuildDataRecord> GUILD_DATA_PKEY = Internal.createUniqueKey(GuildData.GUILD_DATA, DSL.name("guild_data_pkey"), new TableField[] { GuildData.GUILD_DATA.GUILD_ID }, true);
     public static final UniqueKey<GuildTicketsRecord> GUILD_TICKETS_CHANNEL_ID_KEY = Internal.createUniqueKey(GuildTickets.GUILD_TICKETS, DSL.name("guild_tickets_channel_id_key"), new TableField[] { GuildTickets.GUILD_TICKETS.CHANNEL_ID }, true);
 }

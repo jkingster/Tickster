@@ -31,6 +31,10 @@ public abstract class Cache<K, V extends Record> {
         return this.CACHE_MAP.getOrDefault(key, null);
     }
 
+    public void remove(K key) {
+        this.CACHE_MAP.remove(key);
+    }
+
     public <T> void putUpdated(K key, Field<T> field, T value) {
         final V record = get(key);
         if (record == null)
@@ -39,6 +43,7 @@ public abstract class Cache<K, V extends Record> {
         record.set(field, value);
         put(key, record);
     }
+
 
     public abstract void insert(V value);
 
