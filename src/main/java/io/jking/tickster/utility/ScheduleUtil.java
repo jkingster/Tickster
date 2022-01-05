@@ -1,17 +1,13 @@
 package io.jking.tickster.utility;
 
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
 import java.util.concurrent.TimeUnit;
 
 public final class ScheduleUtil {
     private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(
-           new BasicThreadFactory.Builder()
-                   .daemon(true)
-                   .namingPattern("Scheduler-Thread")
-                   .build()
+            r -> new Thread(r, "Scheduler-Thread")
     );
 
     private ScheduleUtil(){}
