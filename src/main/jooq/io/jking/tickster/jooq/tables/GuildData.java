@@ -46,29 +46,29 @@ public class GuildData extends TableImpl<GuildDataRecord> {
     public final TableField<GuildDataRecord, Long> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.guild_data.ticket_manager</code>.
+     * The column <code>public.guild_data.log_id</code>.
      */
-    public final TableField<GuildDataRecord, Long> TICKET_MANAGER = createField(DSL.name("ticket_manager"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<GuildDataRecord, Long> LOG_ID = createField(DSL.name("log_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.guild_data.ticket_channel</code>.
+     * The column <code>public.guild_data.support_id</code>.
      */
-    public final TableField<GuildDataRecord, Long> TICKET_CHANNEL = createField(DSL.name("ticket_channel"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<GuildDataRecord, Long> SUPPORT_ID = createField(DSL.name("support_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.guild_data.ticket_category</code>.
+     * The column <code>public.guild_data.invite_id</code>.
      */
-    public final TableField<GuildDataRecord, Long> TICKET_CATEGORY = createField(DSL.name("ticket_category"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<GuildDataRecord, Long> INVITE_ID = createField(DSL.name("invite_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.guild_data.log_channel</code>.
+     * The column <code>public.guild_data.category_id</code>.
      */
-    public final TableField<GuildDataRecord, Long> LOG_CHANNEL = createField(DSL.name("log_channel"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<GuildDataRecord, Long> CATEGORY_ID = createField(DSL.name("category_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.guild_data.report_channel</code>.
+     * The column <code>public.guild_data.ticket_id</code>.
      */
-    public final TableField<GuildDataRecord, Long> REPORT_CHANNEL = createField(DSL.name("report_channel"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<GuildDataRecord, Long> TICKET_ID = createField(DSL.name("ticket_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     private GuildData(Name alias, Table<GuildDataRecord> aliased) {
         this(alias, aliased, null);

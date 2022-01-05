@@ -5,7 +5,6 @@ package io.jking.tickster.jooq;
 
 
 import io.jking.tickster.jooq.tables.GuildData;
-import io.jking.tickster.jooq.tables.GuildReports;
 import io.jking.tickster.jooq.tables.GuildTickets;
 
 
@@ -19,11 +18,6 @@ public class Tables {
      * The table <code>public.guild_data</code>.
      */
     public static final GuildData GUILD_DATA = GuildData.GUILD_DATA;
-
-    /**
-     * The table <code>public.guild_reports</code>.
-     */
-    public static final GuildReports GUILD_REPORTS = GuildReports.GUILD_REPORTS;
 
     /**
      * The table <code>public.guild_tickets</code>.

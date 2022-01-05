@@ -5,7 +5,6 @@ package io.jking.tickster.jooq;
 
 
 import io.jking.tickster.jooq.tables.GuildData;
-import io.jking.tickster.jooq.tables.GuildReports;
 import io.jking.tickster.jooq.tables.GuildTickets;
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -34,11 +33,6 @@ public class Public extends SchemaImpl {
     public final GuildData GUILD_DATA = GuildData.GUILD_DATA;
 
     /**
-     * The table <code>public.guild_reports</code>.
-     */
-    public final GuildReports GUILD_REPORTS = GuildReports.GUILD_REPORTS;
-
-    /**
      * The table <code>public.guild_tickets</code>.
      */
     public final GuildTickets GUILD_TICKETS = GuildTickets.GUILD_TICKETS;
@@ -60,7 +54,6 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             GuildData.GUILD_DATA,
-            GuildReports.GUILD_REPORTS,
             GuildTickets.GUILD_TICKETS
         );
     }

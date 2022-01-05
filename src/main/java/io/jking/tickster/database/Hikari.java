@@ -2,53 +2,41 @@ package io.jking.tickster.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import net.dv8tion.jda.api.utils.data.DataObject;
-import net.dv8tion.jda.internal.utils.Checks;
-import org.jooq.DSLContext;
+import io.jking.tickster.core.Config;
 import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultConfiguration;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.sql.DataSource;
 
 public class Hikari {
 
-    private final HikariDataSource hikariDataSource;
+    private final DataSource dataSource;
+    private final DefaultConfiguration defaultConfiguration;
 
-    public Hikari(DataObject dataObject) {
-        this.hikariDataSource = initHikari(dataObject);
-    }
-
-    private HikariDataSource initHikari(DataObject dataObject) {
-        Checks.notNull(dataObject, "Config DataObject");
-
+    public Hikari(Config config) {
         final HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName("org.postgresql.Driver");
-        hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
-        hikariConfig.setUsername(dataObject.getObject("database").getString("username"));
-        hikariConfig.setPassword(dataObject.getObject("database").getString("password"));;
+        hikariConfig.setJdbcUrl(config.getDBUrl());
+        hikariConfig.setUsername(config.getDBUsername());
+        hikariConfig.setPassword(config.getDBPassword());
+        hikariConfig.setMaximumPoolSize(6);
+        hikariConfig.setPoolName("Database-Pool");
 
         System.getProperties().setProperty("org.jooq.no-logo", "true");
         System.getProperties().setProperty("org.jooq.no-tips", "true");
 
-        return new HikariDataSource(hikariConfig);
+        this.dataSource = new HikariDataSource(hikariConfig);
+        this.defaultConfiguration = new DefaultConfiguration();
+        defaultConfiguration.setDataSource(dataSource);
+        defaultConfiguration.setSQLDialect(SQLDialect.POSTGRES);
+
     }
 
-    public Connection getConnection() throws SQLException {
-        final Connection connection = hikariDataSource.getConnection();
-        if (connection == null) {
-            return getConnection();
-        }
-        return connection;
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
-    public DSLContext getDSL() {
-        try {
-            final Connection connection = getConnection();
-            return DSL.using(connection, SQLDialect.POSTGRES);
-        } catch (Exception ignored) {
-            return getDSL();
-        }
+    public DefaultConfiguration getDefaultConfiguration() {
+        return defaultConfiguration;
     }
-
 }

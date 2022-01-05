@@ -50,11 +50,6 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     public final TableField<GuildTicketsRecord, Long> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.guild_tickets.category_id</code>.
-     */
-    public final TableField<GuildTicketsRecord, Long> CATEGORY_ID = createField(DSL.name("category_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
      * The column <code>public.guild_tickets.creator_id</code>.
      */
     public final TableField<GuildTicketsRecord, Long> CREATOR_ID = createField(DSL.name("creator_id"), SQLDataType.BIGINT.nullable(false), this, "");
@@ -62,17 +57,12 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     /**
      * The column <code>public.guild_tickets.ticket_timestamp</code>.
      */
-    public final TableField<GuildTicketsRecord, LocalDateTime> TICKET_TIMESTAMP = createField(DSL.name("ticket_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<GuildTicketsRecord, LocalDateTime> TICKET_TIMESTAMP = createField(DSL.name("ticket_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
-     * The column <code>public.guild_tickets.open</code>.
+     * The column <code>public.guild_tickets.status</code>.
      */
-    public final TableField<GuildTicketsRecord, Boolean> OPEN = createField(DSL.name("open"), SQLDataType.BOOLEAN.nullable(false), this, "");
-
-    /**
-     * The column <code>public.guild_tickets.transcript</code>.
-     */
-    public final TableField<GuildTicketsRecord, JSON> TRANSCRIPT = createField(DSL.name("transcript"), SQLDataType.JSON, this, "");
+    public final TableField<GuildTicketsRecord, Boolean> STATUS = createField(DSL.name("status"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     private GuildTickets(Name alias, Table<GuildTicketsRecord> aliased) {
         this(alias, aliased, null);
@@ -144,11 +134,11 @@ public class GuildTickets extends TableImpl<GuildTicketsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, Long, Long, LocalDateTime, Boolean, JSON> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row5<Long, Long, Long, LocalDateTime, Boolean> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
