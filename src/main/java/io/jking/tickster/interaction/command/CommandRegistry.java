@@ -9,7 +9,9 @@ import io.jking.tickster.interaction.command.impl.ticket_support.SupportCommand;
 import io.jking.tickster.interaction.command.impl.utility.*;
 import io.jking.tickster.interaction.core.Registry;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.interactions.commands.Command;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +35,8 @@ public class CommandRegistry extends Registry<AbstractCommand> {
         return getMap()
                 .values()
                 .stream()
-                .filter(command -> command.getCategory() == category)
-                .filter(command -> member.hasPermission(command.getPermission()))
+                .filter(command -> command.getCategory() == category && member.hasPermission(command.getPermission()))
+                .sorted(Comparator.comparing(AbstractCommand::getName))
                 .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }

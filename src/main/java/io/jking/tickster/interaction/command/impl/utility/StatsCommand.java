@@ -1,5 +1,6 @@
 package io.jking.tickster.interaction.command.impl.utility;
 
+import io.jking.tickster.core.TicksterInfo;
 import io.jking.tickster.interaction.command.AbstractCommand;
 import io.jking.tickster.interaction.command.CommandCategory;
 import io.jking.tickster.interaction.command.CommandFlag;
@@ -66,9 +67,10 @@ public class StatsCommand extends AbstractCommand {
                 days, hours, minutes, seconds
         ), true);
 
-        embed.setDescription(String.format("**JDA Version:** `%s`\n**JVM Version:** `%s`",
+        embed.setDescription(String.format("**JDA Version:** `%s`\n**JVM Version:** `%s`\n**Tickster Version:** `%s`\n",
                 JDAInfo.VERSION,
-                System.getProperty("java.version")
+                System.getProperty("java.version"),
+                TicksterInfo.TICKSTER_VERSION
                 )
         );
 

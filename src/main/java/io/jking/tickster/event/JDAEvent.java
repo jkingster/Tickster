@@ -2,6 +2,7 @@ package io.jking.tickster.event;
 
 import io.jking.tickster.cache.CacheManager;
 import io.jking.tickster.core.Tickster;
+import io.jking.tickster.core.TicksterInfo;
 import io.jking.tickster.database.Database;
 import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.jooq.tables.records.GuildTicketsRecord;
@@ -69,7 +70,7 @@ public class JDAEvent implements EventListener {
     }
 
     private void onReady(ReadyEvent event) {
-        Tickster.getLogger().info("Tickster Ready");
+        Tickster.getLogger().info("Tickster Ready - Version: {}", TicksterInfo.TICKSTER_VERSION);
 
         deleteExpiredTickets(shardManager);
 

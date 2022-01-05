@@ -7,10 +7,15 @@ import java.util.concurrent.TimeUnit;
 
 public final class ScheduleUtil {
     private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(
-            r -> new Thread(r, "Scheduler-Thread")
+            r -> {
+                final Thread thread = new Thread(r, "Scheduler-Thread");
+                thread.setDaemon(true);
+                return thread;
+            }
     );
 
-    private ScheduleUtil(){}
+    private ScheduleUtil() {
+    }
 
     public static void scheduleTask(Runnable runnable, long duration, TimeUnit timeUnit) {
         EXECUTOR_SERVICE.scheduleAtFixedRate(runnable, 0L, duration, timeUnit);
