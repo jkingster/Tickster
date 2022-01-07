@@ -1,13 +1,18 @@
 package io.jking.tickster.utility;
 
+import io.jking.tickster.interaction.command.AbstractCommand;
+import io.jking.tickster.interaction.command.CommandCategory;
+import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.core.responses.Success;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
+
 import java.awt.*;
 import java.time.Instant;
+import java.util.List;
 
 
 public final class EmbedUtil {
@@ -81,7 +86,22 @@ public final class EmbedUtil {
                 necessary details/information.
                 """
         ).setTitle(member.getUser().getAsTag() + " Ticket")
-        .setFooter("Creator ID: " + member.getIdLong(), member.getUser().getEffectiveAvatarUrl())
-        .setTimestamp(Instant.now());
+                .setFooter("Creator ID: " + member.getIdLong(), member.getUser().getEffectiveAvatarUrl())
+                .setTimestamp(Instant.now());
     }
+
+    public static EmbedBuilder getCategories(List<CommandCategory> categories) {
+        return getDefault().setDescription("**Pick any category in the menu.**\n " + CommandCategory.getCategoriesPrinted(categories))
+                .setTimestamp(Instant.now());
+    }
+
+    public static EmbedBuilder getCommands(CommandCategory category, List<AbstractCommand> commands) {
+        return getDefault().setDescription(String.format(
+                "**Category:** %s %s\n**Pick any command in the menu to view it.**\n%s",
+                category.getEmoji().getAsMention(),
+                category.getPrettifiedName(),
+                CommandRegistry.getCommandsPrinted(commands))
+        ).setTimestamp(Instant.now());
+    }
+
 }

@@ -28,7 +28,7 @@ public abstract class AbstractCommand extends CommandDataImpl {
         this.category = category;
     }
 
-    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, CommandFlag flags)  {
+    public AbstractCommand(@NotNull String name, @NotNull String description, Permission permission, CommandCategory category, CommandFlag flags) {
         super(name, description);
         this.permission = permission;
         this.category = category;
@@ -51,6 +51,10 @@ public abstract class AbstractCommand extends CommandDataImpl {
 
 
     public abstract void onSlashCommand(SlashSender sender);
+
+    public String getPrettifiedName() {
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    }
 
     public Permission getPermission() {
         return permission;
@@ -86,7 +90,7 @@ public abstract class AbstractCommand extends CommandDataImpl {
                         **Description:** `%s`
                         **Category:**  %s `%s`
                         **Usage:** ```%s```
-                     
+                                             
                         """,
                         getDescription(),
                         getCategory().getEmoji(),

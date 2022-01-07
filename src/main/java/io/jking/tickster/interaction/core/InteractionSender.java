@@ -16,9 +16,14 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.sharding.ShardManager;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 
 public class InteractionSender<T extends GenericInteractionCreateEvent> {
@@ -41,6 +46,7 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
         this.buttonRegistry = tickster.getButtonRegistry();
         this.database = tickster.getDatabase();
         this.cache = tickster.getCacheManager();
+
     }
 
     public T getEvent() {

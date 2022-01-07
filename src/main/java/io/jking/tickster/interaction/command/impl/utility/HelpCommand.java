@@ -7,6 +7,7 @@ import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.SlashSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.jooq.tables.records.GuildDataRecord;
+import io.jking.tickster.utility.EmbedUtil;
 import io.jking.tickster.utility.MiscUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -15,7 +16,10 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HelpCommand extends AbstractCommand {
 
@@ -36,15 +40,16 @@ public class HelpCommand extends AbstractCommand {
 
     @Override
     public void onSlashCommand(SlashSender sender) {
+        final Member member = sender.getMember();
         final String input = sender.getStringOption("input");
         if (input == null) {
-            sendCategoriesMenu(sender, CommandCategory.getCategories());
+            sendCategoriesMenu(sender, getCategories(sender.getGuildRecord(), member));
             return;
         }
 
         final CommandCategory category = CommandCategory.getCategoryByName(input);
         if (category != null) {
-            sendCategoryMenu(sender, sender.getMember(), category);
+            sendCategoryMenu(sender, member, category);
             return;
         }
 
@@ -60,8 +65,8 @@ public class HelpCommand extends AbstractCommand {
         sendCommandInfo(sender, command);
     }
 
-    private void sendCategoriesMenu(SlashSender sender, CommandCategory[] categories) {
-        if (categories.length == 0) {
+    private void sendCategoriesMenu(SlashSender sender, List<CommandCategory> categories) {
+        if (categories.isEmpty()) {
             sender.reply(
                     Error.CUSTOM,
                     "You are not permitted to view any command categories."
@@ -70,14 +75,14 @@ public class HelpCommand extends AbstractCommand {
         }
 
         final SelectMenu.Builder menu = getCategoriesMenu(sender.getMember().getIdLong(), categories);
-        sender.reply("Select any category to get started.")
+        sender.reply(EmbedUtil.getCategories(categories))
                 .addActionRow(menu.build())
                 .queue();
     }
 
-    private SelectMenu.Builder getCategoriesMenu(long memberId, CommandCategory[] categories) {
+    private SelectMenu.Builder getCategoriesMenu(long memberId, List<CommandCategory> categories) {
         final SelectMenu.Builder builder = SelectMenu.create("menu:help_categories");
-        builder.setPlaceholder("Pick a command category to get started!");
+        builder.setPlaceholder("Select a command.");
         for (CommandCategory category : categories) {
             if (category == null)
                 continue;
@@ -108,11 +113,9 @@ public class HelpCommand extends AbstractCommand {
         }
 
         final SelectMenu.Builder menu = getCategoryMenu(commandList);
-        sender.replyFormat(
-                "%s %s - Click any command to view its information.",
-                category.getEmoji(),
-                category.getPrettifiedName()
-        ).addActionRow(menu.build()).queue();
+
+        sender.reply(EmbedUtil.getCommands(category, commandList))
+                .addActionRow(menu.build()).queue();
     }
 
     private SelectMenu.Builder getCategoryMenu(List<AbstractCommand> commandList) {
@@ -152,6 +155,14 @@ public class HelpCommand extends AbstractCommand {
 
         final EmbedBuilder commandEmbed = command.getAsEmbed();
         sender.reply(commandEmbed).queue();
+    }
+
+    private List<CommandCategory> getCategories(GuildDataRecord record, Member member) {
+        return Arrays.stream(CommandCategory.VALUES)
+                .filter(category -> category.isPermitted(member, record))
+                .sorted(Comparator.comparing(CommandCategory::getPrettifiedName))
+                .distinct()
+                .collect(Collectors.toUnmodifiableList());
     }
 
 }

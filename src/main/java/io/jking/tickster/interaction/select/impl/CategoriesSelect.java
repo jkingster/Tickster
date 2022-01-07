@@ -6,6 +6,8 @@ import io.jking.tickster.interaction.command.CommandRegistry;
 import io.jking.tickster.interaction.core.impl.SelectSender;
 import io.jking.tickster.interaction.core.responses.Error;
 import io.jking.tickster.interaction.select.AbstractSelect;
+import io.jking.tickster.utility.EmbedUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
@@ -61,15 +63,16 @@ public class CategoriesSelect extends AbstractSelect {
             return;
         }
 
+        final EmbedBuilder embed = EmbedUtil.getCommands(category, commandList);
         final SelectMenu.Builder menu = getCategoryMenu(commandList);
-        sender.deferEdit().flatMap(
-                hook -> hook.editOriginalFormat("%s %s - Click any command to view its information.",
-                        category.getEmoji(), category.getPrettifiedName()).setActionRow(menu.build())
-        ).queue();
+        sender.deferEdit()
+                .flatMap(hook -> hook.editOriginalEmbeds(embed.build()).setActionRow(menu.build()))
+                .queue();
     }
 
     private SelectMenu.Builder getCategoryMenu(List<AbstractCommand> commandList) {
         final SelectMenu.Builder menu = SelectMenu.create("menu:help_category");
+        menu.setPlaceholder("Pick a command!");
         for (AbstractCommand command : commandList) {
             menu.addOption(
                     command.getName(),

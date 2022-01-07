@@ -35,7 +35,6 @@ public class InteractionEvent implements EventListener {
     private final SelectRegistry selectRegistry;
     private final Database database;
     private final CacheManager cache;
-
     public InteractionEvent(Tickster tickster,
                             CommandRegistry commandRegistry,
                             ButtonRegistry buttonRegistry,
