@@ -44,7 +44,6 @@ public abstract class Cache<K, V extends Record> {
         put(key, record);
     }
 
-
     public abstract void insert(V value);
 
     public abstract V fetch(K key);

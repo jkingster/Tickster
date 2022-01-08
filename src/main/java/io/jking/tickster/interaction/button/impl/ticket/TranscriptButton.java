@@ -45,7 +45,10 @@ public class TranscriptButton extends AbstractButton {
                                 .collect(Collectors.toUnmodifiableList());
 
                         if (filteredList.isEmpty()) {
-                            sender.replyErrorEphemeral(Error.CUSTOM, "No messages to build into a transcript.").queue();
+                            sender.getHook().editOriginalEmbeds(EmbedUtil.getError(
+                                    Error.CUSTOM,
+                                    "There are no messages to build into a transcript!"
+                            ).build()).setContent("").queue();
                             return;
                         }
 

@@ -12,7 +12,7 @@ public final class EmojiUtil {
     public static Emoji WARNING         = Emoji.fromUnicode("\uD83D\uDED1");
 
     // CommandCategory
-    public static Emoji BOT_OWNER         = Emoji.fromUnicode("\uD83D\uDEE1️");
+    public static Emoji DEVELOPER         = Emoji.fromUnicode("\uD83D\uDEE1️");
     public static Emoji ADMINISTRATOR     = Emoji.fromUnicode("\uD83D\uDEE0️");
     public static Emoji MODERATOR         = Emoji.fromUnicode("⚔️");
     public static Emoji TICKET            = Emoji.fromUnicode("\uD83C\uDFAB");
