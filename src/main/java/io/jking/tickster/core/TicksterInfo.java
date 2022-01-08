@@ -3,8 +3,6 @@ package io.jking.tickster.core;
 import io.jking.tickster.Starter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Objects;
 
 public class TicksterInfo {
 
@@ -15,10 +13,12 @@ public class TicksterInfo {
     public static String TICKSTER_VERSION = getVersion();
 
     // https://stackoverflow.com/questions/14189162/get-name-of-running-jar-or-exe/14189195
+    // This is hacky but w.e. smh
     private static String getVersion() {
         try {
-            return new File(Starter.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-                    .getName();
+            final String name = new File(Starter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getName();
+            final String[] split = name.split("-");
+            return String.format("%s-%s", split[1], split[2]).replace(".jar", "");
         } catch (Exception ignored) {
             return "Unknown.";
         }
