@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClassName = 'io.jking.tickster.Starter'
+    mainClassName = 'io.jking.tickster.App'
 }
 
 repositories {
@@ -27,7 +27,7 @@ dependencies {
     jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
     implementation group: 'net.jodah', name: 'expiringmap', version: '0.5.10'
 
-    implementation("net.dv8tion:JDA:5.0.0-alpha.2") {
+    implementation("com.github.DV8FromTheWorld:JDA:rework~interactions-SNAPSHOT") {
         exclude group: 'club.minnced', module: 'opus-java'
     }
 
@@ -58,9 +58,10 @@ jooq {
                     generate {
                         records = true
                         fluentSetters = true
+                        immutablePojos = true
                     }
                     target {
-                        packageName = 'io.jking.tickster.jooq'
+                        packageName = 'io.jking.jooq'
                         directory = "src/main/jooq"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"

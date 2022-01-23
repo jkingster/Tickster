@@ -1,11 +1,8 @@
 package io.jking.tickster.core;
 
-import io.jking.tickster.cache.CacheManager;
-import io.jking.tickster.database.Database;
-import io.jking.tickster.event.InteractionEvent;
-import io.jking.tickster.event.MiscEvent;
-import io.jking.tickster.interaction.button.ButtonRegistry;
-import io.jking.tickster.interaction.command.CommandRegistry;
+import io.jking.tickster.database.JooqConnector;
+import io.jking.tickster.event.GuildEvent;
+import io.jking.tickster.event.JDAEvent;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -14,43 +11,46 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Tickster {
 
-    private final Config config;
-    private final CommandRegistry commandRegistry;
-    private final ButtonRegistry buttonRegistry;
-    private final Database database;
-    private final CacheManager cacheManager;
-    private final ShardManager shardManager;
+    private static final Logger logger = LoggerFactory.getLogger(Tickster.class);
 
-    public Tickster(String configPath) throws FileNotFoundException, LoginException {
-        this.config = new Config(configPath);
-        this.commandRegistry = new CommandRegistry();
-        this.buttonRegistry = new ButtonRegistry();
-        this.database = new Database(config);
-        this.cacheManager = new CacheManager(database);
-        this.shardManager = buildShardManager();
+    private final Config config;
+    private final JooqConnector jooqConnector;
+
+    private ShardManager shardManager;
+
+    public Tickster() {
+        this.config = Config.getInstance();
+        this.jooqConnector = JooqConnector.getInstance();
     }
 
-    private ShardManager buildShardManager() throws LoginException {
-        final String token = config.getString("token");
-        return DefaultShardManagerBuilder.createDefault(token)
-                .addEventListeners(
-                        new InteractionEvent(commandRegistry, buttonRegistry, database, cacheManager),
-                        new MiscEvent(cacheManager.getGuildCache())
-                )
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public void start() throws LoginException, IOException {
+        logger.info("Starting Tickster!");
+        jooqConnector.createTables();
+        configureShardManager();
+    }
+
+    private void configureShardManager() throws LoginException {
+        this.shardManager = DefaultShardManagerBuilder.createDefault(config.getString("token"))
+                .addEventListeners(new JDAEvent(), new GuildEvent())
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_INVITES)
                 .disableCache(Arrays.asList(CacheFlag.values()))
-                .setShardsTotal(-1)
-                .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_INVITES, GatewayIntent.GUILD_MEMBERS)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
                 .setChunkingFilter(ChunkingFilter.NONE)
-                .setActivity(Activity.watching(" for new tickets."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .setActivity(Activity.watching(" for new tickets."))
                 .build();
     }
 
@@ -58,16 +58,8 @@ public class Tickster {
         return config;
     }
 
-    public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    public CacheManager getCacheManager() {
-        return cacheManager;
+    public JooqConnector getJooqConnector() {
+        return jooqConnector;
     }
 
     public ShardManager getShardManager() {
