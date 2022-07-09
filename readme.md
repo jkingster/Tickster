@@ -8,5 +8,6 @@
     - This includes Failure/Success responses.
 - [X] Create a cache system that handles tickets, guild settings, and blacklisted users.
     - This will utilize ExpiringMap.
--  ~~Try and get the new permissions pr working, not sure if even implemented anywhere for JDA.~~
+- ~~Try and get the new permissions pr working, not sure if even implemented anywhere for JDA.~~
 - [X] Implement ClassGraph to automatically register all interaction classes? Would simplify things.
+- [ ] Figure out slash command registering?
