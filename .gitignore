@@ -1,0 +1,7 @@
+/.gradle/
+/.idea/
+/build/
+/gradle/
+config.production.json
+config.development.json
+config.json

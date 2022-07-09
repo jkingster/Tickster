@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'nu.studer.jooq' version '6.0.1'
+}
+
+application {
+    mainClassName = 'io.jking.tickster.App'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://m2.dv8tion.net/releases'
+    }
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
+    implementation group: 'org.jooq', name: 'jooq', version: '3.15.4'
+    jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
+    implementation group: 'net.jodah', name: 'expiringmap', version: '0.5.10'
+    implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.141'
+
+    implementation('com.github.Xirado:JDA:feature~modalselectmenu-SNAPSHOT') {
+        exclude module: 'opus-java'
+    }
+
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha10'
+}
+
+jooq {
+    version = '3.15.4'
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://localhost:5432/tickster'
+                    user = 'postgres'
+                    password = 'password'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        includes = '.*'
+                        excludes = ''
+                    }
+                    generate {
+                        records = true
+                        fluentSetters = true
+                        immutablePojos = true
+                    }
+                    target {
+                        packageName = 'io.jking.jooq'
+                        directory = "src/main/jooq"
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
+
+group = 'io.jking'
+description = 'Untitled'
+compileJava.options.encoding = 'UTF-8'
