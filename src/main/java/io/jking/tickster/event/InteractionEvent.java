@@ -31,7 +31,8 @@ public class InteractionEvent implements EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        if (event instanceof GenericInteractionCreateEvent casted) {
+        if (event instanceof GenericInteractionCreateEvent) {
+            final GenericInteractionCreateEvent casted = (GenericInteractionCreateEvent) event;
             Guild guild = casted.getGuild();
             if (guild == null)
                 return;
