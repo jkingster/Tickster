@@ -28,7 +28,7 @@ public class Tickster {
     public void start() throws LoginException {
         this.shardManager = DefaultShardManagerBuilder.createDefault(config.getString("token"))
                 .setShardsTotal(-1)
-                .addEventListeners(new JDAEvent(interactionRegistry))
+                .addEventListeners(new JDAEvent(interactionRegistry), new GuildEvent(), new InteractionEvent(interactionRegistry))
                 .disableCache(Arrays.asList(CacheFlag.values()))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES)
                 .setActivity(Activity.watching(" for new tickets."))

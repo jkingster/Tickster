@@ -40,8 +40,6 @@ public class JDAEvent implements EventListener {
         if (shardId == 0) {
             interactionRegistry.registerInteractions(shard);
         }
-
-        shard.addEventListener(new GuildEvent(), new InteractionEvent(interactionRegistry));
     }
 
     private void onDisconnect(DisconnectEvent event) {

@@ -43,8 +43,9 @@ public class GuildEvent implements EventListener {
     // If the guild does not exist in the GUILD_DATA table, we will register it.
     private void registerGuild(Guild guild) {
         long guildId = guild.getIdLong();
-        if (guildRepo.isExisting(guildId))
+        if (guildRepo.isExisting(guildId)) {
             return;
+        }
 
         guildRepo.register(guild);
     }

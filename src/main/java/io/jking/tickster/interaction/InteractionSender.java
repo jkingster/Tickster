@@ -42,10 +42,6 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
         return getEvent().getMessageChannel();
     }
 
-    public TextChannel getTextChannel() {
-        return getEvent().getTextChannel();
-    }
-
     public Member getSelfMember() {
         return getGuild().getSelfMember();
     }
