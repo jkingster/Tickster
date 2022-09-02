@@ -15,7 +15,7 @@ public class Config {
 
     private final DataObject data;
 
-    public Config(String path) {
+    private Config(String path) {
         this.data = getData(path);
     }
 
