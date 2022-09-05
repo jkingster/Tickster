@@ -3,6 +3,9 @@ package io.jking.tickster.database.impl;
 import io.jking.jooq.tables.records.GuildTicketBlacklistRecord;
 import io.jking.tickster.database.Repository;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import static io.jking.jooq.tables.GuildTicketBlacklist.GUILD_TICKET_BLACKLIST;
 
 public class BlacklistRepo extends Repository<GuildTicketBlacklistRecord> {
@@ -35,5 +38,10 @@ public class BlacklistRepo extends Repository<GuildTicketBlacklistRecord> {
         dsl().deleteFrom(GUILD_TICKET_BLACKLIST)
                 .where(GUILD_TICKET_BLACKLIST.GUILD_ID.eq(id))
                 .execute();
+    }
+
+    @Override
+    public void update(GuildTicketBlacklistRecord record, BiConsumer<GuildTicketBlacklistRecord, Boolean> biConsumer){
+        // Ignored
     }
 }

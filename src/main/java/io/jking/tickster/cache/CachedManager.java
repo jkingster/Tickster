@@ -32,7 +32,7 @@ public class CachedManager {
         return instance.blacklistCache;
     }
 
-    public CachedManager getInstance() {
+    public static CachedManager getInstance() {
         if (instance == null)
             return new CachedManager();
         return instance;

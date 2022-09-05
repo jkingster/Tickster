@@ -1,5 +1,9 @@
 package io.jking.tickster.interaction;
 
+import io.jking.tickster.cache.CachedManager;
+import io.jking.tickster.cache.impl.BlacklistCache;
+import io.jking.tickster.cache.impl.GuildCache;
+import io.jking.tickster.cache.impl.TicketCache;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -49,4 +53,17 @@ public class InteractionSender<T extends GenericInteractionCreateEvent> {
     public User getSelfUser() {
         return getJDA().getSelfUser();
     }
+
+    public GuildCache getGuildCache() {
+        return CachedManager.guildCache();
+    }
+
+    public TicketCache getTicketCache() {
+        return CachedManager.ticketCache();
+    }
+
+    public BlacklistCache getBlacklistCache() {
+        return CachedManager.blacklistCache();
+    }
+
 }
