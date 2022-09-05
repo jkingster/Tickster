@@ -79,7 +79,7 @@ public class InteractionRegistry {
         }
 
         public List<T> getValues() {
-            return Collections.unmodifiableList(map.values().stream().toList());
+            return map.values().stream().collect(Collectors.toUnmodifiableList());
         }
     }
 

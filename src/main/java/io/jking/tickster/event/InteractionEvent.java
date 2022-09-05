@@ -31,7 +31,8 @@ public class InteractionEvent implements EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        if (event instanceof GenericInteractionCreateEvent casted) {
+        if (event instanceof GenericInteractionCreateEvent) {
+            final GenericInteractionCreateEvent casted = (GenericInteractionCreateEvent) event;
             Guild guild = casted.getGuild();
             if (guild == null)
                 return;
@@ -75,6 +76,16 @@ public class InteractionEvent implements EventListener {
         if (slashContainer == null)
             return;
 
-        slashContainer.onInteraction(new SlashSender(event));
+        String subCommandName = event.getSubcommandName();
+        if (subCommandName == null) {
+            slashContainer.onInteraction(new SlashSender(event));
+            return;
+        }
+
+        SlashContainer.SubCommandContainer subCommand = slashContainer.getSubContainer(subCommandName);
+        if (subCommand == null)
+            return;
+
+        subCommand.onInteraction(new SlashSender(event));
     }
 }

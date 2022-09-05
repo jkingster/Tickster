@@ -28,7 +28,7 @@ dependencies {
     implementation group: 'net.jodah', name: 'expiringmap', version: '0.5.10'
     implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.141'
 
-    implementation('com.github.Xirado:JDA:feature~modalselectmenu-SNAPSHOT') {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.18") {
         exclude module: 'opus-java'
     }
 

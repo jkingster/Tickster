@@ -8,6 +8,9 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.jooq.Field;
 import org.jooq.TableField;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import static io.jking.jooq.tables.GuildData.GUILD_DATA;
 
 public class GuildRepo extends Repository<GuildDataRecord> {
@@ -42,6 +45,20 @@ public class GuildRepo extends Repository<GuildDataRecord> {
                 .execute();
     }
 
+    @Override
+    public void update(GuildDataRecord record, BiConsumer<GuildDataRecord, Boolean> biConsumer) {
+        final int update = dsl().update(GUILD_DATA)
+                .set(record)
+                .where(GUILD_DATA.GUILD_ID.eq(record.getGuildId()))
+                .execute();
+
+        if (update >= 1) {
+            biConsumer.accept(record, true);
+        } else {
+            biConsumer.accept(null, false);
+        }
+    }
+
     public boolean isExisting(long id) {
         return dsl().fetchExists(GUILD_DATA, GUILD_DATA.GUILD_ID.eq(id));
     }
@@ -56,6 +73,7 @@ public class GuildRepo extends Repository<GuildDataRecord> {
 
         save(record);
     }
+
 
     public <T> void update(long id, TableField<GuildDataRecord, T> field, T newValue) {
         dsl().update(GUILD_DATA)
