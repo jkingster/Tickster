@@ -9,6 +9,8 @@ public enum Failure {
 
     UPDATED("Data could not be **updated.**"),
     RETRIEVE("Data could not be **retrieved.**"),
+    PERMISSION("Missing permission(s): `%s`"),
+    CUSTOM("%s"),
     MATCHING("The data attempting to be updated is already the current."); // This might be too vague?
 
     private final String description;
