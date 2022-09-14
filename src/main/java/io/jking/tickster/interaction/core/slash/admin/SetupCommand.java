@@ -8,6 +8,7 @@ import io.jking.tickster.interaction.response.Failure;
 import io.jking.tickster.utility.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -22,11 +23,51 @@ public class SetupCommand extends SlashContainer {
     public SetupCommand() {
         super("setup", "Configure the settings for this server.", Permission.ADMINISTRATOR);
         super.getData().setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR));
-        super.putSubContainers(getPortalContainer());
+        super.putSubContainers(getPortalContainer(), getLoggingContainer(), getMasterContainer());
     }
 
     @Override
     public void onInteraction(SlashSender sender) {
+    }
+
+    private SubCommandContainer getMasterContainer() {
+        return new SubCommandContainer("master", "Configure the ticket master role.",
+                new OptionData(OptionType.ROLE, "master", "The role that manages tickets.")) {
+            @Override
+            public void onInteraction(SlashSender sender) {
+                final long guildId = sender.getGuild().getIdLong();
+                final GuildDataRecord guildData = sender.getGuildCache().get(guildId);
+
+                if (guildData == null) {
+                    sender.reply(Failure.RETRIEVE).setEphemeral(true).queue();
+                    return;
+                }
+
+                final long masterRoleId = guildData.getTicketMasterRoleId();
+                final Role role = sender.getRole("master");
+                if (role == null) {
+                    sender.reply(Failure.CUSTOM, "Could not get role option.").setEphemeral(true).queue();
+                    return;
+                }
+
+                final long targetRoleId = role.getIdLong();
+                if (targetRoleId == masterRoleId) {
+                    sender.reply(Failure.MATCHING).setEphemeral(true).queue();
+                    return;
+                }
+
+                guildRepo.update(guildData.setTicketMasterRoleId(targetRoleId), (record, status) -> {
+                    if (!status) {
+                        sender.reply(Failure.UPDATED).setEphemeral(true).queue();
+                        return;
+                    }
+
+                    sender.reply(EmbedFactory.getUpdated("Master Role Set: %s `(%s)`", role.getAsMention(), targetRoleId))
+                            .setEphemeral(true)
+                            .queue();
+                });
+            }
+        };
     }
 
     private SubCommandContainer getLoggingContainer() {
@@ -34,7 +75,42 @@ public class SetupCommand extends SlashContainer {
                 new OptionData(OptionType.CHANNEL, "logs", "The channel where logs are sent.", true)) {
             @Override
             public void onInteraction(SlashSender sender) {
+                final long guildId = sender.getGuild().getIdLong();
+                final GuildDataRecord guildData = sender.getGuildCache().get(guildId);
 
+                if (guildData == null) {
+                    sender.reply(Failure.RETRIEVE).setEphemeral(true).queue();
+                    return;
+                }
+
+                final long logsChannelId = guildData.getTicketLoggingChannelId();
+                final GuildChannelUnion logChannelUnion = sender.getChannel("logs");
+                if (logChannelUnion instanceof TextChannel) {
+                    final TextChannel logChannel = logChannelUnion.asTextChannel();
+                    if (!logChannel.canTalk()) {
+                        sender.reply(Failure.PERMISSION, Permission.MESSAGE_SEND).setEphemeral(true).queue();
+                        return;
+                    }
+
+                    final long channelId = logChannel.getIdLong();
+                    if (logsChannelId == channelId) {
+                        sender.reply(Failure.MATCHING).setEphemeral(true).queue();
+                        return;
+                    }
+
+                    guildRepo.update(guildData.setTicketLoggingChannelId(channelId), (updatedRecord, status) -> {
+                        if (!status) {
+                            sender.reply(Failure.UPDATED).setEphemeral(true).queue();
+                            return;
+                        }
+
+                        sender.reply(EmbedFactory.getUpdated("Log Channel Set: %s `(%s)`", logChannel.getAsMention(), logsChannelId))
+                                .setEphemeral(true)
+                                .queue();
+                    });
+                    return;
+                }
+                sender.reply(Failure.CUSTOM, "Must select a valid TextChannel!").setEphemeral(true).queue();
             }
         };
     }
